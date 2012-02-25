@@ -29,7 +29,7 @@ public class Message{
 	private Map<String,Message>	specificMessages;										// For contact specific Messages
 	public String 				text;													// Text of the message to be sent
 	private final boolean 		child;													// Whether or not it is a "child" message
-	private final int 			DB_ID;													// Database ID
+	public final int 			DB_ID;													// Database ID
 		
 	/*	Message Constructor
 	 * 		sets the text, initialize contact specificMessages,
@@ -42,6 +42,11 @@ public class Message{
 																							// the number of the contact
 		child 				= c;														// Set if child
 		DB_ID 				= 0; 														// Query Database for ID
+	}
+	public Message(int fake){
+		child = false;
+		DB_ID = -1;
+		text = new String("Create a message to have it show up here.");
 	}
 	
 	/*	setText

@@ -3,5 +3,6 @@
 
     <string name="hello">Hello World, HomeScreenActivity!</string>
     <string name="app_name">BRB</string>
+    <string name="default_text">Type to create message</string>
 
 </resources>

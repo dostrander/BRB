@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/message_item2"
+    android:background="@color/list_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+	<TextView
+    	android:id="@+id/message_item_text"
+    	android:layout_marginLeft="5dp"
+    	android:layout_marginRight="5dp"
+    	android:layout_marginTop="5dp"
+    	android:layout_marginBottom="5dp"
+    	android:layout_weight="1"
+    	android:layout_height="fill_parent"
+    	android:layout_width="wrap_content" />
+	<Button 
+	    android:id="@+id/message_item_select_button"
+	    android:text="Select"
+	    android:layout_weight="0"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"/>
+	<Button 
+	    android:id="@+id/message_item_edit_button"
+	    android:text="Edit"
+	    android:layout_weight="0"
+	    android:layout_width="wrap_content"
+	    android:layout_height="fill_parent"/>
+</TableRow>
+
