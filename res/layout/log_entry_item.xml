@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+	
+    	<TextView
+    	    android:id="@+id/log_entry_date"
+    	    android:text="2/5"
+    	    android:textSize="24dp"
+    	    android:paddingLeft="10dp"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content" />
+    	
+    	<ImageView
+    	    android:id="@+id/log_entry_picture"
+    	    android:src="@drawable/phone_symbol"
+    	    android:paddingLeft="5dp"
+    	    android:paddingTop="2dp"
+        	android:layout_toRightOf="@id/log_entry_date"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content" />
+
+    	<TextView 	
+    	    android:id="@+id/log_entry_contact"
+    		android:text="(315) 555-5555"
+    		android:textSize="24dp"
+    		android:paddingLeft="5dp"
+    		android:layout_toRightOf="@id/log_entry_picture"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content" />
+    	
+    	<TextView 	
+    	    android:id="@+id/log_entry_more"
+    		android:text="more"
+    		android:textSize="18dp"
+    		android:textColor="#AA0000"
+    		android:paddingRight="5dp"
+    		android:paddingTop="6dp"
+    		android:layout_alignParentRight="true" 
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content" />
+    	
+    	<TextView 	
+    	    android:id="@+id/log_entry_time_label"
+    		android:text="Time: "
+    		android:textSize="24dp"
+    		android:paddingLeft="10dp"
+    		android:layout_below="@id/log_entry_date"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content" />
+    	
+    	<TextView 	
+    	    android:id="@+id/log_entry_time"
+    		android:text="5:00"
+    		android:textSize="24dp"
+    		android:layout_toRightOf="@id/log_entry_time_label"
+    		android:layout_below="@id/log_entry_date"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content" />
+    	
+    	<TextView 	
+    	    android:id="@+id/log_entry_time_ampm"
+    		android:text="PM"
+    		android:textSize="18dp"
+    		android:paddingTop="6dp"
+    		android:paddingLeft="2dp"
+    		android:layout_toRightOf="@id/log_entry_time"
+    		android:layout_below="@id/log_entry_date"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content" />
+    	
+    	<TextView 	
+    	    android:id="@+id/log_entry_response_label"
+    		android:text="Responded with: "
+    		android:textSize="24dp"
+    		android:paddingLeft="10dp"
+    		android:layout_below="@id/log_entry_time_label"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content" />
+    	
+    	<TextView 	
+    	    android:id="@+id/log_entry_response"
+    		android:text="'At the dentist...'"
+    		android:textSize="24dp"
+    		android:paddingLeft="40dp"
+    		android:layout_below="@id/log_entry_response_label"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content" />
+    	
+</RelativeLayout>
