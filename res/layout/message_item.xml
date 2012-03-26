@@ -1,30 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableRow 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/message_item2"
-    android:background="@color/list_background"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contact_specific_message_item"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
-	<TextView
-    	android:id="@+id/message_item_text"
-    	android:layout_marginLeft="5dp"
-    	android:layout_marginRight="5dp"
-    	android:layout_marginTop="5dp"
-    	android:layout_marginBottom="5dp"
-    	android:layout_weight="1"
-    	android:layout_height="fill_parent"
-    	android:layout_width="wrap_content" />
-	<Button 
-	    android:id="@+id/message_item_select_button"
-	    android:text="Select"
-	    android:layout_weight="0"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"/>
-	<Button 
-	    android:id="@+id/message_item_edit_button"
-	    android:text="Edit"
-	    android:layout_weight="0"
-	    android:layout_width="wrap_content"
-	    android:layout_height="fill_parent"/>
-</TableRow>
 
+    <TextView
+        android:id="@+id/names"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Names, Names, Names"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Button
+        android:id="@+id/add_names_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/names"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/names"
+        android:padding="0dp" />
+    <TextView 
+        android:id="@+id/contact_specific_message_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/names"
+        android:layout_alignParentLeft="true"
+        android:layout_toRightOf="@+id/edit_specific_message_text"
+        android:text="Message"
+         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/edit_specific_message_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/contact_specific_message_text"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/contact_specific_message_text" />
+
+</RelativeLayout>

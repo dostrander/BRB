@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <TableRow android:id="@+id/top_row"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_alignParentTop="true" >
+        <EditText
+            android:id="@+id/message_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:layout_weight="1" 
+            android:text="Enter text here...">
+            <requestFocus />
+        </EditText>
+        
+        <Button android:id="@+id/message_list_button" 
+            android:layout_marginLeft="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="select"
+            android:layout_weight="0"
+            >
+		</Button>        
+		   <Button android:id="@+id/enable_away_button" 
+            android:layout_marginLeft="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="enable"
+            android:layout_weight="0"
+            >
+		</Button>   
+    </TableRow>
+	<TabHost android:id="@android:id/tabhost"
+	    android:layout_below="@id/top_row"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    >
+	    <RelativeLayout 
+	        android:id="@+id/tab2"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:padding="5dp"
+	         >
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+            <FrameLayout 
+                android:id="@android:id/tabcontent"
+                android:layout_below="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                >
+                <LinearLayout 
+                    android:id="@+id/tab1"
+                    android:layout_height="fill_parent"
+                    android:layout_width="fill_parent" />
+<!--                             <TextView 
+                android:id="@+id/textview1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" 
+                android:text="this is a tab" /> -->
+            <TextView 
+                android:id="@+id/textview2"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" 
+                android:text="this is another tab" /> 
+
+            </FrameLayout>	        
+	    </RelativeLayout>
+	    
+	</TabHost>    
+
+</RelativeLayout>
