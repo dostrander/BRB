@@ -6,37 +6,38 @@
 
     <TextView
         android:id="@+id/names"
+        android:paddingBottom="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/add_names_button"
         android:text="Names, Names, Names"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
         android:id="@+id/add_names_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/names"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/names"
-        android:padding="0dp" />
-    <TextView 
-        android:id="@+id/contact_specific_message_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/names"
-        android:layout_alignParentLeft="true"
-        android:layout_toRightOf="@+id/edit_specific_message_text"
-        android:text="Message"
-         android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_alignParentRight="true"
+        android:text="+" />
 
     <Button
         android:id="@+id/edit_specific_message_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/contact_specific_message_text"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/contact_specific_message_text" />
+        android:layout_below="@+id/add_names_button"
+        android:text="+" />
+
+    <TextView
+        android:id="@+id/contact_specific_message_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:layout_alignBottom="@+id/edit_specific_message_text"
+        android:layout_alignParentLeft="true"
+        android:text="Tap to Edit Message"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

@@ -21,15 +21,16 @@
         android:label="@string/app_name" >
         <activity
             android:name=".HomeScreenActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-
+        <activity android:name=".MessageActivity"/>            
+        <activity android:name=".DateTimePickerActivity"
+        	android:theme="@android:style/Theme.Dialog" />
          <receiver android:name=".IncomingListener"> 
             <intent-filter> 
                 <action android:name=
@@ -38,14 +39,10 @@
                     "android.provider.Telephony.SMS_RECEIVED" /> 
             </intent-filter> 
         </receiver>
-        
-         
          <receiver android:name=".Message"  android:enabled="true">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_SENT" />
             </intent-filter>
         </receiver>
-    
     </application>
-    
 </manifest>

@@ -1,91 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/message_view"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+    <TableRow 
+        android:id="@+id/priority_row"
+        android:layout_alignParentTop="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
 	<TextView
         android:id="@+id/priority_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_gravity="center_vertical"
         android:textStyle="bold"
         android:text="Priority Level"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 	<RadioButton
 	    android:id="@+id/high_priority_button"
 	    android:text="Hi"
+	    android:textColor="#FF0000"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_alignParentTop="true"
-	    android:layout_marginLeft="20dp"
-	    android:layout_toRightOf="@+id/priority_label" />
+	    android:layout_marginLeft="20dp" />
 	<RadioButton
         android:id="@+id/low_priority_button"
         android:layout_marginRight="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:text="Low" />
- 
+        android:text="Low" 
+        android:textColor="#00FF00"/>
+	</TableRow>
+
+	<TableRow 
+	    android:id="@+id/start_row"
+	    android:layout_weight="1"
+	    android:layout_below="@+id/priority_row"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    	    android:layout_marginTop="5dp" 
+	    android:layout_marginBottom="5dp" >
     <TextView
         android:id="@+id/starttime_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/priority_label"
-        android:layout_marginBottom="20dp"
+        android:layout_weight="1"
         android:textStyle="bold"
         android:text="Start Time"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
     
-    <TextView
+	<TextView
         android:id="@+id/starttime_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/starttime_label"
-        android:layout_alignLeft="@+id/priority_text"
         android:textStyle="bold"
-        android:textColor="@color/green"
-        android:layout_marginBottom="10dp"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_weight="0"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/date_time_background"
+        android:text="1/2/12 11:11 PM"
+        android:textAppearance="?android:attr/textAppearanceMedium" /> 
 
+        </TableRow>
+
+	<TableRow 
+	    android:id="@+id/end_row"
+	    android:layout_below="@+id/start_row"
+	    android:layout_height="wrap_content"
+	    android:layout_width="fill_parent"
+	    android:layout_marginTop="5dp" 
+	    android:layout_marginBottom="5dp" 
+	    >
     <TextView
         android:id="@+id/endtime_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignRight="@+id/starttime_label"
-        android:layout_below="@+id/starttime_label"
+        android:layout_weight="1"
         android:textStyle="bold"
         android:text="End Time"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-    <TextView
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+	<TextView
         android:id="@+id/endtime_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/endtime_text"
-        android:layout_alignLeft="@+id/priority_text"
-        android:layout_below="@+id/starttime_label"
-        android:textColor="@color/red"
         android:textStyle="bold"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_weight="0"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/date_time_background"
+        android:text="1/2/12 11:11 PM"
+        android:textAppearance="?android:attr/textAppearanceMedium" /> 
+    </TableRow>
     <TextView
         android:id="@+id/contact_specific_label"
+        android:layout_below="@+id/end_row"
+        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/endtime_text"
-        android:layout_centerHorizontal="true"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_gravity="center_horizontal"
+        android:text="Contact Specific Messages"
+        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
     
-    <ListView 
+    <ListView
         android:id="@+id/contact_specific_message_list"
         android:layout_below="@+id/contact_specific_label"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_alignParentBottom="true"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent" />
 
 
 </RelativeLayout>

@@ -1,6 +1,10 @@
 package b.r.b;
 
 // Java Imports
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 // Android Imports
@@ -26,33 +30,92 @@ public class Message{
 	private final String TAG = "Message";
 	
 	// Variables
-	private Map<String,Message>	specificMessages;										// For contact specific Messages
+	private Map<String,Integer>	specificNumbers;										// For contact specific Messages
+	ArrayList<String>	specificMessages;
 	public String 				text;													// Text of the message to be sent
-	private final boolean 		child;													// Whether or not it is a "child" message
+	private boolean 			no_end;													// Tells whether there is an end or not
 	public final int 			DB_ID;													// Database ID
+	// start time
+	private Calendar 			startTime;
+	private Calendar			endTime;
+	// finish time
 		
 	/*	Message Constructor
 	 * 		sets the text, initialize contact specificMessages,
 	 * 		tells whether or not it is a child and gets database id
 	 */
-	public Message(String t, boolean c){
+	public Message(String t){
 	 	Log.d(TAG,"in Message Constructor");
+	 	startTime	= Calendar.getInstance();
+	 	endTime 	= Calendar.getInstance(); 
 		text 				= new String(t);											// Set text
-		specificMessages 	= new HashMap<String,Message>();							// Initialize specific messages, key is 
+		specificNumbers 	= new HashMap<String,Integer>();							// Initialize specific messages, key is 
 																							// the number of the contact
-		child 				= c;														// Set if child
+		specificMessages	= new ArrayList<String>();
+		specificMessages.add("");
 		DB_ID 				= 0; 														// Query Database for ID
 	}
-	public Message(int fake){
-		child = false;
-		DB_ID = -1;
-		text = new String("Create a message to have it show up here.");
+
+	
+	// setters
+	public void setText(String t){text = t;}
+	public void setStartDate(int m, int d, int y, int h, int mi){
+		startTime.set(y,m,d,h,mi);
+		checkDates();
+	}
+	public void setEndDate(int m, int d, int y, int h, int mi){
+		endTime.set(y,m,d,h,mi);
+		checkDates();
+	}
+	// getters
+	public int getsYear(){ return startTime.get(Calendar.YEAR);}
+	public int getfYear(){ return endTime.get(Calendar.YEAR);}
+	public int getsMonth(){ return startTime.get(Calendar.MONTH);}
+	public int getfMonth(){ return endTime.get(Calendar.MONTH);}
+	public int getsDay(){ return startTime.get(Calendar.DAY_OF_MONTH);}
+	public int getfDay(){ return endTime.get(Calendar.DAY_OF_MONTH);}
+	public int getsHour(){ return startTime.get(Calendar.HOUR_OF_DAY);}
+	public int getfHour(){ return endTime.get(Calendar.HOUR_OF_DAY);}
+	public int getsMinute(){ return startTime.get(Calendar.MINUTE);}
+	public int getfMinute(){ return endTime.get(Calendar.MINUTE);}
+	public String startDateToText(){
+		DateFormat format = new SimpleDateFormat("MM/dd/yy hh:mm aa");
+		return format.format(startTime.getTime()).toString();
+	}
+	public String endDateToText(){
+		DateFormat format = new SimpleDateFormat("MM/dd/yy hh:mm aa");
+		return format.format(endTime.getTime()).toString();
 	}
 	
-	/*	setText
-	 * 		setter for the text
-	 */
-	public void setText(String t){text = t;}
+	private void checkDates(){
+		if(startTime.after(endTime)){
+			Log.d(TAG,"after");
+			if(endTime.get(Calendar.HOUR_OF_DAY) < startTime.get(Calendar.HOUR_OF_DAY) ||	// if the hour is larger
+					(endTime.get(Calendar.HOUR_OF_DAY) == startTime.get(Calendar.HOUR_OF_DAY) && // or the hour is the same
+					 endTime.get(Calendar.MINUTE) < startTime.get(Calendar.MINUTE)))			// and minute is larger
+				endTime.set(startTime.get(Calendar.YEAR),										// set all categories 
+					startTime.get(Calendar.MONTH), 
+					startTime.get(Calendar.DAY_OF_MONTH),
+					startTime.get(Calendar.HOUR),
+					startTime.get(Calendar.MINUTE));
+			else endTime.set(startTime.get(Calendar.YEAR),
+					startTime.get(Calendar.MONTH), 
+					startTime.get(Calendar.DAY_OF_MONTH));
+		}
+		Log.d(TAG,"start" +String.valueOf(startTime.get(Calendar.YEAR)) + " " + 
+				String.valueOf(startTime.get(Calendar.MONTH)) + " " +
+				String.valueOf(startTime.get(Calendar.DAY_OF_MONTH)) + " " +
+				String.valueOf(startTime.get(Calendar.HOUR)) + " " +
+				String.valueOf(startTime.get(Calendar.MINUTE)));
+		Log.d(TAG,"end" +String.valueOf(endTime.get(Calendar.YEAR)) + " " + 
+				String.valueOf(endTime.get(Calendar.MONTH)) + " " +
+				String.valueOf(endTime.get(Calendar.DAY_OF_MONTH)) + " " +
+				String.valueOf(endTime.get(Calendar.HOUR)) + " " +
+				String.valueOf(endTime.get(Calendar.MINUTE)));
+	}
+	
+
+	
 	
 	/*	saveToDatabase
 	 * 		check whether or not it is in the appropriate 
@@ -61,14 +124,14 @@ public class Message{
 	 */
 	public void saveToDatabase(){
 		Log.d(TAG,"in saveToDatabase");
-		if (child == true)
-			// Check to see if there is an entry 
-			// in the child database
-			;
-		else
-			// Check to see if there is an entry
-			// in the parent database
-			;
+//		if (child == true)
+//			// Check to see if there is an entry 
+//			// in the child database
+//			;
+//		else
+//			// Check to see if there is an entry
+//			// in the parent database
+//			;
 	}
 	
 	/*	addContactSpecificMessage
@@ -76,7 +139,10 @@ public class Message{
 	 */
 	public void addContactSpecificMessage(String number, String t){
 		Log.d(TAG,"in addContactSpecificMessage");
-		specificMessages.put(number, new Message(t,true));								// Put a new message in specificMessages
+		// Add to database
+		int db_id = 0;
+		specificNumbers.put(number, specificMessages.size());
+		specificMessages.add(t);
 																							// make it a child message
 	}
 	
@@ -87,11 +153,10 @@ public class Message{
 	 */
 	public void sendSMS(String incomingNumber, Context context){
 		Log.d(TAG,"in sendText");
-		if(specificMessages.containsKey(incomingNumber))								// If there is a key that matches
-			specificMessages.get(incomingNumber).sendSMS(incomingNumber,context);		// Tell that message to send it
+		if(specificNumbers.containsKey(incomingNumber));								// If there is a key that matches
+//			specificMessages.get(incomingNumber).sendSMS(incomingNumber,context);		// Tell that message to send it
 		
 		else{																			// If not
-			Log.d(TAG,"sending message, child == " + String.valueOf(child));
 			SmsManager smsManager = SmsManager.getDefault();							// Get the SmsManager
 			
 			// if we want to track whether or not it was sent we need to change this 

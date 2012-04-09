@@ -18,7 +18,9 @@ import java.util.ArrayList;
 
 
 import android.app.Activity;									
+import android.app.TabActivity;
 import android.content.Context;
+import android.content.Intent;
 //import android.content.BroadcastReceiver;
 //import android.content.Context;
 //import android.content.Intent;
@@ -37,6 +39,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -46,7 +50,7 @@ import android.widget.Toast;
  * 		Starts the application bringing up the main screen	
  */
 
-public class HomeScreenActivity extends Activity {
+public class HomeScreenActivity extends TabActivity {
 	private final String TAG = "HomeScreenActivity";
     // Convenience Variables
 	
@@ -58,8 +62,12 @@ public class HomeScreenActivity extends Activity {
 	Button selectButton;
 	EditText inputMessage;
 	boolean enabled;
+	TabHost mTabHost;
+	TabWidget mTabWidget;
 	
-	MessageListAdapter messageListAdapter;
+	
+	
+	//MessageListAdapter messageListAdapter;
 	ListView messageListView;
 	//View createMessageView;
 	
@@ -78,19 +86,33 @@ public class HomeScreenActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"in onCreate");
-        setContentView(R.layout.main);
+        setContentView(R.layout.main_screen);
         enabled = false;
         
-        // Find Views
-        enableButton = (Button) findViewById(R.id.enable_away_button);
-        //enableButton.setBackgroundResource(R.drawable.)
-        selectButton = (Button) findViewById(R.id.select_message_button);
-        inputMessage = (EditText) findViewById(R.id.message_input);
-        messageListView = (ListView) findViewById(R.id.message_list);
+        Intent i = new Intent(HomeScreenActivity.this,MessageActivity.class);
         
-        messageListAdapter = new MessageListAdapter(this);
-        messageListView.setAdapter(messageListAdapter);
-        registerClickListeners();
+        TabHost.TabSpec spec;
+        //Intent i = new Intent(this,MessageActivity.class);
+        mTabHost 	= getTabHost();
+        mTabWidget 	= getTabWidget();
+        //mTabHost.addTab(mTabHost.newTabSpec("message").setIndicator("Message").setContent(R.id.textview1));
+        //mTabHost.addTab(mTabHost.newTabSpec("message").setIndicator("Message").setContent(i));
+        mTabHost.addTab(mTabHost.newTabSpec("message").setIndicator("Message").setContent(new Intent(this,MessageActivity.class)));
+        mTabHost.addTab(mTabHost.newTabSpec("log").setIndicator("Log").setContent(R.id.textview2));
+        mTabHost.setCurrentTab(0);
+        //mTabHost.set
+        //spec = mTabHost.newTabSpec("messages").setIndicator("Messages").setContent(viewId)
+        
+        
+        // Find Views
+//        enableButton = (Button) findViewById(R.id.enable_away_button);
+//        selectButton = (Button) findViewById(R.id.select_message_button);
+//        inputMessage = (EditText) findViewById(R.id.message_input);
+//        messageListView = (ListView) findViewById(R.id.message_list);
+//        
+//        messageListAdapter = new MessageListAdapter(this);
+//        messageListView.setAdapter(messageListAdapter);
+//        registerClickListeners();
     }
     
     @Override
@@ -140,19 +162,19 @@ public class HomeScreenActivity extends Activity {
     private void registerClickListeners(){
     	Log.d(TAG,"in registerListener");
     	// Enable Button
-    	enableButton.setOnClickListener(new View.OnClickListener(){
-
-			public void onClick(View v) {
-		        getIntent().putExtra("currentMessageText", "hey");
-		        listener = new IncomingListener();
-			}
-    	});
-    	// Select Button
-    	selectButton.setOnClickListener(new Button.OnClickListener() {
-    		public void onClick(View v){
-
-    		}
-		});
+//    	enableButton.setOnClickListener(new View.OnClickListener(){
+//
+//			public void onClick(View v) {
+//		        getIntent().putExtra("currentMessageText", "hey");
+//		        listener = new IncomingListener();
+//			}
+//    	});
+//    	// Select Button
+//    	selectButton.setOnClickListener(new Button.OnClickListener() {
+//    		public void onClick(View v){
+//
+//    		}
+//		});
     	// Input Message
 //    	inputMessage.setOnClickListener(new EditText.OnClickListener(){
 //			public void onClick(View v) {
@@ -193,11 +215,10 @@ public class HomeScreenActivity extends Activity {
     	// This is where we are going to get all of the messages from the database
     	if(message_count > 0)
     		for(int i = 0; i < message_count; i++)
-    			messages.add(new Message("Random Message: " + String.valueOf(message_count), false));
+    			messages.add(new Message("Random Message: " + String.valueOf(message_count)));
     	else{// else add a fake one telling them to add one
     		messages.add(
-    				new Message(0)
-    				);
+    				new Message("Stuff"));
     	}
     		
     }
@@ -208,58 +229,58 @@ public class HomeScreenActivity extends Activity {
     /*	Adapter Class for ListView
      * 
      */
-    private static class MessageListAdapter extends BaseAdapter {
-    	private class ViewHolder{		// holder class for the view
-    		TextView text;
-    		Button edit;
-    		Button select;
-    	}
-    	private LayoutInflater inflater;
-    	private Context context;
-    	HomeScreenActivity homeScreenActivity;
-    	
-    	public MessageListAdapter(Context ctx){
-    		inflater = LayoutInflater.from(ctx);
-    		context = ctx;
-    		homeScreenActivity = (HomeScreenActivity) ctx;
-    		
-    	}
-		public View getView(int position, View convertView, ViewGroup parent) {
-        	ViewHolder holder;
-        	
-        	final Message tempObject = (Message) messages.get(position);
-         
-        	if (convertView == null) {
-        		convertView = inflater.inflate(R.layout.message_item, null);
-        	}
-         
-    		holder = new ViewHolder();
-    		holder.text = (TextView) convertView.findViewById(R.id.message_item_text);
-    		holder.select = (Button) convertView.findViewById(R.id.message_item_select_button);
-    		holder.edit = (Button) convertView.findViewById(R.id.message_item_edit_button);
-
-    		if (tempObject.DB_ID == -1) {
-    			Button hideMiles = (Button) convertView.findViewById(R.id.message_item_edit_button);
-    			hideMiles.setVisibility(View.INVISIBLE);
-    			Button hidefees = (Button) convertView.findViewById(R.id.message_item_select_button);
-    			hidefees.setVisibility(View.INVISIBLE);
-    			holder.text.setText("No Messages created");
-    		}
-			return convertView;
-		}
-
-		public int getCount() {
-			return messages.size();
-		}
-
-		public Object getItem(int position) {
-			return messages.get(position);
-		}
-
-		public long getItemId(int position) {
-			return 0;
-		}
-
-    	
-    }
+//    private static class MessageListAdapter extends BaseAdapter {
+//    	private class ViewHolder{		// holder class for the view
+//    		TextView text;
+//    		Button edit;
+//    		Button select;
+//    	}
+//    	private LayoutInflater inflater;
+//    	private Context context;
+//    	HomeScreenActivity homeScreenActivity;
+//    	
+//    	public MessageListAdapter(Context ctx){
+//    		inflater = LayoutInflater.from(ctx);
+//    		context = ctx;
+//    		homeScreenActivity = (HomeScreenActivity) ctx;
+//    		
+//    	}
+//		public View getView(int position, View convertView, ViewGroup parent) {
+//        	ViewHolder holder;
+//        	
+//        	final Message tempObject = (Message) messages.get(position);
+//         
+//        	if (convertView == null) {
+//        		convertView = inflater.inflate(R.layout.message_item, null);
+//        	}
+//         
+////    		holder = new ViewHolder();
+////    		holder.text = (TextView) convertView.findViewById(R.id.message_item_text);
+////    		holder.select = (Button) convertView.findViewById(R.id.message_item_select_button);
+////    		holder.edit = (Button) convertView.findViewById(R.id.message_item_edit_button);
+////
+////    		if (tempObject.DB_ID == -1) {
+////    			Button hideMiles = (Button) convertView.findViewById(R.id.message_item_edit_button);
+////    			hideMiles.setVisibility(View.INVISIBLE);
+////    			Button hidefees = (Button) convertView.findViewById(R.id.message_item_select_button);
+////    			hidefees.setVisibility(View.INVISIBLE);
+////    			holder.text.setText("No Messages created");
+////    		}
+//			return convertView;
+//		}
+//
+//		public int getCount() {
+//			return messages.size();
+//		}
+//
+//		public Object getItem(int position) {
+//			return messages.get(position);
+//		}
+//
+//		public long getItemId(int position) {
+//			return 0;
+//		}
+//
+//    	
+//    }
 }
