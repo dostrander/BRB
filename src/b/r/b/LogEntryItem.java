@@ -1,25 +1,51 @@
 package b.r.b;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
+
+import android.util.Log;
 
 public class LogEntryItem {
 	private int CALL = 0, TEXT = 1;   
-	
+	private static final String TAG = "LogEntryItem";
 	Calendar cal;
 	int type;
 	String contact_number;
-	String message;
+	String response;
 	Boolean expanded;
 
-public LogEntryItem (int month, int day, int year, int tempType, String num, String msg)
+// hour should be given in 24 hour(0-23) time!!!
+public LogEntryItem (int month, int day, int year, int hour, int minutes, int tempType, String num, String rsp)
 {
 	//Calendar
-	
+	cal = Calendar.getInstance();
+	cal.set(year, month, day, hour, minutes);
+	//Log.d(TAG, response);
 	type = tempType;
 	contact_number = num;
-	message = msg;
+	response = rsp;
 	expanded = false;
 }
+
+public String getDate()
+{
+	DateFormat format = new SimpleDateFormat("MM/dd");
+	return format.format(cal.getTime()).toString();
 }
+public String getTime()
+{
+	DateFormat format = new SimpleDateFormat("hh:mm");
+	return format.format(cal.getTime()).toString();
+}
+public String getAMPM()
+{
+	DateFormat format = new SimpleDateFormat("aa");
+	return format.format(cal.getTime()).toString();
+}
+}
+
+
 
 
