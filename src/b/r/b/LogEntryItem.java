@@ -49,12 +49,13 @@ public String getAMPM()
 	DateFormat format = new SimpleDateFormat("aa");
 	return format.format(cal.getTime()).toString();
 }
-public String findContact(String phoneNumber,Context ctx)
+public String findContact(Context ctx)
 {
-	Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+	Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(contact_number));
 	Cursor resolver = ctx.getContentResolver().query(uri, new String[]{PhoneLookup.DISPLAY_NAME},null,null,null);
 	return(resolver.getString(0));
 }
+public void setExpanded(){expanded = !expanded;}
 
 
 }

@@ -88,17 +88,16 @@ public class HomeScreenActivity extends TabActivity {
         Log.d(TAG,"in onCreate");
         setContentView(R.layout.main_screen);
         enabled = false;
-        
-        Intent i = new Intent(HomeScreenActivity.this,MessageActivity.class);
-        
-        TabHost.TabSpec spec;
+        LogEntryItem log = new LogEntryItem(0,0,0,0,0,0,"5182312471","stuff");
         //Intent i = new Intent(this,MessageActivity.class);
         mTabHost 	= getTabHost();
         mTabWidget 	= getTabWidget();
         //mTabHost.addTab(mTabHost.newTabSpec("message").setIndicator("Message").setContent(R.id.textview1));
         //mTabHost.addTab(mTabHost.newTabSpec("message").setIndicator("Message").setContent(i));
         mTabHost.addTab(mTabHost.newTabSpec("message").setIndicator("Message").setContent(new Intent(this,MessageActivity.class)));
-        mTabHost.addTab(mTabHost.newTabSpec("log").setIndicator("Log").setContent(R.id.textview2));
+        mTabHost.addTab(mTabHost.newTabSpec("log").setIndicator("Log").setContent(new Intent(this,LogActivity.class)));
+        
+        //mTabHost.addTab(mTabHost.newTabSpec("log").setIndicator("Log").setContent(R.id.textview2));
         mTabHost.setCurrentTab(0);
         //mTabHost.set
         //spec = mTabHost.newTabSpec("messages").setIndicator("Messages").setContent(viewId)
@@ -107,7 +106,8 @@ public class HomeScreenActivity extends TabActivity {
         // Find Views
 //        enableButton = (Button) findViewById(R.id.enable_away_button);
 //        selectButton = (Button) findViewById(R.id.select_message_button);
-//        inputMessage = (EditText) findViewById(R.id.message_input);
+        inputMessage = (EditText) findViewById(R.id.message_input);
+        inputMessage.setText(log.findContact(this));
 //        messageListView = (ListView) findViewById(R.id.message_list);
 //        
 //        messageListAdapter = new MessageListAdapter(this);
