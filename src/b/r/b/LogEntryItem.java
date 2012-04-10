@@ -5,6 +5,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import android.content.Context;
+import android.database.CharArrayBuffer;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract.PhoneLookup;
 import android.util.Log;
 
 public class LogEntryItem {
@@ -44,6 +49,14 @@ public String getAMPM()
 	DateFormat format = new SimpleDateFormat("aa");
 	return format.format(cal.getTime()).toString();
 }
+public String findContact(String phoneNumber,Context ctx)
+{
+	Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+	Cursor resolver = ctx.getContentResolver().query(uri, new String[]{PhoneLookup.DISPLAY_NAME},null,null,null);
+	return(resolver.getString(0));
+}
+
+
 }
 
 
