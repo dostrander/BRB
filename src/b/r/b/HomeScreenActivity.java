@@ -106,8 +106,8 @@ public class HomeScreenActivity extends TabActivity {
         // Find Views
 //        enableButton = (Button) findViewById(R.id.enable_away_button);
 //        selectButton = (Button) findViewById(R.id.select_message_button);
-        inputMessage = (EditText) findViewById(R.id.message_input);
-        inputMessage.setText(log.findContact(this));
+//        inputMessage = (EditText) findViewById(R.id.message_input);
+//        inputMessage.setText(log.findContact(this));
 //        messageListView = (ListView) findViewById(R.id.message_list);
 //        
 //        messageListAdapter = new MessageListAdapter(this);
