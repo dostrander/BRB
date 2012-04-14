@@ -43,6 +43,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -66,7 +67,7 @@ public class HomeScreenActivity extends TabActivity {
 	IncomingListener listener;
 	
 	// Views
-	Button enableButton;
+	ImageButton enableButton;
 	Button selectButton;
 	static EditText inputMessage;
 	private static ListView mAutoCompleteList;
@@ -141,6 +142,8 @@ public class HomeScreenActivity extends TabActivity {
         Log.d(TAG,"in onCreate");
         setContentView(R.layout.main_screen);
         enabled = false;
+        
+        // Set TabHost
         mTabHost 	= getTabHost();
         mTabWidget 	= getTabWidget();
         mTabHost.addTab(mTabHost.newTabSpec(MESSAGE).
@@ -152,39 +155,15 @@ public class HomeScreenActivity extends TabActivity {
         mTabHost.setCurrentTab(0);        
         
         // Find Views
-//        enableButton = (Button) findViewById(R.id.enable_away_button);
-//        selectButton = (Button) findViewById(R.id.select_message_button);
+        enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
         mAutoCompleteList = (ListView) findViewById(R.id.auto_complete_list);
-        inputMessage = (EditText) findViewById(R.id.message_input);
+        inputMessage = 		(EditText) findViewById(R.id.message_input);
+        
+        // Set adapter
         adapter = new AutoCompleteArrayAdapter(this, COUNTRIES);
         mAutoCompleteList.setAdapter(adapter);
-        adapter.setDropDownViewResource(R.id.message_input);
-        
-        filter = new TextWatcher(){
-			public void afterTextChanged(Editable e) {
-				inputMessage.setEnabled(true);
-			}
-
-			public void beforeTextChanged(CharSequence s, int start,
-					int count, int after) {
-				inputMessage.setEnabled(false);
-			}
-
-			public void onTextChanged(CharSequence s, int start, int count,
-					int after) {
-				adapter.clear();
-				Log.d(TAG,"in onTextChanged");
-				if(count > 2){
-					for(String sc : COUNTRIES)
-						if(sc.contains(s))
-							adapter.add(sc);
-					showAutoComplete();
-				} else hideAutoComplete();
-			}
-        };
-        
-
-        showAutoComplete();
+        hideAutoComplete();
+        registerListeners();
     }
     
     @Override
@@ -219,6 +198,7 @@ public class HomeScreenActivity extends TabActivity {
     public void onDestroy(){
     	super.onDestroy();
     	Log.d(TAG,"in onDestroy");
+    	inputMessage.removeTextChangedListener((TextWatcher) adapter.getFilter());
     	
     }
     
@@ -231,7 +211,7 @@ public class HomeScreenActivity extends TabActivity {
      * 
      */
     
-    private void registerClickListeners(){
+    private void registerListeners(){
     	Log.d(TAG,"in registerListener");
     	// Enable Button
 //    	enableButton.setOnClickListener(new View.OnClickListener(){
@@ -280,6 +260,27 @@ public class HomeScreenActivity extends TabActivity {
 //			}
 //    		
 //    	});
+    	
+    	
+    	// Filter for CustomAutoComplete
+        inputMessage.addTextChangedListener(new TextWatcher(){
+    		public void afterTextChanged(Editable e) {
+    			inputMessage.setEnabled(true);
+    		}
+
+    		public void beforeTextChanged(CharSequence s, int start,
+    				int count, int after) {
+    			inputMessage.setEnabled(false);
+    		}
+
+    		public void onTextChanged(CharSequence s, int start, int count,
+    				int after) {
+    			Log.d(TAG,String.valueOf(s.length()));
+    			if(s.length() > 1) showAutoComplete();
+    			else hideAutoComplete();
+    			adapter.getFilter().filter(s);
+    		}
+        });
     }
     
     
@@ -304,6 +305,8 @@ public class HomeScreenActivity extends TabActivity {
     private static void hideAutoComplete(){
     	mAutoCompleteList.setVisibility(View.GONE);
     }
+    
+    
     
     private class AutoCompleteArrayAdapter extends ArrayAdapter<String> {
     	private final Context context;
