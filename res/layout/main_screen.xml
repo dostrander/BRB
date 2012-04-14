@@ -3,43 +3,49 @@
     android:id="@+id/main_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    
-    <LinearLayout android:id="@+id/top_row"
-        android:layout_height="wrap_content"
+    <EditText
+        android:id="@+id/message_input"
         android:layout_width="fill_parent"
-        android:layout_alignParentTop="true" >
-        <EditText
-            android:id="@+id/message_input"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:layout_weight="1" 
-            android:hint="Enter text here...">
-            <requestFocus />
-        </EditText>
-        
-        <Button android:id="@+id/message_list_button" 
-            android:layout_marginLeft="0dp"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:visibility="gone"
-            android:text="select"
-            android:layout_weight="0"
-            >
-		</Button>
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/enable_away_button"
+        android:inputType="textMultiLine"
+        android:hint="Enter text here..."
+        android:isScrollContainer="true" />
+    <TextView 
+        android:id="@+id/message_inputed"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/enable_away_button"
+        android:inputType="textMultiLine"
+        android:isScrollContainer="true" />
 
-        <ImageButton
+     <ImageButton
             android:id="@+id/enable_away_button"
+            android:layout_alignTop="@+id/message_input"
+            android:layout_alignBottom="@+id/message_input"
+            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
-            android:layout_weight="0.01"
-            
-           	 />
-   
-    </LinearLayout>
+            android:src="@drawable/enable_icon" />
+
+    <ListView android:id="@+id/auto_complete_list"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="#FFFFFF"
+        android:layout_alignLeft="@+id/message_input"
+        android:layout_alignRight="@+id/message_input"
+        android:layout_below="@+id/message_input"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" /> 
+    
+    
 	<TabHost android:id="@android:id/tabhost"
-	    android:layout_below="@id/top_row"
+	    android:layout_below="@id/message_input"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    >
