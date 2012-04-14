@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     
-    <TableRow android:id="@+id/top_row"
+    <LinearLayout android:id="@+id/top_row"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:layout_alignParentTop="true" >
@@ -22,19 +22,22 @@
             android:layout_marginLeft="0dp"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:visibility="gone"
             android:text="select"
             android:layout_weight="0"
             >
-		</Button>        
-		   <Button android:id="@+id/enable_away_button" 
-            android:layout_marginLeft="0dp"
-            android:layout_height="wrap_content"
+		</Button>
+
+        <ImageButton
+            android:id="@+id/enable_away_button"
             android:layout_width="wrap_content"
-            android:text="enable"
-            android:layout_weight="0"
-            >
-		</Button>   
-    </TableRow>
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_weight="0.01"
+            
+           	 />
+   
+    </LinearLayout>
 	<TabHost android:id="@android:id/tabhost"
 	    android:layout_below="@id/top_row"
 	    android:layout_width="fill_parent"
