@@ -36,11 +36,9 @@ public class LogActivity extends ListActivity{
 	private void fillData(){
 		Log.d(TAG,"in fillData");
 		if(true){
-			
+ 
 			mLogItems.add(new LogEntryItem(0,0,0,0,0,0,"-1",NO_LOGS));
-		}else {
-			
-		}
+		}else {}
 	}
 	
 	
@@ -126,6 +124,9 @@ public class LogActivity extends ListActivity{
 				public void onClick(View v) {
 					Log.d(TAG,"in onClick more");
 					getItem(position).setExpanded();
+					if(getItem(position).expanded)
+						((TextView) v).setText("less");
+					else ((TextView) v).setText("more");
 					notifyDataSetChanged();
 				}
     			
