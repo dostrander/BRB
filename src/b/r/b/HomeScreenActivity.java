@@ -17,25 +17,35 @@ package b.r.b;
 import java.util.ArrayList;
 
 
+import android.app.AlertDialog;
 import android.app.TabActivity;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;											// Logs
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 
@@ -48,19 +58,19 @@ public class HomeScreenActivity extends TabActivity {
 	private final String TAG = "HomeScreenActivity";
 	private final String MESSAGE = "message";
 	private final String LOG = "log";
+	private int DB_ID = -1;
 
 	// Variables
 	IncomingListener listener;
 	
 	// Views
 	ImageButton enableButton;
+	ImageButton listButton;
 	Button selectButton;
-	static EditText inputMessage;
-	static TextView freezeText;
+	static TextView inputMessage;
 	private static ListView mAutoCompleteList;
 	private static AutoCompleteArrayAdapter adapter;
 	boolean enabled;
-	static boolean editing;
 	TabHost mTabHost;
 	TabWidget mTabWidget;
 	
@@ -72,7 +82,7 @@ public class HomeScreenActivity extends TabActivity {
 	
 	// Temp
 	int message_count = 5;
-	static final String[] COUNTRIES = new String[] {
+	static final String[] MESSAGES = new String[] {
 		  "Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra",
 		  "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda", "Argentina",
 		  "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan",
@@ -128,8 +138,6 @@ public class HomeScreenActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"in onCreate");
         setContentView(R.layout.main_screen);
-        enabled = false;
-        editing = false;
         
         // Set TabHost
         mTabHost 	= getTabHost();
@@ -143,14 +151,16 @@ public class HomeScreenActivity extends TabActivity {
         
         // Find Views
         enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
+        listButton		= 	(ImageButton) findViewById(R.id.show_list_button);
         mAutoCompleteList = (ListView) findViewById(R.id.auto_complete_list);
-        inputMessage = 		(EditText) findViewById(R.id.message_input);
-        freezeText	 =		(TextView) findViewById(R.id.message_inputed); 
-        
+        inputMessage = 		(TextView) findViewById(R.id.message_input);
+
         // Set adapter
-        adapter = new AutoCompleteArrayAdapter(this, COUNTRIES);
+        adapter = new AutoCompleteArrayAdapter(this, MESSAGES);
         mAutoCompleteList.setAdapter(adapter);
-        hideAutoComplete();
+        noMessage();
+        
+        mAutoCompleteList.setVisibility(View.GONE);
         registerListeners();
     }
     
@@ -179,7 +189,6 @@ public class HomeScreenActivity extends TabActivity {
     public void onStop(){
     	super.onStop();
     	Log.d(TAG, "in onStop");
-    	
     }
     
     @Override
@@ -201,33 +210,94 @@ public class HomeScreenActivity extends TabActivity {
     
     private void registerListeners(){
     	Log.d(TAG,"in registerListener");
-    	// ClickListeners
-    	freezeText.setOnClickListener(new OnClickListener(){
+    	// Filter for CustomAutoComplete
+    	
+    	inputMessage.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
-				unfreezeText();
+				// Set an EditText view to get user input
+				int myDialogColor = Color.rgb(33, 66, 99);
+				LinearLayout ll = new LinearLayout(HomeScreenActivity.this);
+				ll.setOrientation(LinearLayout.VERTICAL);
+				final EditText input = new EditText(HomeScreenActivity.this);
+				final ListView lv = new ListView(HomeScreenActivity.this);
+				input.setLines(2);
+				input.setGravity(Gravity.TOP);
+				ll.setBackgroundColor(myDialogColor);
+				lv.setBackgroundColor(myDialogColor);
+				lv.setCacheColorHint(myDialogColor);
+				lv.setAdapter(new ArrayAdapter<String>(HomeScreenActivity.this,
+						R.layout.dialog_message_item,R.id.textView1, MESSAGES));
+				lv.setOnItemClickListener(new OnItemClickListener(){
+					public void onItemClick(AdapterView<?> adap, View v,
+							int position, long id) {
+						input.setText(MESSAGES[position]);
+					}
+				});
+				ll.addView(input);
+				ll.addView(lv);
+				AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
+				builder.setTitle("Create New Message")
+				.setView(ll)
+				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						
+					}
+				});
+
+				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+				    // Canceled.
+					}
+				}).create().show();
 			}
     	});
-    	// Filter for CustomAutoComplete
-        inputMessage.addTextChangedListener(new TextWatcher(){
-    		public void afterTextChanged(Editable e) {
-    			inputMessage.setEnabled(true);
-    		}
-
-    		public void beforeTextChanged(CharSequence s, int start,
-    				int count, int after) {
-    			inputMessage.setEnabled(false);
-    		}
-
-    		public void onTextChanged(CharSequence s, int start, int count,
-    				int after) {
-    			Log.d(TAG,String.valueOf(s.length()));
-    			if(s.length() > 1) showAutoComplete();
-    			else hideAutoComplete();
-    			adapter.getFilter().filter(s);
-    		}
-        });
+		
+    	enableButton.setOnClickListener(new OnClickListener(){
+			public void onClick(View v) {
+				if(!enabled) enableMessage();
+				else disableMessage();
+			}
+    	});
+    	
+//        inputMessage.addTextChangedListener(new TextWatcher(){
+//    		public void afterTextChanged(Editable e) {
+//    			inputMessage.setEnabled(true);
+//    		}
+//
+//    		public void beforeTextChanged(CharSequence s, int start,
+//    				int count, int after) {
+//    			inputMessage.setEnabled(false);
+//    		}
+//
+//    		public void onTextChanged(CharSequence s, int start, int count,
+//    				int after) {
+//    			Log.d(TAG,String.valueOf(s.length()));
+//    			if(s.length() > 1) showAutoComplete();
+//    			else hideAutoComplete();
+//    			adapter.getFilter().filter(s);
+//    		}
+//        });
     }
     
+    
+    private void enableMessage(){
+    	enableButton.setImageResource(R.drawable.enabled_message_selector);
+    	enabled = true;
+    	// startListener
+    	
+    }
+    
+    private void disableMessage(){
+    	enableButton.setImageResource(R.drawable.disabled_button_selector);
+    	enabled = false;
+    	// disableListener
+    }
+    
+    private void noMessage(){
+    	enableButton.setImageResource(R.drawable.nothing_button_selector);
+    	enabled = false;
+    	DB_ID = -1;
+    }
     
     private void fillData(){
     	// This is where we are going to get all of the messages from the database
@@ -242,29 +312,22 @@ public class HomeScreenActivity extends TabActivity {
     }
     
     
-    private void showAutoComplete(){
-    	mAutoCompleteList.setVisibility(View.VISIBLE);
-    	mAutoCompleteList.bringToFront();
-    }
-    
-    private static void hideAutoComplete(){
-    	mAutoCompleteList.setVisibility(View.GONE);
-    	if(editing)
-    		freezeText();
-    }
-    
+
     private static void freezeText(){
-   		freezeText.setText(inputMessage.getText().toString());
+//   		freezeText.setText(inputMessage.getText().toString());
    		inputMessage.setVisibility(View.INVISIBLE);
-   		freezeText.setVisibility(View.VISIBLE);
+//   		freezeText.setVisibility(View.VISIBLE);
     }
     
     private static void unfreezeText(){
     	inputMessage.setVisibility(View.VISIBLE);
-    	freezeText.setVisibility(View.GONE);
+//    	freezeText.setVisibility(View.GONE);
     }
     
-    
+    public void getMessageFromDB(String text){
+    	// get Message from db
+    	Log.d(TAG,text);
+    }
     
     private class AutoCompleteArrayAdapter extends ArrayAdapter<String> {
     	private final Context context;
@@ -297,8 +360,8 @@ public class HomeScreenActivity extends TabActivity {
 			convertView.setOnClickListener(new OnClickListener(){
 				public void onClick(View v) {
 					inputMessage.setText(getItem(position));
-					editing = true;
-					hideAutoComplete();
+//					editing = true;
+//					hideAutoComplete();
 				}
 			});
 			
