@@ -188,6 +188,36 @@ public class MessageActivity extends Activity {
 	// ListView
 	
 	//private static ListArray<String> mContactSpecificMessages;
+	private class ContactDialogAdapter extends BaseAdapter {
+		private Context context;
+		private LayoutInflater inflater;
+		public ContactDialogAdapter(Context ctx){
+			inflater = LayoutInflater.from(ctx);
+			context = ctx;
+			
+		}
+		public View getView(int position, View convertView, ViewGroup parent) {
+			
+			return convertView;
+		}
+
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		
+	}
 	
 	private class ContactMessageListAdapter extends BaseAdapter {
 		private class ViewHolder{		// holder class for the view
@@ -250,24 +280,39 @@ public class MessageActivity extends Activity {
         	convertView.findViewById(R.id.add_names_button).setOnClickListener(new OnClickListener(){
     				public void onClick(View v) {
 
+    					final int NAMES = 0;
+    					final int ID = 1;
+    					final int NUMBER = 2;
     	                Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
     	    	                new String[] {Phone._ID, Phone.DISPLAY_NAME, Phone.NUMBER}, null, null,  Phone.DISPLAY_NAME + " ASC");
+
+    	                String[][] names = new String[3][cursor.getCount()]; 
     	                AlertDialog alert = new AlertDialog.Builder(MessageActivity.this)
     	                    .setIcon(R.drawable.ic_launcher)
     	                    .setTitle("Get Contacts")
+    	                    //.setItems(cursor.get, listener)
     	                    .setMultiChoiceItems(cursor,
     	                            Phone.NUMBER,
     	                            Phone.DISPLAY_NAME,
     	                            new DialogInterface.OnMultiChoiceClickListener() {
     	                                public void onClick(DialogInterface dialog, int whichButton,
     	                                        boolean isChecked) {
+    	                                	dialog.dismiss();
     	                                }
     	                            })
+    	                            
     	                   .create();
     	                
     	                alert.show();
     				}
             	});
+        	convertView.findViewById(R.id.add_message_button).setOnClickListener(new OnClickListener(){
+				public void onClick(View v) {
+					mMessage.addContactSpecificMessage("518-444-4444", "Hi Im Derek");
+					notifyDataSetChanged();
+				}
+        		
+        	});
          
         	
 //    		holder.text = (TextView) convertView.findViewById(R.id.message_item_text);
