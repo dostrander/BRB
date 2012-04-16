@@ -235,7 +235,7 @@ public class MessageActivity extends Activity {
 		}
 		
 		public View getView(int position, View convertView, ViewGroup parent){
-        	ViewHolder holder;
+        	final ViewHolder holder;
         	
         	final String tempObject = getItem(position);
          
@@ -250,6 +250,8 @@ public class MessageActivity extends Activity {
         		holder = (ViewHolder) convertView.getTag();
         		holder.text.setTag(getItem(position));
         	}
+        	if(position > 0)
+        		holder.add.setVisibility(View.GONE);
         	convertView.findViewById(R.id.contact_specific_message_text).setOnClickListener(new OnClickListener(){
     				public void onClick(View v) {
     					AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
@@ -263,7 +265,8 @@ public class MessageActivity extends Activity {
 
     					builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
     						public void onClick(DialogInterface dialog, int whichButton) {
-    							
+    							if(holder.text.getText().toString() != input.getText().toString())
+    								holder.text.setText(input.getText().toString());
     						}
     					});
 

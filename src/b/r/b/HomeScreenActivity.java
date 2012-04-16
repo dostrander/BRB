@@ -85,8 +85,7 @@ public class HomeScreenActivity extends TabActivity {
 	
 	static final String[] MESSAGES = new String[] {
 		"I'm at class", "Playing Soccer", "At the Dentist", "Too Drunk to talk",
-		"At work", "Call you back when I get a chance", 
-		"I'm Sorry I couldn't pick up [ENTER GF NAME HERE] please don't kill me"
+		"At work", "Call you back when I get a chance", "Well I rather not talk to you" 
 	};
 	// For ListView
 	private static ArrayList<Message> messages = new ArrayList<Message>();
@@ -113,8 +112,8 @@ public class HomeScreenActivity extends TabActivity {
         
         // Find Views
         enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
-        listButton		= 	(ImageButton) findViewById(R.id.show_list_button);
-        messageList = (ListView) findViewById(R.id.auto_complete_list);
+        listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
+        messageList  = 		(ListView) findViewById(R.id.auto_complete_list);
         inputMessage = 		(TextView) findViewById(R.id.message_input);
 
         // Set adapter
@@ -219,6 +218,7 @@ public class HomeScreenActivity extends TabActivity {
 				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						inputMessage.setText(input.getText().toString());
+						disableMessage(); // make it so the light is red
 					}
 				});
 
@@ -343,12 +343,12 @@ public class HomeScreenActivity extends TabActivity {
 				holder.text = (TextView) convertView.findViewById(R.id.input_message_list_item);
 				convertView.setTag(holder);
 			} else holder = (ViewHolder) convertView.getTag();
-			
 			holder.text.setText(getItem(position));
 			convertView.setOnClickListener(new OnClickListener(){
 				public void onClick(View v) {
 					inputMessage.setText(getItem(position));
 					messageList.setVisibility(View.GONE);
+					disableMessage(); // make button red
 //					editing = true;
 //					hideAutoComplete();
 				}
