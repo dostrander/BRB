@@ -14,30 +14,29 @@
         android:text="Names, Names, Names"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Button
+    <ImageView
         android:id="@+id/add_names_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:text="+" />
-
-    <Button
-        android:id="@+id/edit_specific_message_text"
-        android:layout_width="50dp"
-        android:layout_height="40dp"
+        android:layout_alignParentRight="true" 
+        android:background="@drawable/add_name_selector"/>
+    <ImageView
+        android:id="@+id/add_message_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/add_names_button"
-        android:text="+" />
+        android:background="@drawable/add_contact_specific_message_selector" />
 
     <TextView
         android:id="@+id/contact_specific_message_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="5dp"
-        android:layout_alignBottom="@+id/edit_specific_message_text"
+    	android:layout_below="@+id/names"
         android:layout_alignParentLeft="true"
-        android:text="Tap to Edit Message"
+        android:layout_toLeftOf="@+id/add_message_button"
+        android:text="Some Message"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

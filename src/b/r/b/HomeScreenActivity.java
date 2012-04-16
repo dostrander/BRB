@@ -68,7 +68,7 @@ public class HomeScreenActivity extends TabActivity {
 	ImageButton listButton;
 	Button selectButton;
 	static TextView inputMessage;
-	private static ListView mAutoCompleteList;
+	private static ListView messageList;
 	private static AutoCompleteArrayAdapter adapter;
 	boolean enabled;
 	TabHost mTabHost;
@@ -152,15 +152,15 @@ public class HomeScreenActivity extends TabActivity {
         // Find Views
         enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
         listButton		= 	(ImageButton) findViewById(R.id.show_list_button);
-        mAutoCompleteList = (ListView) findViewById(R.id.auto_complete_list);
+        messageList = (ListView) findViewById(R.id.auto_complete_list);
         inputMessage = 		(TextView) findViewById(R.id.message_input);
 
         // Set adapter
         adapter = new AutoCompleteArrayAdapter(this, MESSAGES);
-        mAutoCompleteList.setAdapter(adapter);
+        messageList.setAdapter(adapter);
         noMessage();
         
-        mAutoCompleteList.setVisibility(View.GONE);
+        messageList.setVisibility(View.GONE);
         registerListeners();
     }
     
@@ -195,8 +195,6 @@ public class HomeScreenActivity extends TabActivity {
     public void onDestroy(){
     	super.onDestroy();
     	Log.d(TAG,"in onDestroy");
-    	inputMessage.removeTextChangedListener((TextWatcher) adapter.getFilter());
-    	
     }
     
     
@@ -220,17 +218,34 @@ public class HomeScreenActivity extends TabActivity {
 				ll.setOrientation(LinearLayout.VERTICAL);
 				final EditText input = new EditText(HomeScreenActivity.this);
 				final ListView lv = new ListView(HomeScreenActivity.this);
+				final ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeScreenActivity.this,
+						R.layout.dialog_message_item,R.id.textView1, MESSAGES);
 				input.setLines(2);
 				input.setGravity(Gravity.TOP);
+				input.addTextChangedListener(new TextWatcher(){
+					public void afterTextChanged(Editable e) {
+						
+					}
+
+					public void beforeTextChanged(CharSequence s, int arg1,
+							int arg2, int arg3) {
+					}
+
+					public void onTextChanged(CharSequence s, int start,
+							int before, int count) {
+						adapter.getFilter().filter(s);
+					}
+					
+				});
 				ll.setBackgroundColor(myDialogColor);
 				lv.setBackgroundColor(myDialogColor);
 				lv.setCacheColorHint(myDialogColor);
-				lv.setAdapter(new ArrayAdapter<String>(HomeScreenActivity.this,
-						R.layout.dialog_message_item,R.id.textView1, MESSAGES));
+				lv.setAdapter(adapter);
 				lv.setOnItemClickListener(new OnItemClickListener(){
 					public void onItemClick(AdapterView<?> adap, View v,
 							int position, long id) {
 						input.setText(MESSAGES[position]);
+						input.setSelection(input.getText().length());
 					}
 				});
 				ll.addView(input);
@@ -256,6 +271,16 @@ public class HomeScreenActivity extends TabActivity {
 			public void onClick(View v) {
 				if(!enabled) enableMessage();
 				else disableMessage();
+			}
+    	});
+    	listButton.setOnClickListener(new OnClickListener(){
+			public void onClick(View v) {
+				if(messageList.getVisibility() == View.GONE){
+					messageList.setVisibility(View.VISIBLE);
+					messageList.bringToFront();
+				}
+				else messageList.setVisibility(View.GONE);
+					
 			}
     	});
     	

@@ -7,7 +7,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,6 +29,7 @@ import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -33,6 +37,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
+import android.widget.Toast;
 
 public class MessageActivity extends Activity {
 	private static final String TAG = "MessageActivity";
@@ -184,10 +189,10 @@ public class MessageActivity extends Activity {
 	
 	//private static ListArray<String> mContactSpecificMessages;
 	
-	private class ContactMessageListAdapter extends BaseAdapter implements OnClickListener, OnLongClickListener{
+	private class ContactMessageListAdapter extends BaseAdapter {
 		private class ViewHolder{		// holder class for the view
 			TextView text;
-			Button add;
+			ImageView add;
 		}
 		private LayoutInflater inflater;
 		private Context context;
@@ -208,15 +213,61 @@ public class MessageActivity extends Activity {
         		convertView = inflater.inflate(R.layout.message_item, null);
         		holder = new ViewHolder();
         		holder.text = (TextView) 	convertView.findViewById(R.id.contact_specific_message_text);
-        		holder.add  = (Button)		convertView.findViewById(R.id.edit_specific_message_text);
+        		holder.add  = (ImageView)		convertView.findViewById(R.id.add_message_button);
         		holder.text.setTag(getItem(position));
         		convertView.setTag(holder);
         	} else{
         		holder = (ViewHolder) convertView.getTag();
         		holder.text.setTag(getItem(position));
         	}
-        	convertView.findViewById(R.id.contact_specific_message_text).setOnClickListener(this);
-        	convertView.findViewById(R.id.add_names_button).setOnClickListener(this);
+        	convertView.findViewById(R.id.contact_specific_message_text).setOnClickListener(new OnClickListener(){
+    				public void onClick(View v) {
+    					AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
+
+    					builder.setTitle("Edit Message Text");
+    					// Set an EditText view to get user input 
+    					final EditText input = new EditText(MessageActivity.this);
+    					input.setLines(2);
+    					input.setGravity(Gravity.TOP);
+    					builder.setView(input);
+
+    					builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+    						public void onClick(DialogInterface dialog, int whichButton) {
+    							
+    						}
+    					});
+
+    					builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+    						public void onClick(DialogInterface dialog, int whichButton) {
+    					    // Canceled.
+    						}
+    					});
+
+    					AlertDialog alert = builder.create();
+    					alert.show();
+    				}
+            	});
+        	convertView.findViewById(R.id.add_names_button).setOnClickListener(new OnClickListener(){
+    				public void onClick(View v) {
+
+    	                Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+    	    	                new String[] {Phone._ID, Phone.DISPLAY_NAME, Phone.NUMBER}, null, null,  Phone.DISPLAY_NAME + " ASC");
+    	                AlertDialog alert = new AlertDialog.Builder(MessageActivity.this)
+    	                    .setIcon(R.drawable.ic_launcher)
+    	                    .setTitle("Get Contacts")
+    	                    .setMultiChoiceItems(cursor,
+    	                            Phone.NUMBER,
+    	                            Phone.DISPLAY_NAME,
+    	                            new DialogInterface.OnMultiChoiceClickListener() {
+    	                                public void onClick(DialogInterface dialog, int whichButton,
+    	                                        boolean isChecked) {
+    	                                }
+    	                            })
+    	                   .create();
+    	                
+    	                alert.show();
+    				}
+            	});
          
         	
 //    		holder.text = (TextView) convertView.findViewById(R.id.message_item_text);
@@ -244,48 +295,6 @@ public class MessageActivity extends Activity {
 		}
 
 		
-		
-		
-		// Click Listeners
-		public boolean onLongClick(View arg0) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		public void onClick(View v) {
-			switch(v.getId()){
-			case R.id.add_names_button:
-				break;
-			case R.id.contact_specific_message_text:
-				AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
-
-				builder.setTitle("Edit Message Text");
-				// Set an EditText view to get user input 
-				final EditText input = new EditText(MessageActivity.this);
-				input.setLines(2);
-				input.setGravity(Gravity.TOP);
-				builder.setView(input);
-
-				builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						
-					}
-				});
-
-				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-				    // Canceled.
-					}
-				});
-
-				AlertDialog alert = builder.create();
-				alert.show();
-				break;
-				default:
-					break;
-			}
-		}
-
-	}
+	}		
 
 }
