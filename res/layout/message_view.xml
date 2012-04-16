@@ -103,6 +103,8 @@
     
     <ListView
         android:id="@+id/contact_specific_message_list"
+        android:divider="#FFFFFF"
+        android:dividerHeight="1dp"
         android:layout_below="@+id/contact_specific_label"
         android:layout_alignParentBottom="true"
         android:layout_margin="5dp"

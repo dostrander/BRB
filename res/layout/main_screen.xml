@@ -63,7 +63,7 @@
             android:layout_toLeftOf="@+id/top_divider2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/enable_icon" />
+            android:src="@drawable/arrow" />
      <LinearLayout
             android:id="@+id/top_divider1"
             android:background="#C5C5C5"
