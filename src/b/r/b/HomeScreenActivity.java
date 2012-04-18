@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -59,8 +60,8 @@ public class HomeScreenActivity extends TabActivity {
 	private final String MESSAGE = "message";
 	private final String LOG = "log";
 	private int DB_ID = -1;
-	
 	private Message mCurrent;
+	private int ringerMode = 0;
 
 	// Variables
 	IncomingListener listener;
@@ -87,8 +88,8 @@ public class HomeScreenActivity extends TabActivity {
 	int message_count = 5;
 	
 	static final String[] MESSAGES = new String[] {
-		"I'm at class", "Playing Soccer", "At the Dentist", "Too Drunk to talk",
-		"At work", "Call you back when I get a chance", "Well I rather not talk to you" 
+		"I'm in class", "Roller skating", "Playing hide and seek", "druuunnmk",
+		"At work", "Call you back when I get a chance", "Well I'd rather not talk to you" 
 	};
 	// For ListView
 	private static ArrayList<Message> messages = new ArrayList<Message>();
@@ -115,7 +116,7 @@ public class HomeScreenActivity extends TabActivity {
         
         // Find Views
         enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
-        listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
+        //listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
         messageList  = 		(ListView) findViewById(R.id.auto_complete_list);
         inputMessage = 		(TextView) findViewById(R.id.message_input);
         
@@ -299,12 +300,22 @@ public class HomeScreenActivity extends TabActivity {
     	enabled = true;
     	// startListener
     	
+    	// I believe this silences the phone when you enable the message, but not sure... -Evan
+    	// It saves the current ringer mode for later use when the message is disabled...   	
+    	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+    	ringerMode = audiomanage.getRingerMode();
+    	audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
     }
     
     private void disableMessage(){
     	enableButton.setImageResource(R.drawable.disabled_button_selector);
     	enabled = false;
     	// disableListener
+    	
+    	// I believe this sets the phone back to whatever mode the phone was in before when you disable 
+    	// the message, but again not sure... - Evan 
+    	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+    	audiomanage.setRingerMode(ringerMode);
     }
     
     private void noMessage(){

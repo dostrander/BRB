@@ -3,82 +3,43 @@
     android:id="@+id/main_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    <TextView 
+    <EditText
         android:id="@+id/message_input"
-        android:paddingTop="5dp"
-        android:background="#000000"
-        android:gravity="top"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/show_list_button"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/enable_away_button"
+        android:inputType="textMultiLine"
+        android:hint="@string/english_enter_text"
+        android:isScrollContainer="true" />
+    <TextView 
+        android:id="@+id/message_inputed"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/enable_away_button"
         android:inputType="textMultiLine"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:lines="2"
-        android:isScrollContainer="true" />
-         
-         
-	  <LinearLayout
-            android:id="@+id/top_divider3"
-            android:background="#C5C5C5"
-            android:paddingLeft="1dp"
-            android:paddingRight="1dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/message_input"
-            android:layout_alignBottom="@+id/message_input"
-            android:layout_width="1dp"
-            android:layout_height="fill_parent" />
-        
+        android:lines="2" />
 
      <ImageButton
             android:id="@+id/enable_away_button"
-            android:background="@drawable/button_selector"
-            android:padding="15dp"
             android:layout_alignTop="@+id/message_input"
             android:layout_alignBottom="@+id/message_input"
-            android:layout_toLeftOf="@+id/top_divider3"
+            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
             android:src="@drawable/enable_icon" />
-     <LinearLayout
-            android:id="@+id/top_divider2"
-            android:background="#C5C5C5"
-            android:paddingLeft="1dp"
-            android:paddingRight="1dp"
-            android:layout_alignTop="@+id/message_input"
-            android:layout_alignBottom="@+id/message_input"
-            android:layout_toLeftOf="@+id/enable_away_button"
-            android:layout_width="1dp"
-            android:layout_height="fill_parent" />
-     
-     <ImageButton
-            android:id="@+id/show_list_button"
-            android:background="@drawable/button_selector"
-            android:padding="15dp"
-            android:layout_alignTop="@+id/message_input"
-            android:layout_alignBottom="@+id/message_input"
-            android:layout_toLeftOf="@+id/top_divider2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/arrow" />
-     <LinearLayout
-            android:id="@+id/top_divider1"
-            android:background="#C5C5C5"
-            android:paddingLeft="1dp"
-            android:paddingRight="1dp"
-            android:layout_alignTop="@+id/message_input"
-            android:layout_alignBottom="@+id/message_input"
-            android:layout_toLeftOf="@+id/show_list_button"
-            android:layout_width="1dp"
-            android:layout_height="fill_parent" />
 
     <ListView android:id="@+id/auto_complete_list"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:background="#FFFFFF"
-        android:cacheColorHint="#FFFFFF"
         android:layout_alignLeft="@+id/message_input"
         android:layout_alignRight="@+id/message_input"
         android:layout_below="@+id/message_input"
@@ -93,9 +54,9 @@
 	    >
 	    <RelativeLayout 
 	        android:id="@+id/tab2"
-	        android:paddingTop="5dp"
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
+	        android:padding="5dp"
 	         >
             <TabWidget
                 android:id="@android:id/tabs"
@@ -106,6 +67,7 @@
                 android:layout_below="@android:id/tabs"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:padding="5dp"
                 >
                 <LinearLayout 
                     android:id="@+id/tab1"
@@ -117,3 +79,4 @@
 	</TabHost>    
 
 </RelativeLayout>
+       

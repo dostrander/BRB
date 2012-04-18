@@ -83,6 +83,7 @@
         android:id="@+id/endtime_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:textStyle="bold"
         android:layout_weight="0"
         android:layout_marginRight="10dp"
@@ -99,11 +100,12 @@
         android:layout_gravity="center_horizontal"
         android:text="Contact Specific Messages"
         android:textStyle="bold"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium" 
+        android:paddingTop="10dp" />
     
     <ListView
         android:id="@+id/contact_specific_message_list"
-        android:divider="#FFFFFF"
+        android:divider="#FFF000"
         android:dividerHeight="1dp"
         android:layout_below="@+id/contact_specific_label"
         android:layout_alignParentBottom="true"
