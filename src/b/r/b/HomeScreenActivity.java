@@ -59,6 +59,8 @@ public class HomeScreenActivity extends TabActivity {
 	private final String MESSAGE = "message";
 	private final String LOG = "log";
 	private int DB_ID = -1;
+	
+	private Message mCurrent;
 
 	// Variables
 	IncomingListener listener;
@@ -71,6 +73,7 @@ public class HomeScreenActivity extends TabActivity {
 	private static ListView messageList;
 	private static AutoCompleteArrayAdapter adapter;
 	boolean enabled;
+	TextView header;
 	TabHost mTabHost;
 	TabWidget mTabWidget;
 	
@@ -115,10 +118,19 @@ public class HomeScreenActivity extends TabActivity {
         listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
         messageList  = 		(ListView) findViewById(R.id.auto_complete_list);
         inputMessage = 		(TextView) findViewById(R.id.message_input);
+        
+        View theader = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.input_message_list_item, null, false);
+        theader.setBackgroundColor(Color.DKGRAY);
+        header = (TextView) theader.findViewById(R.id.input_message_list_item);
+        header.setTextColor(Color.WHITE);
+        header.setText("Create New Message");
+        messageList.addHeaderView(header);
 
         // Set adapter
         adapter = new AutoCompleteArrayAdapter(this, MESSAGES);
         messageList.setAdapter(adapter);
+        
+        
         noMessage();
         
         messageList.setVisibility(View.GONE);
@@ -136,7 +148,6 @@ public class HomeScreenActivity extends TabActivity {
     public void onResume(){
     	super.onResume();
     	Log.d(TAG,"in onResume");
-    	fillData();
     	
     }
         
@@ -173,60 +184,9 @@ public class HomeScreenActivity extends TabActivity {
     	
     	inputMessage.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
-				// Set an EditText view to get user input
-				int myDialogColor = Color.rgb(33, 66, 99);
-				LinearLayout ll = new LinearLayout(HomeScreenActivity.this);
-				ll.setOrientation(LinearLayout.VERTICAL);
-				final EditText input = new EditText(HomeScreenActivity.this);
-				final ListView lv = new ListView(HomeScreenActivity.this);
-				final ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeScreenActivity.this,
-						R.layout.dialog_message_item,R.id.textView1, MESSAGES);
-				input.setLines(2);
-				input.setGravity(Gravity.TOP);
-				input.setHint("Start typing message...");
-				input.addTextChangedListener(new TextWatcher(){
-					public void afterTextChanged(Editable e) {
-						
-					}
-
-					public void beforeTextChanged(CharSequence s, int arg1,
-							int arg2, int arg3) {
-					}
-
-					public void onTextChanged(CharSequence s, int start,
-							int before, int count) {
-						adapter.getFilter().filter(s);
-					}
-					
-				});
-				ll.setBackgroundColor(myDialogColor);
-				lv.setBackgroundColor(myDialogColor);
-				lv.setCacheColorHint(myDialogColor);
-				lv.setAdapter(adapter);
-				lv.setOnItemClickListener(new OnItemClickListener(){
-					public void onItemClick(AdapterView<?> adap, View v,
-							int position, long id) {
-						input.setText(MESSAGES[position]);
-						input.setSelection(input.getText().length());
-					}
-				});
-				ll.addView(input);
-				ll.addView(lv);
-				AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
-				builder.setTitle("Create New Message")
-				.setView(ll)
-				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						inputMessage.setText(input.getText().toString());
-						disableMessage(); // make it so the light is red
-					}
-				});
-
-				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-				    // Canceled.
-					}
-				}).create().show();
+				if(mCurrent == null)
+					createNewMessageDialog();
+				else editTextDialog();
 			}
     	});
 		
@@ -244,6 +204,12 @@ public class HomeScreenActivity extends TabActivity {
 				}
 				else messageList.setVisibility(View.GONE);
 					
+			}
+    	});
+    	
+    	header.setOnClickListener(new OnClickListener(){
+			public void onClick(View v) {
+				createNewMessageDialog();				
 			}
     	});
     	
@@ -267,6 +233,66 @@ public class HomeScreenActivity extends TabActivity {
 //        });
     }
     
+    private void createNewMessageDialog(){
+		// Set an EditText view to get user input
+		int myDialogColor = Color.rgb(33, 66, 99);
+		LinearLayout ll = new LinearLayout(HomeScreenActivity.this);
+		ll.setOrientation(LinearLayout.VERTICAL);
+		final EditText input = new EditText(HomeScreenActivity.this);
+		final ListView lv = new ListView(HomeScreenActivity.this);
+		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeScreenActivity.this,
+				R.layout.dialog_message_item,R.id.textView1, MESSAGES);
+		input.setLines(2);
+		input.setGravity(Gravity.TOP);
+		input.setHint("Start typing message...");
+		input.addTextChangedListener(new TextWatcher(){
+			public void afterTextChanged(Editable e) {
+				
+			}
+
+			public void beforeTextChanged(CharSequence s, int arg1,
+					int arg2, int arg3) {
+			}
+
+			public void onTextChanged(CharSequence s, int start,
+					int before, int count) {
+				adapter.getFilter().filter(s);
+			}
+			
+		});
+		ll.setBackgroundColor(myDialogColor);
+		lv.setBackgroundColor(myDialogColor);
+		lv.setCacheColorHint(myDialogColor);
+		lv.setAdapter(adapter);
+		lv.setOnItemClickListener(new OnItemClickListener(){
+			public void onItemClick(AdapterView<?> adap, View v,
+					int position, long id) {
+				input.setText(MESSAGES[position]);
+				input.setSelection(input.getText().length());
+			}
+		});
+		ll.addView(input);
+		ll.addView(lv);
+		AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
+		builder.setTitle("Create New Message")
+		.setView(ll)
+		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				inputMessage.setText(input.getText().toString());
+				disableMessage(); // make it so the light is red
+			}
+		});
+
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+		    // Canceled.
+			}
+		}).create().show();
+    }
+    
+    private void editTextDialog(){
+    	
+    }
     
     private void enableMessage(){
     	enableButton.setImageResource(R.drawable.enabled_message_selector);
@@ -285,32 +311,9 @@ public class HomeScreenActivity extends TabActivity {
     	enableButton.setImageResource(R.drawable.nothing_button_selector);
     	enabled = false;
     	DB_ID = -1;
+    	mCurrent = null;
     }
     
-    private void fillData(){
-    	// This is where we are going to get all of the messages from the database
-    	if(message_count > 0)
-    		for(int i = 0; i < message_count; i++)
-    			messages.add(new Message("Random Message: " + String.valueOf(message_count)));
-    	else{// else add a fake one telling them to add one
-    		messages.add(
-    				new Message("Stuff"));
-    	}
-    		
-    }
-    
-    
-
-    private static void freezeText(){
-//   		freezeText.setText(inputMessage.getText().toString());
-   		inputMessage.setVisibility(View.INVISIBLE);
-//   		freezeText.setVisibility(View.VISIBLE);
-    }
-    
-    private static void unfreezeText(){
-    	inputMessage.setVisibility(View.VISIBLE);
-//    	freezeText.setVisibility(View.GONE);
-    }
     
     public void getMessageFromDB(String text){
     	// get Message from db

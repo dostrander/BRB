@@ -22,6 +22,7 @@ import android.widget.TextView;
 public class LogActivity extends ListActivity{
 	private static final String TAG = "LogActivity";
 	private static final String NO_LOGS = "No Log Entries for this Message";
+	private Message mCurrent;
 	
 	private static ArrayList<LogEntryItem> mLogItems;
 	public void onCreate(Bundle bundle){
@@ -30,13 +31,15 @@ public class LogActivity extends ListActivity{
 		mLogItems = new ArrayList<LogEntryItem>();
 		setListAdapter(new LogAdapter(this));
 		fillData();
+		mCurrent = null;
 		
 	}
 	
+	public void setMessage(Message current){ mCurrent = current;}
+	
 	private void fillData(){
 		Log.d(TAG,"in fillData");
-		if(true){
- 
+		if(mCurrent == null){
 			mLogItems.add(new LogEntryItem(0,0,0,0,0,0,"-1",NO_LOGS));
 		}else {}
 	}
@@ -164,66 +167,4 @@ public class LogActivity extends ListActivity{
 		}
 		
 	}
-	
-	
-	
-	
-	
-	
-
-    /**
-     * We will use a SpeechView to display each speech. It's just a LinearLayout
-     * with two text fields.
-     *
-     */
-    private class ExtendView extends LinearLayout {
-		TextView time;
-		TextView ampm;
-		TextView response;
-		TextView time_label;
-		TextView response_label;
-        public ExtendView(Context context, String title, String dialogue, boolean expanded) {
-            super(context);
-
-            this.setOrientation(VERTICAL);
-
-            // Here we build the child views in code. They could also have
-            // been specified in an XML file.
-
-            mTitle = new TextView(context);
-            mTitle.setText(title);
-            addView(mTitle, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-
-            mDialogue = new TextView(context);
-            mDialogue.setText(dialogue);
-            addView(mDialogue, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-
-            mDialogue.setVisibility(expanded ? VISIBLE : GONE);
-        }
-
-        /**
-         * Convenience method to set the title of a SpeechView
-         */
-        public void setTitle(String title) {
-            mTitle.setText(title);
-        }
-
-        /**
-         * Convenience method to set the dialogue of a SpeechView
-         */
-        public void setDialogue(String words) {
-            mDialogue.setText(words);
-        }
-
-        /**
-         * Convenience method to expand or hide the dialogue
-         */
-        public void setExpanded(boolean expanded) {
-            mDialogue.setVisibility(expanded ? VISIBLE : GONE);
-        }
-
-        private TextView mTitle;
-        private TextView mDialogue;
-    }
-
 }

@@ -13,7 +13,6 @@
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/show_list_button"
         android:inputType="textMultiLine"
-        android:hint="Click To Change Message"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:textAppearance="?android:attr/textAppearanceMedium"
