@@ -52,7 +52,6 @@ public class Message{
 		specificNumbers 	= new HashMap<String,Integer>();							// Initialize specific messages, key is 
 																							// the number of the contact
 		specificMessages	= new ArrayList<String>();
-		specificMessages.add("");
 		DB_ID 				= 0; 														// Query Database for ID
 	}
 

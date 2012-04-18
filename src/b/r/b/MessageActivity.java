@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -43,6 +44,7 @@ public class MessageActivity extends Activity {
 	private static final String TAG = "MessageActivity";
 	private static final int STARTTIME_ID = 0;
 	private static final int ENDTIME_ID = 1;
+	private static final int PICK_CONTACT_ID = 5;
 	
 	
 	private static Message mMessage;
@@ -52,11 +54,14 @@ public class MessageActivity extends Activity {
 	RadioButton 		vHiButton;
 	RadioButton 		vLoButton;
 	TableRow			vPriorityRow;
+	View				header;
 	
 	static TextView 	vStartTime;
 	static TextView 	vEndTime;
 
 	
+	
+	private int position_edited;
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -69,9 +74,14 @@ public class MessageActivity extends Activity {
 		vHiButton 	= (RadioButton) findViewById(R.id.high_priority_button);
 		vLoButton 	= (RadioButton) findViewById(R.id.low_priority_button);
 		vContactMessageList = (ListView) findViewById(R.id.contact_specific_message_list);
-		mAdapter = new ContactMessageListAdapter(this);
-		vContactMessageList.setAdapter(mAdapter);
+		header = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.message_item, null, false);
+
 		
+		mAdapter = new ContactMessageListAdapter(this);
+		vContactMessageList.addHeaderView(header);
+		vContactMessageList.setAdapter(mAdapter);
+
+		position_edited = -1;
 		setDates();
 		registerListeners();
 		vPriorityRow.setVisibility(View.GONE);
@@ -162,6 +172,52 @@ public class MessageActivity extends Activity {
 				vHiButton.setChecked(!isChecked);
 			}
 		});
+		
+		
+		header.findViewById(R.id.add_names_button).setOnClickListener(new OnClickListener(){
+
+			public void onClick(View v) {
+				
+				Intent intent = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
+				position_edited = -1;
+				startActivityForResult(intent,PICK_CONTACT_ID);
+			}
+			
+		});
+		final TextView tv = (TextView) header.findViewById(R.id.contact_specific_message_text); 
+		tv.setOnClickListener(new OnClickListener(){
+			public void onClick(final View v) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
+
+				builder.setTitle("Edit Message Text");
+				// Set an EditText view to get user input 
+				final EditText input = new EditText(MessageActivity.this);
+				input.setLines(2);
+				input.setGravity(Gravity.TOP);
+				builder.setView(input);
+
+				builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+							((TextView) v).setText(input.getText().toString());
+					}
+				});
+
+				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+				    // Canceled.
+					}
+				});
+
+				AlertDialog alert = builder.create();
+				alert.show();
+			}
+    	});
+		header.findViewById(R.id.add_message_button).setOnClickListener(new OnClickListener(){
+			public void onClick(View v) {
+				mMessage.addContactSpecificMessage("NONE",tv.getText().toString());
+				mAdapter.notifyDataSetChanged();
+			}
+		});
 	}
 	private static void setDates(){
 		vStartTime.setText(mMessage.startDateToText());
@@ -234,7 +290,7 @@ public class MessageActivity extends Activity {
 			messageActivity = (MessageActivity) ctx;
 		}
 		
-		public View getView(int position, View convertView, ViewGroup parent){
+		public View getView(final int position, View convertView, ViewGroup parent){
         	final ViewHolder holder;
         	
         	final String tempObject = getItem(position);
@@ -244,14 +300,13 @@ public class MessageActivity extends Activity {
         		holder = new ViewHolder();
         		holder.text = (TextView) 	convertView.findViewById(R.id.contact_specific_message_text);
         		holder.add  = (ImageView)		convertView.findViewById(R.id.add_message_button);
+        		holder.add.setVisibility(View.GONE);
         		holder.text.setTag(getItem(position));
         		convertView.setTag(holder);
         	} else{
         		holder = (ViewHolder) convertView.getTag();
         		holder.text.setTag(getItem(position));
         	}
-        	if(position > 0)
-        		holder.add.setVisibility(View.GONE);
         	convertView.findViewById(R.id.contact_specific_message_text).setOnClickListener(new OnClickListener(){
     				public void onClick(View v) {
     					AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
@@ -283,41 +338,12 @@ public class MessageActivity extends Activity {
         	convertView.findViewById(R.id.add_names_button).setOnClickListener(new OnClickListener(){
     				public void onClick(View v) {
 
-    					final int NAMES = 0;
-    					final int ID = 1;
-    					final int NUMBER = 2;
-    	                Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-    	    	                new String[] {Phone._ID, Phone.DISPLAY_NAME, Phone.NUMBER}, null, null,  Phone.DISPLAY_NAME + " ASC");
-
-    	                String[][] names = new String[3][cursor.getCount()]; 
-    	                AlertDialog alert = new AlertDialog.Builder(MessageActivity.this)
-    	                    .setIcon(R.drawable.ic_launcher)
-    	                    .setTitle("Get Contacts")
-    	                    //.setItems(cursor.get, listener)
-    	                    .setMultiChoiceItems(cursor,
-    	                            Phone.NUMBER,
-    	                            Phone.DISPLAY_NAME,
-    	                            new DialogInterface.OnMultiChoiceClickListener() {
-    	                                public void onClick(DialogInterface dialog, int whichButton,
-    	                                        boolean isChecked) {
-    	                                	dialog.dismiss();
-    	                                }
-    	                            })
-    	                            
-    	                   .create();
-    	                
-    	                alert.show();
+    					Intent intent = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
+    					position_edited = position;
+    					startActivityForResult(intent,PICK_CONTACT_ID);
     				}
             	});
-        	convertView.findViewById(R.id.add_message_button).setOnClickListener(new OnClickListener(){
-				public void onClick(View v) {
-					mMessage.addContactSpecificMessage("518-444-4444", "Hi Im Derek");
-					notifyDataSetChanged();
-				}
-        		
-        	});
-         
-        	
+
 //    		holder.text = (TextView) convertView.findViewById(R.id.message_item_text);
 //    		holder.select = (Button) convertView.findViewById(R.id.message_item_select_button);
 //    		holder.edit = (Button) convertView.findViewById(R.id.message_item_edit_button);
@@ -325,6 +351,7 @@ public class MessageActivity extends Activity {
     		if (tempObject.equals("")) {
     			holder.add.setVisibility(View.VISIBLE);
     		}
+    		holder.text.setText(getItem(position));
 			return convertView;
 		}
 

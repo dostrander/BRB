@@ -9,20 +9,22 @@
 //				Will Stahl				  //
 //										  //
 //				Created on:				  //
-//			January 23rd, 2011			  //
+//			January 23rd, 2012			  //
 //////////////////////////////////////////*/
 
 package b.r.b;
 
 import java.util.ArrayList;
 
-
+import static b.r.b.Constants.*;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -59,9 +61,9 @@ public class HomeScreenActivity extends TabActivity {
 	private final String TAG = "HomeScreenActivity";
 	private final String MESSAGE = "message";
 	private final String LOG = "log";
+	private final String NO_MESSAGE = "Click to Edit Message";
 	private int DB_ID = -1;
 	private Message mCurrent;
-	private int ringerMode = 0;
 
 	// Variables
 	IncomingListener listener;
@@ -91,8 +93,6 @@ public class HomeScreenActivity extends TabActivity {
 		"I'm in class", "Roller skating", "Playing hide and seek", "druuunnmk",
 		"At work", "Call you back when I get a chance", "Well I'd rather not talk to you" 
 	};
-	// For ListView
-	private static ArrayList<Message> messages = new ArrayList<Message>();
 	
 	/*	onCreate
 	 * 		
@@ -116,7 +116,7 @@ public class HomeScreenActivity extends TabActivity {
         
         // Find Views
         enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
-        //listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
+        listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
         messageList  = 		(ListView) findViewById(R.id.auto_complete_list);
         inputMessage = 		(TextView) findViewById(R.id.message_input);
         
@@ -213,25 +213,6 @@ public class HomeScreenActivity extends TabActivity {
 				createNewMessageDialog();				
 			}
     	});
-    	
-//        inputMessage.addTextChangedListener(new TextWatcher(){
-//    		public void afterTextChanged(Editable e) {
-//    			inputMessage.setEnabled(true);
-//    		}
-//
-//    		public void beforeTextChanged(CharSequence s, int start,
-//    				int count, int after) {
-//    			inputMessage.setEnabled(false);
-//    		}
-//
-//    		public void onTextChanged(CharSequence s, int start, int count,
-//    				int after) {
-//    			Log.d(TAG,String.valueOf(s.length()));
-//    			if(s.length() > 1) showAutoComplete();
-//    			else hideAutoComplete();
-//    			adapter.getFilter().filter(s);
-//    		}
-//        });
     }
     
     private void createNewMessageDialog(){
@@ -296,33 +277,44 @@ public class HomeScreenActivity extends TabActivity {
     }
     
     private void enableMessage(){
+    	inputMessage.setTextColor(Color.WHITE);
     	enableButton.setImageResource(R.drawable.enabled_message_selector);
     	enabled = true;
-    	// startListener
     	
-    	// I believe this silences the phone when you enable the message, but not sure... -Evan
-    	// It saves the current ringer mode for later use when the message is disabled...   	
+    	// enable listener
+    	
+    	// silent phone
     	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-    	ringerMode = audiomanage.getRingerMode();
+    	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();
+    	editor.putInt("ringer_mode", audiomanage.getRingerMode());
+    	editor.commit();
     	audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
     }
     
     private void disableMessage(){
+    	inputMessage.setTextColor(Color.WHITE);
     	enableButton.setImageResource(R.drawable.disabled_button_selector);
     	enabled = false;
-    	// disableListener
     	
-    	// I believe this sets the phone back to whatever mode the phone was in before when you disable 
-    	// the message, but again not sure... - Evan 
+    	// disable listener
+    	
+    	// enable normal ringing
+    	SharedPreferences prefs = getSharedPreferences(PREFS, Activity.MODE_PRIVATE);
     	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-    	audiomanage.setRingerMode(ringerMode);
+    	audiomanage.setRingerMode(prefs.getInt("ringer_mode",AudioManager.RINGER_MODE_NORMAL));
     }
     
     private void noMessage(){
+    	inputMessage.setText(NO_MESSAGE);
+    	inputMessage.setTextColor(Color.GRAY);
     	enableButton.setImageResource(R.drawable.nothing_button_selector);
     	enabled = false;
     	DB_ID = -1;
     	mCurrent = null;
+    	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+    	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();
+    	editor.putInt("ringer_mode", audiomanage.getRingerMode());
+    	editor.commit();
     }
     
     

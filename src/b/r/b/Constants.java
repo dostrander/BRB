@@ -26,5 +26,7 @@ public interface Constants extends BaseColumns {
 
 	public static final String RESPONSE_LOG_IDS = "response_log_ids";
 	public static final String USES = "uses";
+	
+	public static final String PREFS = "BRB_PREFERENCES";
    
 }
