@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background"
+    android:orientation="vertical" >
+    <RelativeLayout
+        android:id="@+id/scrollview_main"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+         >
+  	<EditText
+       	android:id="@+id/message_input"
+       	android:hint="@string/english_enter_text"
+       	android:textColor="@color/light_grey"
+       	android:lines="2"
+       	android:ems="10"
+       	android:maxLines="4"
+       	android:gravity="top"
+       	android:layout_width="240dp"
+       	android:layout_height="100dp"
+       	android:layout_alignParentTop="true"
+       	android:layout_alignParentLeft="true"
+       	android:autoText="true"
+       	android:inputType="textLongMessage"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp" />
+  	
+   	<Button 
+        android:id="@+id/enable_away_button"
+        android:text="@string/english_enable"
+        android:textSize="10dp"
+       	android:layout_width="55dp"
+        android:layout_height="50dp" 
+   	    android:layout_toRightOf="@id/message_input"
+   	    android:layout_alignTop="@id/message_input" />
+   	<Button
+   	    android:id="@+id/select_message_button"
+   	    android:text="@string/english_select"
+   	    android:textSize="10dp"
+   	    android:layout_width="55dp"
+   	    android:layout_height="50dp"
+   	    android:layout_toRightOf="@id/message_input"
+   	    android:layout_alignBottom="@id/message_input" />
+   	<TextView 
+   	    android:id="@+id/message_label"
+   	    android:text="@string/english_messages"
+   	    android:textSize="15dp"
+   	    android:textColor="#FFFFFF"
+   	    android:layout_marginLeft="15dp"
+   	    android:layout_marginTop="4dp"
+   	    android:layout_below="@+id/message_input"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content" />
+   	<ListView 
+   	    android:id="@+id/message_list"
+   	    android:background="@color/list_background"
+   	    android:layout_marginTop="5dp"
+   	    android:layout_marginLeft="15dp"
+   	    android:layout_marginRight="10dp"
+   	    android:layout_below="@+id/message_label"
+   	    android:layout_alignRight="@+id/enable_away_button"
+   	    android:layout_height="150dp"
+   	    android:layout_width="fill_parent"
+   	    >
+<!--    	    <TableRow 
+		    android:id="@+id/message_item"
+		    android:background="@color/list_background"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content" >
+			<TextView
+		    	android:id="@+id/message_item_text"
+		    	android:text="I am away from my phone!"
+		    	android:layout_marginLeft="5dp"
+		    	android:layout_marginRight="5dp"
+		    	android:layout_marginTop="5dp"
+		    	android:layout_marginBottom="5dp"
+    			android:textSize="18dp"
+		    	android:layout_weight="1"
+		    	android:layout_height="wrap_content"
+    			android:layout_width="wrap_content" />
+			<Button 
+	    		android:id="@+id/edit_message"
+			    android:background="#808080"
+			    android:layout_weight="0"
+			    android:layout_width="40dp"
+			    android:layout_height="fill_parent"/>
+		</TableRow> -->
+   	</ListView>
+   	<TextView 
+   	    android:id="@+id/names"
+   	    android:text="John Doe"
+   	    android:textSize="15dp"
+   	    android:textColor="#FFFFFF"
+   	    android:layout_marginLeft="15dp"
+   	    android:layout_marginTop="5dp"
+   	    android:layout_below="@+id/message_list"
+   	    
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content" />
+   	 <ListView 
+   	    android:id="@+id/response_log"
+   	    android:background="@color/list_background"
+   	    android:layout_marginTop="5dp"
+   	    android:layout_marginLeft="15dp"
+   	    android:layout_marginRight="10dp"
+   	    android:layout_below="@+id/names"
+   	    android:layout_alignRight="@+id/enable_away_button"
+   	    android:layout_height="150dp"
+   	    android:layout_width="fill_parent"
+   	    >
+   	</ListView>
+   	
+</RelativeLayout>
+</ScrollView>
