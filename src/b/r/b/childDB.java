@@ -17,11 +17,11 @@ public class childDB extends SQLiteOpenHelper {
 	private static final String DATABASE_CREATE_TABLE =
 			   " CREATE TABLE " + PARENT_TABLE +
 			   " ("+_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, " +ID + " INTEGER NOT NULL, "+ MESSAGE +" TEXT NOT NULL, "+ CHILD_IDS +" INTEGER NOT NULL);";
-	
+	/*
 	private static final String DATABASE_CREATE_TABLE_2 =
 			   " CREATE TABLE " + CHILD_TABLE +
 			   " ("+_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, " +ID + " INTEGER NOT NULL, "+ MESSAGE +" TEXT NOT NULL);";
-	
+	*/
 	public childDB(Context ctx) {
 	     super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
 	  }
@@ -31,7 +31,7 @@ public class childDB extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
 		db.execSQL(DATABASE_CREATE_TABLE);
-		db.execSQL(DATABASE_CREATE_TABLE_2);
+		//db.execSQL(DATABASE_CREATE_TABLE_2);
 	}
 
 
