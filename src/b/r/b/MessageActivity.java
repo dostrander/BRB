@@ -347,10 +347,6 @@ public class MessageActivity extends Activity {
 //    		holder.text = (TextView) convertView.findViewById(R.id.message_item_text);
 //    		holder.select = (Button) convertView.findViewById(R.id.message_item_select_button);
 //    		holder.edit = (Button) convertView.findViewById(R.id.message_item_edit_button);
-
-    		if (tempObject.equals("")) {
-    			holder.add.setVisibility(View.VISIBLE);
-    		}
     		holder.text.setText(getItem(position));
 			return convertView;
 		}

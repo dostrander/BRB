@@ -35,6 +35,7 @@
 
 	<TableRow 
 	    android:id="@+id/start_row"
+	    android:visibility="gone"
 	    android:layout_weight="1"
 	    android:layout_below="@+id/priority_row"
 	    android:layout_width="fill_parent"

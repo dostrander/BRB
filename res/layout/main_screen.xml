@@ -13,12 +13,12 @@
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/show_list_button"
         android:inputType="textMultiLine"
-        android:hint="Click To Change Message"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:lines="2"
-        android:isScrollContainer="true" />
+        android:isScrollContainer="true"
+        android:ellipsize="marquee" />
          
          
 	  <LinearLayout
