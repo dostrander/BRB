@@ -114,7 +114,7 @@ public class HomeScreenActivity extends TabActivity {
         
         // Find Views
         enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
-        listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
+        //listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
         messageList  = 		(ListView) findViewById(R.id.auto_complete_list);
         inputMessage = 		(TextView) findViewById(R.id.message_input);
 
