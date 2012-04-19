@@ -132,10 +132,11 @@ public class HomeScreenActivity extends TabActivity {
         messageList.setAdapter(adapter);
         
         
-        noMessage();
+
         
         messageList.setVisibility(View.GONE);
         registerListeners();
+        noMessage();
     }
     
     @Override
@@ -190,7 +191,6 @@ public class HomeScreenActivity extends TabActivity {
 				else editTextDialog();
 			}
     	});
-		
     	enableButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
 				if(!enabled) enableMessage();
@@ -289,6 +289,7 @@ public class HomeScreenActivity extends TabActivity {
     	editor.putInt("ringer_mode", audiomanage.getRingerMode());
     	editor.commit();
     	audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    	enableButton.setClickable(true);
     }
     
     private void disableMessage(){
@@ -302,6 +303,7 @@ public class HomeScreenActivity extends TabActivity {
     	SharedPreferences prefs = getSharedPreferences(PREFS, Activity.MODE_PRIVATE);
     	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
     	audiomanage.setRingerMode(prefs.getInt("ringer_mode",AudioManager.RINGER_MODE_NORMAL));
+    	enableButton.setClickable(true);
     }
     
     private void noMessage(){
@@ -315,6 +317,7 @@ public class HomeScreenActivity extends TabActivity {
     	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();
     	editor.putInt("ringer_mode", audiomanage.getRingerMode());
     	editor.commit();
+    	enableButton.setClickable(false);
     }
     
     
@@ -325,7 +328,6 @@ public class HomeScreenActivity extends TabActivity {
     
     private class AutoCompleteArrayAdapter extends ArrayAdapter<String> {
     	private final Context context;
-    	private final String[] messages;
     	
     	public class ViewHolder{
     		TextView text;
@@ -334,7 +336,6 @@ public class HomeScreenActivity extends TabActivity {
 		public AutoCompleteArrayAdapter(Context ctx, String[] msgs){
 			super(ctx, R.id.auto_complete_list, msgs);
 			context = ctx;
-			messages = msgs;
 			setNotifyOnChange(true);
 			}
 		
