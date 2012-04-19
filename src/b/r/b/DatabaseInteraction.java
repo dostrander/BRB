@@ -46,14 +46,17 @@ public class DatabaseInteraction extends ListActivity {
 		Cursor c = db.rawQuery(PARENT_TABLE, null);
 		String s = c.getString(CHILD_IDS_COLUMN);
 		String[] a = strc.convertStringToArray(s);
-
+		String[] ids = new String[a.length];
+		
 		for(int i = 0; i < a.length; i ++){
 			if(a[i].equals(number)){
-				return c;
+				ids[i] = c.getString(ID_COLUMN);
+				c = db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS},ID+"=?"
+						, new String[]{ids[i]}, null,null,null);
 			}
 		}
-		c.close();
-		return null;
+		
+		return c;
 	}
 	
 }
