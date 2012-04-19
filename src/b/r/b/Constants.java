@@ -23,7 +23,7 @@ public interface Constants extends BaseColumns {
 	public static final String ID = "id";
 	public static final String MESSAGE = "message";
 	public static final String CHILD_IDS = "child_ids";
-
+	
 	public static final String RESPONSE_LOG_IDS = "response_log_ids";
 	public static final String USES = "uses";
 	
