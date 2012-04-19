@@ -36,7 +36,6 @@
     	android:layout_below="@+id/names"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/add_message_button"
-        android:text="Click to Edit Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 
