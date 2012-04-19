@@ -10,9 +10,11 @@ import android.database.sqlite.SQLiteDatabase;
 public class DatabaseInteraction extends ListActivity {
 	
 	private parentDB parent = new parentDB(this);
+	private StringArrayConverter strc = new StringArrayConverter();
 	
 	public void InsertMessage(String[] message, String[] numbers){
 		SQLiteDatabase db = parent.getWritableDatabase();
+		
 	}
 	
 }
