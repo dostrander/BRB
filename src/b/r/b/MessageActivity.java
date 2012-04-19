@@ -45,6 +45,7 @@ public class MessageActivity extends Activity {
 	private static final int STARTTIME_ID = 0;
 	private static final int ENDTIME_ID = 1;
 	private static final int PICK_CONTACT_ID = 5;
+	private static final String CLICK_TO_EDIT = "Click to Edit Text";
 	
 	
 	private static Message mMessage;
@@ -214,10 +215,16 @@ public class MessageActivity extends Activity {
     	});
 		header.findViewById(R.id.add_message_button).setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
-				mMessage.addContactSpecificMessage("NONE",tv.getText().toString());
-				mAdapter.notifyDataSetChanged();
+				if(!tv.getText().toString().equals(CLICK_TO_EDIT) && 
+						!mAdapter.contains(tv.getText().toString()) &&
+						tv.getText().toString().trim().length() > 0){
+					mMessage.addContactSpecificMessage("NONE",tv.getText().toString());
+					tv.setText(CLICK_TO_EDIT);
+					mAdapter.notifyDataSetChanged();
+				}
 			}
 		});
+		tv.setText(CLICK_TO_EDIT);
 	}
 	private static void setDates(){
 		vStartTime.setText(mMessage.startDateToText());
@@ -365,7 +372,9 @@ public class MessageActivity extends Activity {
 			return 0;
 		}
 
-		
+		public boolean contains(String t){
+			return mMessage.specificMessages.contains(t);
+		}
 	}		
 
 }
