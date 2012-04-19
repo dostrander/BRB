@@ -4,7 +4,7 @@
 package b.r.b;
 
 public class StringArrayConverter {
-	public static String convertArrayToString(String[] array){
+	public String convertArrayToString(String[] array){
     	String str = "";
     	for(int i = 0;i<array.length;i++){
     		str=str+array[i];
@@ -14,7 +14,7 @@ public class StringArrayConverter {
     	}
     	return str;
     }
-    public static String[] convertStringToArray(String str){
+    public  String[] convertStringToArray(String str){
     	String[] array = str.split(",");
     	return array;
     }
