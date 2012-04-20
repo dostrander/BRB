@@ -23,22 +23,32 @@ public class DatabaseInteraction extends ListActivity {
 	//array of strings that contain all the numbers it is used for
 	//If it is a universal message I think we should just use null
 	
-	public void InsertMessage(String id, String message){
+	public void InsertMessage(String id, String[] numbers, String message, int[] pids){
+		String p = "";
+		for(int i = 0; i < pids.length; i ++){
+			p = p + pids[i];
+			if(i != (pids.length - 1)){
+				p = p + ",";
+			}
+			
+		}
 		SQLiteDatabase db = child.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(_ID, id);
+		values.put(NUMBERS, strc.convertArrayToString(numbers));
 		values.put(MESSAGE, message);
+		values.put(PARENT_IDS, p);
 		db.insertOrThrow(CHILD_TABLE, id, values);
 		
 	}
 	
-	public void InsertMessage(String id, String message, String[] numbers, String[] logs){
+	public void InsertMessage(String id, String message, String[] cids){
 		SQLiteDatabase db = parent.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(_ID, id);
 		values.put(MESSAGE, message);
-		values.put(CHILD_IDS, strc.convertArrayToString(numbers));
-		values.put(RESPONSE_LOG_IDS, strc.convertArrayToString(logs));
+		values.put(CHILD_IDS, strc.convertArrayToString(cids));
+		
 		db.insertOrThrow(PARENT_TABLE, id, values);
 	}
 	

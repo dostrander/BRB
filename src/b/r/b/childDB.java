@@ -16,7 +16,8 @@ public class childDB extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 2;
 	private static final String DATABASE_CREATE_TABLE =
 			   " CREATE TABLE " + PARENT_TABLE +
-			   " ("+_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + MESSAGE +" TEXT NOT NULL);";
+			   " ("+_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + NUMBERS +" TEXT NOT NULL, " 
+			   + MESSAGE + " TEXT NOT NULL, " + PARENT_IDS + " TEXTS NOT NULL);";
 	/*
 	private static final String DATABASE_CREATE_TABLE_2 =
 			   " CREATE TABLE " + CHILD_TABLE +
@@ -38,7 +39,7 @@ public class childDB extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
-		db.execSQL("DROP TABLE IF EXISTS " +PARENT_TABLE);
+		
 		db.execSQL("DROP TABLE IF EXISTS " +CHILD_TABLE);
 	     onCreate(db);
 	}
