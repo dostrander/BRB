@@ -16,21 +16,32 @@ public class DatabaseInteraction extends ListActivity {
 	private final int CHILD_IDS_COLUMN = 3;
 	//initializing the local objects
 	private parentDB parent = new parentDB(this);
+	private childDB child   = new childDB(this);
 	private StringArrayConverter strc = new StringArrayConverter();
 	
 	//to insert a message, you pass the string of the message, and an
 	//array of strings that contain all the numbers it is used for
 	//If it is a universal message I think we should just use null
 	
-	public void InsertMessage(String message, String[] numbers){
+	public void InsertMessage(String id, String message){
+		SQLiteDatabase db = child.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(_ID, id);
+		values.put(MESSAGE, message);
+		db.insertOrThrow(CHILD_TABLE, id, values);
+		
+	}
+	
+	public void InsertMessage(String id, String message, String[] numbers, String[] logs){
 		SQLiteDatabase db = parent.getWritableDatabase();
 		ContentValues values = new ContentValues();
+		values.put(_ID, id);
 		values.put(MESSAGE, message);
 		values.put(CHILD_IDS, strc.convertArrayToString(numbers));
-		//id is set to auto-increment so I don't pass it an id 
-		//(check out parentDB.java)
-		db.insertOrThrow(PARENT_TABLE, null, values);
+		values.put(RESPONSE_LOG_IDS, strc.convertArrayToString(logs));
+		db.insertOrThrow(PARENT_TABLE, id, values);
 	}
+	
 	
 	//to SearchByMessage just pass the String of the message
 	public Cursor SearchByMessage(String message){
