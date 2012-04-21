@@ -17,6 +17,7 @@ package b.r.b;
 import java.util.ArrayList;
 
 import static b.r.b.Constants.*;
+import static b.r.b.DatabaseInteraction.*;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TabActivity;
@@ -25,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -45,6 +47,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -74,11 +77,13 @@ public class HomeScreenActivity extends TabActivity {
 	Button selectButton;
 	static TextView inputMessage;
 	private static ListView messageList;
-	private static AutoCompleteArrayAdapter adapter;
+	//private static AutoCompleteArrayAdapter adapter;
+	private static MessageListCursorAdapter adapter;
 	boolean enabled;
 	TextView header;
 	TabHost mTabHost;
 	TabWidget mTabWidget;
+	private DatabaseInteraction db;
 	
 	
 	
@@ -103,7 +108,7 @@ public class HomeScreenActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"in onCreate");
         setContentView(R.layout.main_screen);
-        
+        db = new DatabaseInteraction(this);
         // Set TabHost
         mTabHost 	= getTabHost();
         mTabHost.addTab(mTabHost.newTabSpec(MESSAGE).
@@ -128,7 +133,10 @@ public class HomeScreenActivity extends TabActivity {
         messageList.addHeaderView(header);
 
         // Set adapter
-        adapter = new AutoCompleteArrayAdapter(this, MESSAGES);
+        //adapter = new AutoCompleteArrayAdapter(this, MESSAGES);
+
+        adapter = new MessageListCursorAdapter(this,R.layout.input_message_list_item,db.GetAllParentMessages(),
+        		new String[]{MESSAGE},new int[]{R.id.input_message_list_item});
         messageList.setAdapter(adapter);
         
         
@@ -228,20 +236,11 @@ public class HomeScreenActivity extends TabActivity {
 		input.setGravity(Gravity.TOP);
 		input.setHint("Start typing message...");
 		input.addTextChangedListener(new TextWatcher(){
-			public void afterTextChanged(Editable e) {
-				
-			}
-
+			public void afterTextChanged(Editable e) {}
 			public void beforeTextChanged(CharSequence s, int arg1,
-					int arg2, int arg3) {
-			}
-
+					int arg2, int arg3) {}
 			public void onTextChanged(CharSequence s, int start,
-					int before, int count) {
-				adapter.getFilter().filter(s);
-			}
-			
-		});
+					int before, int count) {adapter.getFilter().filter(s);}			});
 		ll.setBackgroundColor(myDialogColor);
 		lv.setBackgroundColor(myDialogColor);
 		lv.setCacheColorHint(myDialogColor);
@@ -324,6 +323,51 @@ public class HomeScreenActivity extends TabActivity {
     public void getMessageFromDB(String text){
     	// get Message from db
     	Log.d(TAG,text);
+    }
+    
+    private class MessageListCursorAdapter extends SimpleCursorAdapter {
+    	private final Context context;
+    	private final int layout;
+    	private final int textview_id;
+		public MessageListCursorAdapter(Context ctx, int lout, Cursor c,
+				String[] from, int[] to){
+			super(ctx, lout, c, from, to);
+			context = ctx;
+			layout = lout;
+			textview_id = to[0];
+		}
+		
+		@Override
+		public View newView(Context ctx, Cursor cursor, ViewGroup parent){
+			ViewHolder holder = new ViewHolder();
+			View v = LayoutInflater.from(ctx).inflate(layout, null);
+			v.setTag(holder);
+			
+			return v;
+			
+		}
+		
+		@Override
+		public void bindView(View v, Context context, Cursor cursor){
+			final ViewHolder holder = (ViewHolder) v.getTag();
+			TextView tv = (TextView) v.findViewById(textview_id);
+			tv.setText(cursor.getString(cursor.getColumnIndex(MESSAGE)));			
+			holder.text = tv;
+			holder.id = cursor.getLong(cursor.getColumnIndex(ID));
+			v.setOnClickListener(new OnClickListener(){
+				public void onClick(View v) {
+					inputMessage.setText(holder.text.getText().toString());
+					messageList.setVisibility(View.GONE);
+					disableMessage(); // make button red
+				}
+			});
+		}
+    	
+    	public class ViewHolder{
+    		TextView text;
+    		long id;
+    	}
+    	
     }
     
     private class AutoCompleteArrayAdapter extends ArrayAdapter<String> {
