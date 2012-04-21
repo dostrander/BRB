@@ -131,6 +131,12 @@ public class DatabaseInteraction {
 					, new String[]{id}, null, null, null);
 		}
 		
+		public Message getParentMessageById(String id){
+			Cursor c = SearchParentById(id);
+			if(c.moveToFirst()){
+				return new Message(c.getString(c.getColumnIndex(MESSAGE)));
+			} else return null;
+		}
 		//To search by childID just pass the number
 		//remember, c may be null so make sure you try catch when you call
 		//also I'm not sure if this will return all the messages with the sent child ID

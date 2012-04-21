@@ -66,7 +66,7 @@ public class HomeScreenActivity extends TabActivity {
 	private final String LOG = "log";
 	private final String NO_MESSAGE = "Click to Edit Message";
 	private int DB_ID = -1;
-	private Message mCurrent;
+	private static Message mCurrent;
 
 	// Variables
 	IncomingListener listener;
@@ -83,7 +83,7 @@ public class HomeScreenActivity extends TabActivity {
 	TextView header;
 	TabHost mTabHost;
 	TabWidget mTabWidget;
-	private DatabaseInteraction db;
+	private static DatabaseInteraction db;
 	
 	
 	
@@ -240,7 +240,7 @@ public class HomeScreenActivity extends TabActivity {
 			public void beforeTextChanged(CharSequence s, int arg1,
 					int arg2, int arg3) {}
 			public void onTextChanged(CharSequence s, int start,
-					int before, int count) {adapter.getFilter().filter(s);}			});
+					int before, int count) {adapter.getFilter().filter(s);}	});
 		ll.setBackgroundColor(myDialogColor);
 		lv.setBackgroundColor(myDialogColor);
 		lv.setCacheColorHint(myDialogColor);
@@ -319,10 +319,10 @@ public class HomeScreenActivity extends TabActivity {
     	enableButton.setClickable(false);
     }
     
-    
-    public void getMessageFromDB(String text){
-    	// get Message from db
-    	Log.d(TAG,text);
+    public static void changeCurrent(long db_id){
+    	Message temp = db.getParentMessageById(String.valueOf(db_id)); 
+    	if(temp != null)
+    		mCurrent = temp;
     }
     
     private class MessageListCursorAdapter extends SimpleCursorAdapter {
@@ -356,6 +356,7 @@ public class HomeScreenActivity extends TabActivity {
 			holder.id = cursor.getLong(cursor.getColumnIndex(ID));
 			v.setOnClickListener(new OnClickListener(){
 				public void onClick(View v) {
+					Log.d(TAG,String.valueOf(holder.id));
 					inputMessage.setText(holder.text.getText().toString());
 					messageList.setVisibility(View.GONE);
 					disableMessage(); // make button red

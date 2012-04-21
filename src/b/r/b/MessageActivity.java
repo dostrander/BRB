@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -306,7 +307,7 @@ public class MessageActivity extends Activity {
         		convertView = inflater.inflate(R.layout.message_item, null);
         		holder = new ViewHolder();
         		holder.text = (TextView) 	convertView.findViewById(R.id.contact_specific_message_text);
-        		holder.add  = (ImageView)		convertView.findViewById(R.id.add_message_button);
+        		holder.add  = (ImageView)	convertView.findViewById(R.id.add_message_button);
         		holder.add.setVisibility(View.GONE);
         		holder.text.setTag(getItem(position));
         		convertView.setTag(holder);
@@ -321,10 +322,8 @@ public class MessageActivity extends Activity {
     					builder.setTitle("Edit Message Text");
     					// Set an EditText view to get user input 
     					final EditText input = new EditText(MessageActivity.this);
-    					input.setLines(2);
-    					input.setGravity(Gravity.TOP);
+    					input.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
     					builder.setView(input);
-
     					builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
     						public void onClick(DialogInterface dialog, int whichButton) {
     							if(holder.text.getText().toString() != input.getText().toString())
