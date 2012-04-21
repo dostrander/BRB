@@ -105,6 +105,20 @@ public class DatabaseInteraction {
 		return c;
 	}
 	
+	public int[] GetChildIdsFromParent(String pid){
+		SQLiteDatabase db = parent.getWritableDatabase();
+		
+		Cursor c = db.query(PARENT_TABLE, new String[]{ID}, ID+"=?", new String[]{pid}, null, null, null);
+		
+		String a = c.getString(PCHILD_IDS_COLUMN);
+		String[] b = strc.convertStringToArray(a);
+		int[] cids = new int[b.length];
+		for(int i = 0; i < cids.length; i++){
+			cids[i] = Integer.parseInt(b[i]);
+		}
+		return cids;
+	}
+	
 	public Cursor GetAllParentMessages(){
 		SQLiteDatabase db = parent.getReadableDatabase();
 		
