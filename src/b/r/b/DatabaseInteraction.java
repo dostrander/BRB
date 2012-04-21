@@ -33,20 +33,19 @@ public class DatabaseInteraction {
 	
 	//For inserting into the parent, pass an id, the message, and an array of possible child 
 	//ids
-	public void InsertMessage(String id, String message, String[] cids){
+	public void InsertMessage(String message, String[] cids){
 		SQLiteDatabase db = parent.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		values.put(_ID, id);
 		values.put(MESSAGE, message);
 		values.put(CHILD_IDS, strc.convertArrayToString(cids));
 		
-		db.insertOrThrow(PARENT_TABLE, id, values);
+		db.insertOrThrow(PARENT_TABLE, null, values);
 	}
 	
 	
-	//For inserting into the child, pass the id, an arry of the numbers, the message, and 
+	//For inserting into the child, pass the id, an array of the numbers, the message, and 
 	//an array of the parent ids
-	public void InsertMessage(String id, String[] numbers, String message, int[] pids){
+	public void InsertMessage(String[] numbers, String message, int[] pids){
 		String p = "";
 		for(int i = 0; i < pids.length; i ++){
 			p = p + pids[i];
@@ -57,11 +56,10 @@ public class DatabaseInteraction {
 		}
 		SQLiteDatabase db = child.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		values.put(_ID, id);
 		values.put(NUMBERS, strc.convertArrayToString(numbers));
 		values.put(MESSAGE, message);
 		values.put(PARENT_IDS, p);
-		db.insertOrThrow(CHILD_TABLE, id, values);
+		db.insertOrThrow(CHILD_TABLE, null, values);
 		
 	}
 	
