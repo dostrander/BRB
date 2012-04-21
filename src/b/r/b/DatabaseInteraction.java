@@ -5,19 +5,27 @@ package b.r.b;
 
 import android.app.ListActivity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import static b.r.b.Constants.*;
 
-public class DatabaseInteraction extends ListActivity {
+public class DatabaseInteraction {
 	//Constants used to access a column using the cursor getString() method later
 	private final int PID_COLUMN = 1;
 	private final int PARENT_IDS_COLUMN = 4;
 	private final int PCHILD_IDS_COLUMN = 3;
 	//initializing the local objects
-	private parentDB parent = new parentDB(this);
-	private childDB child   = new childDB(this);
+	private parentDB parent;
+	private childDB child;
 	private StringArrayConverter strc = new StringArrayConverter();
+	private Context context;
+	
+	public DatabaseInteraction(Context ctx){
+		context = ctx;
+		parent = new parentDB(context);
+		child = new childDB(context);
+	}
 	
 	//to insert a message, you pass the string of the message, and an
 	//array of strings that contain all the numbers it is used for
@@ -99,7 +107,12 @@ public class DatabaseInteraction extends ListActivity {
 		return c;
 	}
 	
-	
+	public Cursor GetAllParentMessages(){
+		SQLiteDatabase db = parent.getReadableDatabase();
+		
+		return db.query(PARENT_TABLE, new String[]{ID,MESSAGE}, null, 
+				null, null, null, null,null);
+	}
 	
 	//to SearchByMessage just pass the String of the message
 		public Cursor SearchParentByMessage(String message){
