@@ -104,7 +104,7 @@ public class DatabaseInteraction {
 		
 		return c;
 	}
-	
+	//Just send the parent id and you will get an array of the child ids back
 	public int[] GetChildIdsFromParent(String pid){
 		SQLiteDatabase db = parent.getWritableDatabase();
 		
