@@ -14,9 +14,8 @@ import static b.r.b.Constants.*;
 public class DatabaseInteraction {
 	//Constants used to access a column using the cursor getString() method later
 	private final int PID_COLUMN = 1;
-	private final int PARENT_IDS_COLUMN = 4;
-	private final int PCHILD_IDS_COLUMN = 3;
-	private final int CPARENT_IDS_COLUMN = 4;
+	private final int PARENT_ID_COLUMN = 4;
+	private final int PCHILD_ID_COLUMN = 3;
 	private final int CNUMBERS_COLUMN = 2;
 	//initializing the local objects
 	private parentDB parent;
@@ -36,21 +35,13 @@ public class DatabaseInteraction {
 		SQLiteDatabase dbr = parent.getReadableDatabase();
 		SQLiteDatabase dbw = parent.getWritableDatabase();
 		
-		Cursor c = dbr.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS}, MESSAGE+"=?"
+		Cursor c = dbr.query(PARENT_TABLE, new String[] {ID,MESSAGE}, MESSAGE+"=?"
 				, new String[]{oldMessage}, null, null, null);
 		String pid = c.getString(PID_COLUMN);
-		int[] cids = GetChildIdsFromParent(pid);
-		String stringCids = "";
-		for(int i = 0; i < cids.length; i++){
-			stringCids = stringCids + cids[i];
-			if( i != cids.length - 1){
-				stringCids = stringCids + ",";
-			}
-		}
+		
 		ContentValues values = new ContentValues();
 		values.put(ID, pid);
 		values.put(MESSAGE,newMessage);
-		values.put(CHILD_IDS,stringCids);
 		//did it work?
 		return dbw.update(PARENT_TABLE, values, null, null) > 0;
 	}
@@ -61,20 +52,12 @@ public class DatabaseInteraction {
 		String stringPid = "";
 		// What are we doing here????
 		stringPid = String.valueOf(pid);
-		int[] cids = GetChildIdsFromParent(stringPid);
-		String stringCids = "";
-		for(int i = 0; i < cids.length; i++){
-			stringCids = stringCids + cids[i];
-			if( i != cids.length - 1){
-				stringCids = stringCids + ",";
-			}
-		}
+		
 		// END
 		ContentValues values = new ContentValues();
 		
 		values.put(ID, stringPid);
 		values.put(MESSAGE,newMessage);
-		values.put(CHILD_IDS,stringCids);
 		//did it work?
 		return db.update(PARENT_TABLE, values, null, null) > 0;
 	}
@@ -84,17 +67,11 @@ public class DatabaseInteraction {
 		SQLiteDatabase dbr = child.getReadableDatabase();
 		SQLiteDatabase dbw = child.getWritableDatabase();
 		
-		Cursor c = dbr.query(CHILD_TABLE, new String[] {ID,MESSAGE,CHILD_IDS}, MESSAGE+"=?"
+		Cursor c = dbr.query(CHILD_TABLE, new String[] {ID,NUMBERS,MESSAGE,PARENT_ID}, MESSAGE+"=?"
 				, new String[]{oldMessage}, null, null, null);
 		String cid = c.getString(PID_COLUMN);
-		int[] pids = GetParentIdsFromChild(cid);
-		String stringPids = "";
-		for(int i = 0; i < pids.length; i++){
-			stringPids = stringPids + pids[i];
-			if( i != pids.length - 1){
-				stringPids = stringPids + ",";
-			}
-		}
+		double pid = c.getDouble(c.getColumnIndex(PARENT_ID));
+		String stringPid = String.valueOf(pid);
 		int [] numbers = GetNumbersFromChild(cid);
 		String stringNumbers = "";
 		for(int i = 0; i < numbers.length; i++){
@@ -107,7 +84,7 @@ public class DatabaseInteraction {
 		values.put(ID, cid);
 		values.put(NUMBERS, stringNumbers);
 		values.put(MESSAGE,newMessage);
-		values.put(PARENT_IDS,stringPids);
+		values.put(PARENT_ID,stringPid);
 		//did it work?
 		return dbw.update(CHILD_TABLE, values, null, null) > 0;
 	}
@@ -115,17 +92,15 @@ public class DatabaseInteraction {
 	
 
 	public boolean ChildEditMessage(int cid, String newMessage){
-		SQLiteDatabase db = child.getWritableDatabase();
-		String stringCid = "";
-		stringCid = stringCid + cid;
-		int[] pids = GetParentIdsFromChild(stringCid);
-		String stringPids = "";
-		for(int i = 0; i < pids.length; i++){
-			stringPids = stringPids + pids[i];
-			if( i != pids.length - 1){
-				stringPids = stringPids + ",";
-			}
-		}
+		SQLiteDatabase dbr = child.getReadableDatabase();
+		SQLiteDatabase dbw = child.getWritableDatabase();
+		String stringCid = String.valueOf(cid);
+		Cursor c = dbr.query(CHILD_TABLE, new String[] {ID,NUMBERS,MESSAGE,PARENT_ID}, ID+"=?"
+				, new String[]{stringCid}, null, null, null);
+		
+		double pid = c.getDouble(c.getColumnIndex(PARENT_ID));
+		String stringPid = String.valueOf(pid);
+		
 		int [] numbers = GetNumbersFromChild(stringCid);
 		String stringNumbers = "";
 		for(int i = 0; i < numbers.length; i++){
@@ -139,9 +114,9 @@ public class DatabaseInteraction {
 		values.put(ID, stringCid);
 		values.put(MESSAGE,newMessage);
 		values.put(NUMBERS, stringNumbers);
-		values.put(PARENT_IDS,stringPids);
+		values.put(PARENT_ID,stringPid);
 		//did it work?
-		return db.update(CHILD_TABLE, values, null, null) > 0;
+		return dbw.update(CHILD_TABLE, values, null, null) > 0;
 	}
 	
 	
@@ -153,11 +128,10 @@ public class DatabaseInteraction {
 	//array of strings that contain all the numbers it is used for	
 	//For inserting into the parent, pass an id, the message, and an array of possible child 
 		//ids
-	public Message InsertMessage(String message, String[] cids){
+	public Message InsertMessage(String message){
 		SQLiteDatabase db = parent.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(MESSAGE, message);
-		values.put(CHILD_IDS, strc.convertArrayToString(cids));
 		long id = db.insertOrThrow(PARENT_TABLE, null, values);
 		return new Message(message,(int) id);
 	}
@@ -165,22 +139,16 @@ public class DatabaseInteraction {
 	
 	//For inserting into the child, pass the id, an array of the numbers, the message, and 
 	//an array of the parent ids
-	public void InsertMessage(String[] numbers, String message, int[] pids){
-		String p = "";
-		for(int i = 0; i < pids.length; i ++){
-			p = p + pids[i];
-			if(i != (pids.length - 1)){
-				p = p + ",";
-			}
-			
-		}
+	public Message InsertMessage(String[] numbers, String message, double pid){
+		String p = String.valueOf(pid);
 		SQLiteDatabase db = child.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(NUMBERS, strc.convertArrayToString(numbers));
 		values.put(MESSAGE, message);
-		values.put(PARENT_IDS, p);
-		db.insertOrThrow(CHILD_TABLE, null, values);
-
+		values.put(PARENT_ID, p);
+		
+		long id = db.insertOrThrow(CHILD_TABLE, null, values);
+		return new Message(message,(int) id);
 	}
 	
 	
@@ -189,7 +157,7 @@ public class DatabaseInteraction {
 	public Cursor SearchChildByMessage(String message){
 		SQLiteDatabase db = child.getReadableDatabase();
 		
-		return db.query(CHILD_TABLE, new String[] {ID,NUMBERS,MESSAGE,PARENT_IDS}, MESSAGE+"=?"
+		return db.query(CHILD_TABLE, new String[] {ID,NUMBERS,MESSAGE,PARENT_ID}, MESSAGE+"=?"
 				, new String[]{message}, null, null, null);
 		
 	}
@@ -198,7 +166,7 @@ public class DatabaseInteraction {
 	public Cursor SearchChildById(String id){
 		SQLiteDatabase db = child.getReadableDatabase();
 		
-		return db.query(CHILD_TABLE, new String[] {ID,NUMBERS,MESSAGE,PARENT_IDS},ID+"=?"
+		return db.query(CHILD_TABLE, new String[] {ID,NUMBERS,MESSAGE,PARENT_ID},ID+"=?"
 				, new String[]{id}, null, null, null);
 	}
 	
@@ -209,30 +177,19 @@ public class DatabaseInteraction {
 	public Cursor SearchChildByParentId(String pid){
 		SQLiteDatabase db = child.getReadableDatabase();
 		
-		Cursor c = db.rawQuery(CHILD_TABLE, null);
-		// HERE
-		String s = c.getString(PARENT_IDS_COLUMN);
-		String[] a = strc.convertStringToArray(s);
-		String[] ids = new String[a.length];
-		
-		for(int i = 0; i < a.length; i ++){
-			if(a[i].equals(pid)){
-				ids[i] = c.getString(PID_COLUMN);
-				c = db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS},ID+"=?"
-						, new String[]{ids[i]}, null,null,null);
-			}
-		}
-		
-		return c;
+		return db.query(CHILD_TABLE, new String[] {ID,NUMBERS,MESSAGE,PARENT_ID},ID+"=?"
+				, new String[]{pid}, null, null, null);
 	}
 	//Just send the parent id and you will get an array of the child ids back
-	public int[] GetChildIdsFromParent(String pid){
+	/*
+	 public int[] GetChildIdsFromParent(String pid){
+	 
 		SQLiteDatabase db = parent.getWritableDatabase();
 		
 		Cursor c = db.query(PARENT_TABLE, new String[]{ID}, ID+"=?", new String[]{pid}, null, null, null);
 		
 		// HERE
-		String a = c.getString(PARENT_IDS_COLUMN);
+		String a = c.getString(PARENT_ID_COLUMN);
 		String[] b = strc.convertStringToArray(a);
 		int[] cids = new int[b.length];
 		for(int i = 0; i < cids.length; i++){
@@ -240,7 +197,7 @@ public class DatabaseInteraction {
 		}
 		return cids;
 	}
-	
+	*/
 	public Cursor GetAllParentMessages(){
 		SQLiteDatabase db = parent.getReadableDatabase();
 		
@@ -250,9 +207,9 @@ public class DatabaseInteraction {
 	
 	//to SearchByMessage just pass the String of the message
 	public Cursor SearchParentByMessage(String message){
-	SQLiteDatabase db = parent.getReadableDatabase();
+		SQLiteDatabase db = parent.getReadableDatabase();
 	
-	return db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS}, MESSAGE+"=?"
+		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE}, MESSAGE+"=?"
 			, new String[]{message}, null, null, null);
 	
 	}
@@ -267,7 +224,7 @@ public class DatabaseInteraction {
 	public Cursor SearchParentById(String id){
 		SQLiteDatabase db = parent.getReadableDatabase();
 		
-		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS},ID+"=?"
+		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE},ID+"=?"
 				, new String[]{id}, null, null, null);
 	}
 		
@@ -281,7 +238,7 @@ public class DatabaseInteraction {
 		//remember, c may be null so make sure you try catch when you call
 		//also I'm not sure if this will return all the messages with the sent child ID
 		//or just the last one
-	public Cursor SearchParentByChildId(String number){
+	/*public Cursor SearchParentByChildId(String number){
 		SQLiteDatabase db = parent.getReadableDatabase();
 		
 		Cursor c = db.rawQuery(PARENT_TABLE, null);
@@ -298,22 +255,9 @@ public class DatabaseInteraction {
 		}
 		
 		return c;
-	}
+	}*/
 	
-	public int[] GetParentIdsFromChild(String cid) {
-		SQLiteDatabase db = child.getWritableDatabase();
 		
-		Cursor c = db.query(CHILD_TABLE, new String[]{ID}, ID+"=?", new String[]{cid}, null, null, null);
-		
-		String a = c.getString(CPARENT_IDS_COLUMN);
-		String[] b = strc.convertStringToArray(a);
-		int[] pids = new int[b.length];
-		for(int i = 0; i < pids.length; i++){
-			pids[i] = Integer.parseInt(b[i]);
-		}
-		return pids;
-	}
-	
 	public int[] GetNumbersFromChild(String cid){
 		SQLiteDatabase db = child.getWritableDatabase();
 		
