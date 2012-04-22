@@ -274,7 +274,7 @@ public class HomeScreenActivity extends TabActivity {
 		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				String text = input.getText().toString().trim().toString();
-				mCurrent = db.getParentByMessage(text);
+				mCurrent = db.GetParentByMessage(text);
 				if(mCurrent == null){
 					Log.d(TAG,"new message");
 					mCurrent = db.InsertMessage(text, new String[]{});
@@ -376,7 +376,7 @@ public class HomeScreenActivity extends TabActivity {
     
     public void changeCurrent(long db_id){
     	Log.d(TAG,"in changeCurrent");
-    	Message temp = db.getParentById(String.valueOf(db_id));
+    	Message temp = db.GetParentById(String.valueOf(db_id));
     	mCurrent = temp;
     	changeCurrent();
    	}
