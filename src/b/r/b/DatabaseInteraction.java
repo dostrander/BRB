@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import static b.r.b.Constants.*;
 
 public class DatabaseInteraction {
@@ -55,9 +56,11 @@ public class DatabaseInteraction {
 	}
 	
 	public boolean ParentEditMessage(int pid, String newMessage){
+		Log.d("stuff",String.valueOf(pid));
 		SQLiteDatabase db = parent.getWritableDatabase();
 		String stringPid = "";
-		stringPid = stringPid + pid;
+		// What are we doing here????
+		stringPid = String.valueOf(pid);
 		int[] cids = GetChildIdsFromParent(stringPid);
 		String stringCids = "";
 		for(int i = 0; i < cids.length; i++){
@@ -66,6 +69,7 @@ public class DatabaseInteraction {
 				stringCids = stringCids + ",";
 			}
 		}
+		// END
 		ContentValues values = new ContentValues();
 		
 		values.put(ID, stringPid);
@@ -154,8 +158,8 @@ public class DatabaseInteraction {
 		ContentValues values = new ContentValues();
 		values.put(MESSAGE, message);
 		values.put(CHILD_IDS, strc.convertArrayToString(cids));
-		db.insertOrThrow(PARENT_TABLE, null, values);
-		return new Message(message);
+		long id = db.insertOrThrow(PARENT_TABLE, null, values);
+		return new Message(message,(int) id);
 	}
 	
 	
@@ -206,6 +210,7 @@ public class DatabaseInteraction {
 		SQLiteDatabase db = child.getReadableDatabase();
 		
 		Cursor c = db.rawQuery(CHILD_TABLE, null);
+		// HERE
 		String s = c.getString(PARENT_IDS_COLUMN);
 		String[] a = strc.convertStringToArray(s);
 		String[] ids = new String[a.length];
@@ -226,7 +231,8 @@ public class DatabaseInteraction {
 		
 		Cursor c = db.query(PARENT_TABLE, new String[]{ID}, ID+"=?", new String[]{pid}, null, null, null);
 		
-		String a = c.getString(PCHILD_IDS_COLUMN);
+		// HERE
+		String a = c.getString(PARENT_IDS_COLUMN);
 		String[] b = strc.convertStringToArray(a);
 		int[] cids = new int[b.length];
 		for(int i = 0; i < cids.length; i++){
@@ -253,7 +259,7 @@ public class DatabaseInteraction {
 	public Message GetParentByMessage(String message){
 		Cursor c = SearchParentByMessage(message);
 		if(c.moveToFirst()){
-			return new Message(c.getString(c.getColumnIndex(MESSAGE)));
+			return new Message(c.getString(c.getColumnIndex(MESSAGE)),c.getInt(c.getColumnIndex(ID)));
 		} else return null;
 	}
 	
@@ -268,7 +274,7 @@ public class DatabaseInteraction {
 	public Message GetParentById(String id){
 		Cursor c = SearchParentById(id);
 		if(c.moveToFirst()){
-			return new Message(c.getString(c.getColumnIndex(MESSAGE)));
+			return new Message(c.getString(c.getColumnIndex(MESSAGE)),Integer.valueOf(id));
 		} else return null;
 	}
 		//To search by childID just pass the number

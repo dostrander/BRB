@@ -30,6 +30,7 @@ public class Message{
 	private final String TAG = "Message";
 	
 	// Variables
+	private int DB_ID;
 	private Map<String,Integer>	specificNumbers;										// For contact specific Messages
 	ArrayList<String>	specificMessages;
 	public String 				text;													// Text of the message to be sent
@@ -43,7 +44,7 @@ public class Message{
 	 * 		sets the text, initialize contact specificMessages,
 	 * 		tells whether or not it is a child and gets database id
 	 */
-	public Message(String t){
+	public Message(String t,int db_id){
 	 	Log.d(TAG,"in Message Constructor");
 	 	startTime	= Calendar.getInstance();
 	 	endTime 	= Calendar.getInstance(); 
@@ -51,10 +52,27 @@ public class Message{
 		specificNumbers 	= new HashMap<String,Integer>();							// Initialize specific messages, key is 
 																							// the number of the contact
 		specificMessages	= new ArrayList<String>();
+		DB_ID = db_id;
 	}
-
+	public Message(String t, int[] cids, int dbid){
+	 	Log.d(TAG,"in Message Constructor");
+	 	startTime	= Calendar.getInstance();
+	 	endTime 	= Calendar.getInstance(); 
+		text 				= new String(t);											// Set text
+		specificNumbers 	= new HashMap<String,Integer>();							// Initialize specific messages, key is 
+					
+		getChildrens(cids);// get chidren from the db
+		// the number of the contact
+		specificMessages	= new ArrayList<String>();
+		DB_ID = dbid;
+	}
 	
 	// setters
+	private void getChildrens(int[] cids){
+		
+	}
+	public int getID(){return DB_ID;}
+	public String getStringID(){return String.valueOf(DB_ID);}
 	public void setText(String t){text = t;}
 	public void setStartDate(int m, int d, int y, int h, int mi){
 		startTime.set(y,m,d,h,mi);

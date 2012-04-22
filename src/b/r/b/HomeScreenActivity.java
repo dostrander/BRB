@@ -85,7 +85,6 @@ public class HomeScreenActivity extends TabActivity {
 
 	private static MessageListCursorAdapter adapter;
 	static DatabaseInteraction db;
-	boolean enabled;
 
 	
 	/*	onCreate
@@ -206,7 +205,7 @@ public class HomeScreenActivity extends TabActivity {
     	});
     	enableButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
-				if(!enabled) enableMessage();
+				if(isEnabled() == MESSAGE_DISABLED) enableMessage();
 				else disableMessage();
 			}
     	});
@@ -229,7 +228,6 @@ public class HomeScreenActivity extends TabActivity {
     }
     
     private void createNewMessageDialog(){
-		// Set an EditText view to get user input
 		int myDialogColor = Color.rgb(33, 66, 99);
 		LinearLayout ll = new LinearLayout(HomeScreenActivity.this);
 		ll.setOrientation(LinearLayout.VERTICAL);
@@ -244,8 +242,6 @@ public class HomeScreenActivity extends TabActivity {
 		String[] messages = temp.toArray(new String[]{});
 		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeScreenActivity.this,
 				R.layout.dialog_message_item,R.id.textView1, messages);
-		//final MessageListCursorAdapter adapter = new MessageListCursorAdapter(this,R.layout.dialog_message_item,db.GetAllParentMessages(),
-        	//	new String[]{MESSAGE},new int[]{R.id.textView1});
 		input.setLines(2);
 		input.setGravity(Gravity.TOP);
 		input.setHint("Start typing message...");
@@ -275,11 +271,12 @@ public class HomeScreenActivity extends TabActivity {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				String text = input.getText().toString().trim().toString();
 				mCurrent = db.GetParentByMessage(text);
+				String id = mCurrent.getStringID();
+				Log.d(TAG,id);
 				if(mCurrent == null){
 					Log.d(TAG,"new message");
 					mCurrent = db.InsertMessage(text, new String[]{});
 					HomeScreenActivity.adapter.changeCursor(db.GetAllParentMessages());
-					//adapter.notifyDataSetChanged();
 				}
 				messageList.setVisibility(View.GONE);
 				changeCurrent();
@@ -295,9 +292,9 @@ public class HomeScreenActivity extends TabActivity {
     }
     
     private void editTextDialog(){
-		int myDialogColor = Color.rgb(33, 66, 99);
 		LinearLayout ll = new LinearLayout(HomeScreenActivity.this);
 		final EditText input = new EditText(HomeScreenActivity.this);
+		input.setText(mCurrent.text);
 		ll.setOrientation(LinearLayout.VERTICAL);
 		input.setLines(2);
 		input.setGravity(Gravity.TOP);
@@ -307,17 +304,14 @@ public class HomeScreenActivity extends TabActivity {
 		builder.setTitle("Edit Message")
 		.setView(ll)
 		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-//				String text = input.getText().toString().trim().toString();
-//				mCurrent = db.getParentByMessage(text);
-//				if(mCurrent == null){
-//					Log.d(TAG,"new message");
-//					mCurrent = db.InsertMessage(text, new String[]{});
-//					HomeScreenActivity.adapter.changeCursor(db.GetAllParentMessages());
-//				}
-				
+			public void onClick(DialogInterface dialog, int whichButton) {				
 				// update message
-				changeCurrent();
+				String text = input.getText().toString().trim().toString();
+				Log.d(TAG,String.valueOf(mCurrent.getID()));
+				if(text.length() > 0){
+					if(db.ParentEditMessage(mCurrent.getID(), text))
+						editCurrentMessage(text);
+				}
 			}
 		});
 
@@ -329,16 +323,10 @@ public class HomeScreenActivity extends TabActivity {
 
     
     private void enableMessage(){
-    	Log.d(TAG,"here");
-    	Log.d(TAG,"here");
-    	Log.d(TAG,"here");
-    	Log.d(TAG,"here");
-
     	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
     	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();
     	inputMessage.setTextColor(Color.WHITE);
     	enableButton.setImageResource(R.drawable.enabled_message_selector);
-    	enabled = true;
     	// enable listener
     	enableButton.setClickable(true);
     	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
@@ -354,7 +342,6 @@ public class HomeScreenActivity extends TabActivity {
     	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_DISABLED);
     	inputMessage.setTextColor(Color.WHITE);
     	enableButton.setImageResource(R.drawable.disabled_button_selector);
-    	enabled = false;
     	// disable listener
     	audiomanage.setRingerMode(prefs.getInt("ringer_mode",AudioManager.RINGER_MODE_NORMAL));
     	enableButton.setClickable(true);
@@ -367,21 +354,24 @@ public class HomeScreenActivity extends TabActivity {
     	inputMessage.setText(NO_MESSAGE);
     	inputMessage.setTextColor(Color.GRAY);
     	enableButton.setImageResource(R.drawable.nothing_button_selector);
-    	enabled = false;
     	DB_ID = -1;
     	mCurrent = null;
     	enableButton.setClickable(false);
     	editor.commit();
     }
     
-    public void changeCurrent(long db_id){
+    private void editCurrentMessage(String t){
+    	mCurrent.setText(t);
+    	inputMessage.setText(mCurrent.text);
+    	}
+    private void changeCurrent(long db_id){
     	Log.d(TAG,"in changeCurrent");
     	Message temp = db.GetParentById(String.valueOf(db_id));
     	mCurrent = temp;
     	changeCurrent();
    	}
     
-    public void changeCurrent(){
+    private void changeCurrent(){
     	if(mCurrent == null)
     		noMessage();
     	else{

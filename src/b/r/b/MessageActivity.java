@@ -69,7 +69,7 @@ public class MessageActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.message_view);
 
-		mMessage = new Message("Test");
+		mMessage = new Message("Test",-1);
 		vStartTime 	= (TextView) findViewById(R.id.starttime_text);
 		vEndTime 	= (TextView) findViewById(R.id.endtime_text);
 		vPriorityRow = (TableRow) findViewById(R.id.priority_row);
@@ -249,39 +249,7 @@ public class MessageActivity extends Activity {
 	
 	
 	
-	// ListView
-	
-	//private static ListArray<String> mContactSpecificMessages;
-	private class ContactDialogAdapter extends BaseAdapter {
-		private Context context;
-		private LayoutInflater inflater;
-		public ContactDialogAdapter(Context ctx){
-			inflater = LayoutInflater.from(ctx);
-			context = ctx;
-			
-		}
-		public View getView(int position, View convertView, ViewGroup parent) {
-			
-			return convertView;
-		}
-
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		
-	}
+	// ListV
 	
 	private class ContactMessageListAdapter extends BaseAdapter {
 		private class ViewHolder{		// holder class for the view
