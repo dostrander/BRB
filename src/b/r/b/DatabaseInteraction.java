@@ -27,12 +27,64 @@ public class DatabaseInteraction {
 		child = new childDB(context);
 	}
 	
+	//overloading Parent edit message so you can edit by sending the old message, or the id, if you have it
+	//returns true meant it worked, otherwise false, yo
+	public boolean ParentEditMessage(String oldMessage, String newMessage){
+		SQLiteDatabase dbr = parent.getReadableDatabase();
+		SQLiteDatabase dbw = parent.getWritableDatabase();
+		
+		Cursor c = dbr.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS}, MESSAGE+"=?"
+				, new String[]{oldMessage}, null, null, null);
+		String pid = c.getString(PID_COLUMN);
+		int[] cids = GetChildIdsFromParent(pid);
+		String stringCids = "";
+		for(int i = 0; i < cids.length; i++){
+			stringCids = stringCids + cids[i];
+			if( i != cids.length - 1){
+				stringCids = stringCids + ",";
+			}
+		}
+		ContentValues values = new ContentValues();
+		values.put(ID, pid);
+		values.put(MESSAGE,newMessage);
+		values.put(CHILD_IDS,stringCids);
+		//did it work?
+		return dbw.update(PARENT_TABLE, values, null, null) > 0;
+	}
+	
+	public boolean ParentEditMessage(int pid, String newMessage){
+		SQLiteDatabase db = parent.getWritableDatabase();
+		String stringPid = "";
+		stringPid = stringPid + pid;
+		int[] cids = GetChildIdsFromParent(stringPid);
+		String stringCids = "";
+		for(int i = 0; i < cids.length; i++){
+			stringCids = stringCids + cids[i];
+			if( i != cids.length - 1){
+				stringCids = stringCids + ",";
+			}
+		}
+		ContentValues values = new ContentValues();
+		
+		values.put(ID, stringPid);
+		values.put(MESSAGE,newMessage);
+		values.put(CHILD_IDS,stringCids);
+		//did it work?
+		return db.update(PARENT_TABLE, values, null, null) > 0;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	//to insert a message, you pass the string of the message, and an
-	//array of strings that contain all the numbers it is used for
-	
-	
+	//array of strings that contain all the numbers it is used for	
 	//For inserting into the parent, pass an id, the message, and an array of possible child 
-	//ids
+		//ids
 	public Message InsertMessage(String message, String[] cids){
 		SQLiteDatabase db = parent.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -128,12 +180,12 @@ public class DatabaseInteraction {
 	
 	//to SearchByMessage just pass the String of the message
 	public Cursor SearchParentByMessage(String message){
-		SQLiteDatabase db = parent.getReadableDatabase();
-		
-		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS}, MESSAGE+"=?"
-				, new String[]{message}, null, null, null);
-		
-		}
+	SQLiteDatabase db = parent.getReadableDatabase();
+	
+	return db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS}, MESSAGE+"=?"
+			, new String[]{message}, null, null, null);
+	
+	}
 	public Message getParentByMessage(String message){
 		Cursor c = SearchParentByMessage(message);
 		if(c.moveToFirst()){
@@ -142,39 +194,39 @@ public class DatabaseInteraction {
 	}
 	
 		//To search by ID (not sure why you would) just pass the id as a string
-		private Cursor SearchParentById(String id){
-			SQLiteDatabase db = parent.getReadableDatabase();
-			
-			return db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS},ID+"=?"
-					, new String[]{id}, null, null, null);
-		}
+	public Cursor SearchParentById(String id){
+		SQLiteDatabase db = parent.getReadableDatabase();
 		
-		public Message getParentById(String id){
-			Cursor c = SearchParentById(id);
-			if(c.moveToFirst()){
-				return new Message(c.getString(c.getColumnIndex(MESSAGE)));
-			} else return null;
-		}
+		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS},ID+"=?"
+				, new String[]{id}, null, null, null);
+	}
+		
+	public Message getParentById(String id){
+		Cursor c = SearchParentById(id);
+		if(c.moveToFirst()){
+			return new Message(c.getString(c.getColumnIndex(MESSAGE)));
+		} else return null;
+	}
 		//To search by childID just pass the number
 		//remember, c may be null so make sure you try catch when you call
 		//also I'm not sure if this will return all the messages with the sent child ID
 		//or just the last one
-		public Cursor SearchParentByChildId(String number){
-			SQLiteDatabase db = parent.getReadableDatabase();
-			
-			Cursor c = db.rawQuery(PARENT_TABLE, null);
-			String s = c.getString(PCHILD_IDS_COLUMN);
-			String[] a = strc.convertStringToArray(s);
-			String[] ids = new String[a.length];
-			
-			for(int i = 0; i < a.length; i ++){
-				if(a[i].equals(number)){
-					ids[i] = c.getString(PID_COLUMN);
-					c = db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS},ID+"=?"
-							, new String[]{ids[i]}, null,null,null);
-				}
+	public Cursor SearchParentByChildId(String number){
+		SQLiteDatabase db = parent.getReadableDatabase();
+		
+		Cursor c = db.rawQuery(PARENT_TABLE, null);
+		String s = c.getString(PCHILD_IDS_COLUMN);
+		String[] a = strc.convertStringToArray(s);
+		String[] ids = new String[a.length];
+		
+		for(int i = 0; i < a.length; i ++){
+			if(a[i].equals(number)){
+				ids[i] = c.getString(PID_COLUMN);
+				c = db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS},ID+"=?"
+						, new String[]{ids[i]}, null,null,null);
 			}
-			
-			return c;
 		}
+		
+		return c;
+	}
 }
