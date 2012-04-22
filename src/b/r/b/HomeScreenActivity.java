@@ -1,23 +1,22 @@
 /*//////////////////////////////////////////
-//				BRB-Android 	     	  //
-//				Created by:				  //
-//			  Derek Ostrander			  //
-//				 Max Shwenk				  //
-//			    Stuart Lang				  //
-//				Evan Dodge				  //
-//			   Jason Mather				  //
-//				Will Stahl				  //
-//										  //
-//				Created on:				  //
-//			January 23rd, 2012			  //
+//		BRB-Android 	     	  //
+//		Created by:		  //
+//	      Derek Ostrander		  //
+//		 Max Shwenk		  //
+//		Stuart Lang		  //
+//		 Evan Dodge		  //
+//	        Jason Mather		  //
+//		 Will Stahl		  //
+//					  //
+//	         Created on:		  //
+//	      January 23rd, 2012	  //
 //////////////////////////////////////////*/
 
 package b.r.b;
-
-import java.util.ArrayList;
-
+// our stuff
 import static b.r.b.Constants.*;
 import static b.r.b.DatabaseInteraction.*;
+// for android
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TabActivity;
@@ -32,7 +31,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;											// Logs
+import android.util.Log;								
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +53,8 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
+// java stuff
+import java.util.ArrayList;
 
 /*	HomeScreenActivity
  * 		Starts the application bringing up the main screen	
@@ -76,22 +76,16 @@ public class HomeScreenActivity extends TabActivity {
 	ImageButton enableButton;
 	ImageButton listButton;
 	Button selectButton;
-	static TextView inputMessage;
-	private static ListView messageList;
-	//private static AutoCompleteArrayAdapter adapter;
-	private static MessageListCursorAdapter adapter;
-	boolean enabled;
 	TextView header;
 	TabHost mTabHost;
 	TabWidget mTabWidget;
-	static DatabaseInteraction db;
-	
-	
-	
-
+	static TextView inputMessage;
+	private static ListView messageList;
 	ListView messageListView;
-	//View createMessageView;
-	
+
+	private static MessageListCursorAdapter adapter;
+	static DatabaseInteraction db;
+	boolean enabled;
 
 	
 	/*	onCreate
