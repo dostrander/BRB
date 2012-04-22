@@ -126,7 +126,7 @@ public final class R {
         public static final int spanish_enter_text=0x7f060008;
         public static final int spanish_messages=0x7f06000b;
         public static final int spanish_select=0x7f06000a;
-        public static final int widget_text=0x7f060003;
+        public static final int widget_button_content_desc=0x7f060003;
     }
     public static final class xml {
         public static final int widget_provider=0x7f040000;
