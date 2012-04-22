@@ -33,13 +33,13 @@ public class DatabaseInteraction {
 	
 	//For inserting into the parent, pass an id, the message, and an array of possible child 
 	//ids
-	public void InsertMessage(String message, String[] cids){
+	public Message InsertMessage(String message, String[] cids){
 		SQLiteDatabase db = parent.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(MESSAGE, message);
 		values.put(CHILD_IDS, strc.convertArrayToString(cids));
-		
 		db.insertOrThrow(PARENT_TABLE, null, values);
+		return new Message(message);
 	}
 	
 	
@@ -60,7 +60,7 @@ public class DatabaseInteraction {
 		values.put(MESSAGE, message);
 		values.put(PARENT_IDS, p);
 		db.insertOrThrow(CHILD_TABLE, null, values);
-		
+
 	}
 	
 	
@@ -113,23 +113,29 @@ public class DatabaseInteraction {
 	}
 	
 	//to SearchByMessage just pass the String of the message
-		public Cursor SearchParentByMessage(String message){
-			SQLiteDatabase db = parent.getReadableDatabase();
-			
-			return db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS}, MESSAGE+"=?"
-					, new String[]{message}, null, null, null);
-			
-		}
+	public Cursor SearchParentByMessage(String message){
+		SQLiteDatabase db = parent.getReadableDatabase();
 		
+		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS}, MESSAGE+"=?"
+				, new String[]{message}, null, null, null);
+		
+		}
+	public Message getParentByMessage(String message){
+		Cursor c = SearchParentByMessage(message);
+		if(c.moveToFirst()){
+			return new Message(c.getString(c.getColumnIndex(MESSAGE)));
+		} else return null;
+	}
+	
 		//To search by ID (not sure why you would) just pass the id as a string
-		public Cursor SearchParentById(String id){
+		private Cursor SearchParentById(String id){
 			SQLiteDatabase db = parent.getReadableDatabase();
 			
 			return db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS},ID+"=?"
 					, new String[]{id}, null, null, null);
 		}
 		
-		public Message getParentMessageById(String id){
+		public Message getParentById(String id){
 			Cursor c = SearchParentById(id);
 			if(c.moveToFirst()){
 				return new Message(c.getString(c.getColumnIndex(MESSAGE)));
