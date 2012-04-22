@@ -14,6 +14,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -39,6 +42,42 @@ public class Message{
 	private Calendar 			startTime;
 	private Calendar			endTime;
 	// finish time
+	
+	
+	private class ChildMessage{
+		String text;
+		int[] ids;
+		String[] numbers;
+		String namesText;
+		ChildMessage(String t){text = t;}
+		ChildMessage(String t, int[] i, String[] nums){
+			text = t;
+			ids = i;
+			numbers = nums;
+		}
+		public void addNumbers(int[] idss, String[] nums){
+			ids = idss;
+			numbers = nums;
+		}
+		private void numbersToString(Context ctx){
+			namesText = "";
+			for(String n : numbers){
+				String name = numberToString(n,ctx);
+				if(n != numbers[0])
+					namesText = namesText + "," + name;
+				else namesText = name;
+			}
+		}
+		private String numberToString(String num, Context ctx){
+			Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num));
+			Cursor cursor = ctx.getContentResolver().query(contactUri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, 
+					null, null, null);
+			if(cursor.moveToFirst())
+				if(!cursor.isAfterLast())
+					return cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+			return null;
+		}
+	}
 		
 	/*	Message Constructor
 	 * 		sets the text, initialize contact specificMessages,
@@ -129,25 +168,6 @@ public class Message{
 				String.valueOf(endTime.get(Calendar.MINUTE)));
 	}
 	
-
-	
-	
-	/*	saveToDatabase
-	 * 		check whether or not it is in the appropriate 
-	 * 		database (child or parent) and if it is there
-	 * 		update the entry if it is not just save the whole message
-	 */
-	public void saveToDatabase(){
-		Log.d(TAG,"in saveToDatabase");
-//		if (child == true)
-//			// Check to see if there is an entry 
-//			// in the child database
-//			;
-//		else
-//			// Check to see if there is an entry
-//			// in the parent database
-//			;
-	}
 	
 	/*	addContactSpecificMessage
 	 * 		Adds a child Message to specificMessages

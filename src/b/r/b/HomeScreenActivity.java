@@ -136,24 +136,11 @@ public class HomeScreenActivity extends TabActivity {
     	super.onStart();
     	Log.d(TAG,"in onStart");
     	Log.d(TAG,String.valueOf(isEnabled()));
-    	switch(isEnabled()){
-    	case MESSAGE_ENABLED:{
-    		int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
-    		if(db_id >= 0){
-    			changeCurrent(db_id);
-    			enableMessage();
-    		}else noMessage();
-    		break;
-    	}
-    	case MESSAGE_DISABLED:
-    	case NO_MESSAGE_SELECTED: noMessage(); break;
-    	}
-    	String temp = tempFunc("5182310063");
-    	if(temp == null)
-    		popToast("NONE");
-    	else popToast(temp);
-    	
-
+   		int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
+   		if(isEnabled() == MESSAGE_ENABLED && db_id >= 0){
+   			changeCurrent(db_id);
+   			enableMessage();
+   		}else noMessage();
     }
     private String tempFunc(String num){
 		Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num));
@@ -238,6 +225,7 @@ public class HomeScreenActivity extends TabActivity {
     	listButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
 				if(messageList.getVisibility() == View.GONE){
+					adapter.changeCursor(db.GetAllParentMessages());
 					messageList.setVisibility(View.VISIBLE);
 					messageList.bringToFront();
 				}
@@ -297,8 +285,7 @@ public class HomeScreenActivity extends TabActivity {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				String text = input.getText().toString().trim().toString();
 				mCurrent = db.GetParentByMessage(text);
-				String id = mCurrent.getStringID();
-				Log.d(TAG,id);
+				
 				if(mCurrent == null){
 					Log.d(TAG,"new message");
 					mCurrent = db.InsertMessage(text);

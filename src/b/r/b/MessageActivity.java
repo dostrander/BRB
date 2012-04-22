@@ -5,6 +5,7 @@ import java.util.Stack;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -82,11 +83,15 @@ public class MessageActivity extends Activity {
 		mAdapter = new ContactMessageListAdapter(this);
 		vContactMessageList.addHeaderView(header);
 		vContactMessageList.setAdapter(mAdapter);
+		vContactMessageList.setLongClickable(true);
 
 		position_edited = -1;
 		setDates();
 		registerListeners();
 		vPriorityRow.setVisibility(View.GONE);
+		
+		
+		
 	}
 	
 	private void registerListeners(){
@@ -248,7 +253,20 @@ public class MessageActivity extends Activity {
 	
 	
 	
-	
+	private void longClickDialog(){
+		final String[] items = new String[]{"Edit Contacts", "Edit Message", "Delete Message"};
+		AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
+		builder.setTitle("Edit Contact Specific Message")
+		.setItems(items,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Toast.makeText(MessageActivity.this, items[which], Toast.LENGTH_LONG)
+						.show(); 
+						
+					}
+				});
+		builder.create().show();
+	}
 	// ListV
 	
 	private class ContactMessageListAdapter extends BaseAdapter {
@@ -283,6 +301,13 @@ public class MessageActivity extends Activity {
         		holder = (ViewHolder) convertView.getTag();
         		holder.text.setTag(getItem(position));
         	}
+        	convertView.setOnLongClickListener(new OnLongClickListener(){
+				public boolean onLongClick(View v) {
+					longClickDialog();
+					return true;
+
+				}
+        	});
         	convertView.findViewById(R.id.contact_specific_message_text).setOnClickListener(new OnClickListener(){
     				public void onClick(View v) {
     					AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
@@ -317,7 +342,6 @@ public class MessageActivity extends Activity {
     					startActivityForResult(intent,PICK_CONTACT_ID);
     				}
             	});
-
 //    		holder.text = (TextView) convertView.findViewById(R.id.message_item_text);
 //    		holder.select = (Button) convertView.findViewById(R.id.message_item_select_button);
 //    		holder.edit = (Button) convertView.findViewById(R.id.message_item_edit_button);
