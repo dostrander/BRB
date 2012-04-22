@@ -4,6 +4,8 @@
     <string name="hello">Hello World, HomeScreenActivity!</string>
     <string name="app_name">BRB</string>
     <string name="default_text">Type to create message</string>
+    
+    <string name="widget_text">Enter text here...</string>
 	
     <string name="english_enter_text">Enter text here...</string>
     <string name="english_enable">Enable</string>

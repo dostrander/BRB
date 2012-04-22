@@ -29,5 +29,11 @@ public interface Constants extends BaseColumns {
 	public static final String USES = "uses";
 	
 	public static final String PREFS = "BRB_PREFERENCES";
+	public static final String DB_ID_KEY = "db_id";
+	
+	public static final String MESSAGE_ENABLED_KEY = "message_enabled";
+	public static final int MESSAGE_ENABLED = 0;
+	public static final int MESSAGE_DISABLED = 1;
+	public static final int NO_MESSAGE_SELECTED = 2;
    
 }
