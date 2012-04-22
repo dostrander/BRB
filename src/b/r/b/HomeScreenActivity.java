@@ -301,7 +301,8 @@ public class HomeScreenActivity extends TabActivity {
 				Log.d(TAG,id);
 				if(mCurrent == null){
 					Log.d(TAG,"new message");
-					mCurrent = db.InsertMessage(text, new String[]{});
+					mCurrent = db.InsertMessage(text);
+					//mCurrent = db.InsertMessage(text, new String[]{});
 					HomeScreenActivity.adapter.changeCursor(db.GetAllParentMessages());
 				}
 				messageList.setVisibility(View.GONE);

@@ -17,7 +17,7 @@ public class childDB extends SQLiteOpenHelper {
 	private static final String DATABASE_CREATE_TABLE =
 			   " CREATE TABLE " + PARENT_TABLE +
 			   " ("+_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + NUMBERS +" TEXT NOT NULL, " 
-			   + MESSAGE + " TEXT NOT NULL, " + PARENT_IDS + " TEXTS NOT NULL);";
+			   + MESSAGE + " TEXT NOT NULL, " + PARENT_ID + " TEXTS NOT NULL);";
 	/*
 	private static final String DATABASE_CREATE_TABLE_2 =
 			   " CREATE TABLE " + CHILD_TABLE +
