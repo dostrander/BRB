@@ -1,6 +1,7 @@
 package b.r.b;
 
 // Java Imports
+import static b.r.b.Constants.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,11 +32,19 @@ import android.widget.Toast;
  */
 public class Message{
 	private final String TAG = "Message";
+	private static final String CLICK_TO_EDIT = "Click to Edit Text";
 	
 	// Variables
 	private int DB_ID;
+	
+	
 	private Map<String,Integer>	specificNumbers;										// For contact specific Messages
 	ArrayList<String>	specificMessages;
+	
+	
+	
+	ChildMessage header;
+	ArrayList<ChildMessage> cMessages;
 	public String 				text;													// Text of the message to be sent
 	private boolean 			no_end;													// Tells whether there is an end or not
 	// start time
@@ -46,24 +55,31 @@ public class Message{
 	
 	private class ChildMessage{
 		String text;
-		int[] ids;
-		String[] numbers;
+		ArrayList<Integer> ids;
+		ArrayList<String> numbers;
 		String namesText;
-		ChildMessage(String t){text = t;}
-		ChildMessage(String t, int[] i, String[] nums){
-			text = t;
-			ids = i;
-			numbers = nums;
+		ChildMessage(){
+			text = CLICK_TO_EDIT;
+			namesText = CLICK_TO_ADD_NAMES;
+			ids = new ArrayList<Integer>();
+			numbers = new ArrayList<String>();
 		}
-		public void addNumbers(int[] idss, String[] nums){
-			ids = idss;
-			numbers = nums;
+		ChildMessage(String t, int i, String num){
+			text = t;
+			ids = new ArrayList<Integer>();
+			numbers = new ArrayList<String>();
+			addNumbers(i,num);
+			
+		}
+		public void addNumbers(int i, String num){
+			ids.add(i);
+			numbers.add(num);
 		}
 		private void numbersToString(Context ctx){
 			namesText = "";
 			for(String n : numbers){
 				String name = numberToString(n,ctx);
-				if(n != numbers[0])
+				if(n != numbers.get(0))
 					namesText = namesText + "," + name;
 				else namesText = name;
 			}
@@ -77,6 +93,26 @@ public class Message{
 					return cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
 			return null;
 		}
+	}
+	private void addNewChildMessage(){
+		cMessages.add(header);
+		clearHeader();
+	}
+	private void clearHeader(){
+		header.ids.clear();
+		header.numbers.clear();
+		header.text = CLICK_TO_EDIT;
+		header.namesText = CLICK_TO_ADD_NAMES;
+	}
+	private void addChildMessages(Cursor c){
+		String text;
+		int id;
+		String num;
+
+		//if(c.moveToFirst())
+			//do{
+				
+		
 	}
 		
 	/*	Message Constructor

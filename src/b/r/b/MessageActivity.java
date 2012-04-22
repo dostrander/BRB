@@ -1,5 +1,6 @@
 package b.r.b;
 
+import static b.r.b.Constants.*;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -47,7 +48,8 @@ public class MessageActivity extends Activity {
 	private static final int STARTTIME_ID = 0;
 	private static final int ENDTIME_ID = 1;
 	private static final int PICK_CONTACT_ID = 5;
-	private static final String CLICK_TO_EDIT = "Click to Edit Text";
+
+
 	
 	
 	private static Message mMessage;
@@ -70,7 +72,6 @@ public class MessageActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.message_view);
 
-		mMessage = new Message("Test",-1);
 		vStartTime 	= (TextView) findViewById(R.id.starttime_text);
 		vEndTime 	= (TextView) findViewById(R.id.endtime_text);
 		vPriorityRow = (TableRow) findViewById(R.id.priority_row);
@@ -252,7 +253,7 @@ public class MessageActivity extends Activity {
 	}
 	
 	
-	
+	public static void changeMessage(Message current){mMessage = current;}
 	private void longClickDialog(){
 		final String[] items = new String[]{"Edit Contacts", "Edit Message", "Delete Message"};
 		AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);

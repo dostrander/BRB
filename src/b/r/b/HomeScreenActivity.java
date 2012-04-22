@@ -129,18 +129,20 @@ public class HomeScreenActivity extends TabActivity {
         
         messageList.setVisibility(View.GONE);
         registerListeners();
-    }
-    
-    @Override
-    public void onStart(){
-    	super.onStart();
-    	Log.d(TAG,"in onStart");
+        
     	Log.d(TAG,String.valueOf(isEnabled()));
    		int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
    		if(isEnabled() == MESSAGE_ENABLED && db_id >= 0){
    			changeCurrent(db_id);
    			enableMessage();
    		}else noMessage();
+    }
+    
+    @Override
+    public void onStart(){
+    	super.onStart();
+    	Log.d(TAG,"in onStart");
+
     }
     private String tempFunc(String num){
 		Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num));
@@ -378,7 +380,8 @@ public class HomeScreenActivity extends TabActivity {
     private void editCurrentMessage(String t){
     	mCurrent.setText(t);
     	inputMessage.setText(mCurrent.text);
-    	}
+    	MessageActivity.changeMessage(mCurrent);
+    }
     private void changeCurrent(long db_id){
     	Log.d(TAG,"in changeCurrent");
     	Message temp = db.GetParentById(String.valueOf(db_id));
@@ -387,6 +390,7 @@ public class HomeScreenActivity extends TabActivity {
    	}
     
     private void changeCurrent(){
+    	MessageActivity.changeMessage(mCurrent);
     	if(mCurrent == null)
     		noMessage();
     	else{

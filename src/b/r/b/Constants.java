@@ -34,5 +34,8 @@ public interface Constants extends BaseColumns {
 	public static final int MESSAGE_ENABLED = 0;
 	public static final int MESSAGE_DISABLED = 1;
 	public static final int NO_MESSAGE_SELECTED = 2;
+	
+	public static final String CLICK_TO_EDIT = "Click to Edit Text";
+	public static final String CLICK_TO_ADD_NAMES = "Click to add Names...";
    
 }

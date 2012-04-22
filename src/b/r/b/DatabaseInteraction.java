@@ -70,7 +70,7 @@ public class DatabaseInteraction {
 		Cursor c = dbr.query(CHILD_TABLE, new String[] {ID,NUMBERS,MESSAGE,PARENT_ID}, MESSAGE+"=?"
 				, new String[]{oldMessage}, null, null, null);
 		String cid = c.getString(PID_COLUMN);
-		double pid = c.getDouble(c.getColumnIndex(PARENT_ID));
+		int pid = c.getInt(c.getColumnIndex(PARENT_ID));
 		String stringPid = String.valueOf(pid);
 		int [] numbers = GetNumbersFromChild(cid);
 		String stringNumbers = "";
@@ -98,7 +98,7 @@ public class DatabaseInteraction {
 		Cursor c = dbr.query(CHILD_TABLE, new String[] {ID,NUMBERS,MESSAGE,PARENT_ID}, ID+"=?"
 				, new String[]{stringCid}, null, null, null);
 		
-		double pid = c.getDouble(c.getColumnIndex(PARENT_ID));
+		int pid = c.getInt(c.getColumnIndex(PARENT_ID));
 		String stringPid = String.valueOf(pid);
 		
 		int [] numbers = GetNumbersFromChild(stringCid);
@@ -139,11 +139,11 @@ public class DatabaseInteraction {
 	
 	//For inserting into the child, pass the id, an array of the numbers, the message, and 
 	//an array of the parent ids
-	public Message InsertMessage(String[] numbers, String message, double pid){
+	public Message InsertMessage(String number, String message, long pid){
 		String p = String.valueOf(pid);
 		SQLiteDatabase db = child.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		values.put(NUMBERS, strc.convertArrayToString(numbers));
+		values.put(NUMBERS, number);
 		values.put(MESSAGE, message);
 		values.put(PARENT_ID, p);
 		
