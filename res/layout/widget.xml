@@ -6,7 +6,7 @@
 
 	<TextView 
 	    android:id="@+id/widget_textview"
-		android:text="@string/widget_text"
+		android:text="@string/english_enter_text"
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
 		android:background="#FFFFFF"
@@ -19,6 +19,7 @@
 
 	<ImageButton 
     	android:id="@+id/widget_button"
+    	android:contentDescription="@string/widget_button_content_desc"
     	android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
 		android:background="@drawable/button_selector"
