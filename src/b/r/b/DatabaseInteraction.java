@@ -250,7 +250,7 @@ public class DatabaseInteraction {
 			, new String[]{message}, null, null, null);
 	
 	}
-	public Message getParentByMessage(String message){
+	public Message GetParentByMessage(String message){
 		Cursor c = SearchParentByMessage(message);
 		if(c.moveToFirst()){
 			return new Message(c.getString(c.getColumnIndex(MESSAGE)));
@@ -265,7 +265,7 @@ public class DatabaseInteraction {
 				, new String[]{id}, null, null, null);
 	}
 		
-	public Message getParentById(String id){
+	public Message GetParentById(String id){
 		Cursor c = SearchParentById(id);
 		if(c.moveToFirst()){
 			return new Message(c.getString(c.getColumnIndex(MESSAGE)));
