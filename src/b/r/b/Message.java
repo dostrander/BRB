@@ -34,7 +34,6 @@ public class Message{
 	ArrayList<String>	specificMessages;
 	public String 				text;													// Text of the message to be sent
 	private boolean 			no_end;													// Tells whether there is an end or not
-	public final int 			DB_ID;													// Database ID
 	// start time
 	private Calendar 			startTime;
 	private Calendar			endTime;
@@ -52,7 +51,6 @@ public class Message{
 		specificNumbers 	= new HashMap<String,Integer>();							// Initialize specific messages, key is 
 																							// the number of the contact
 		specificMessages	= new ArrayList<String>();
-		DB_ID 				= 0; 														// Query Database for ID
 	}
 
 	

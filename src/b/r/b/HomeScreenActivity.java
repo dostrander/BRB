@@ -1,23 +1,22 @@
 /*//////////////////////////////////////////
-//				BRB-Android 	     	  //
-//				Created by:				  //
-//			  Derek Ostrander			  //
-//				 Max Shwenk				  //
-//			    Stuart Lang				  //
-//				Evan Dodge				  //
-//			   Jason Mather				  //
-//				Will Stahl				  //
-//										  //
-//				Created on:				  //
-//			January 23rd, 2012			  //
+//		BRB-Android 	     	  //
+//		Created by:		  //
+//	      Derek Ostrander		  //
+//		 Max Shwenk		  //
+//		Stuart Lang		  //
+//		 Evan Dodge		  //
+//	        Jason Mather		  //
+//		 Will Stahl		  //
+//					  //
+//	         Created on:		  //
+//	      January 23rd, 2012	  //
 //////////////////////////////////////////*/
 
 package b.r.b;
-
-import java.util.ArrayList;
-
+// our stuff
 import static b.r.b.Constants.*;
 import static b.r.b.DatabaseInteraction.*;
+// for android
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TabActivity;
@@ -32,7 +31,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;											// Logs
+import android.util.Log;								
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +41,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CursorAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -53,7 +53,8 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
+// java stuff
+import java.util.ArrayList;
 
 /*	HomeScreenActivity
  * 		Starts the application bringing up the main screen	
@@ -66,7 +67,7 @@ public class HomeScreenActivity extends TabActivity {
 	private final String LOG = "log";
 	private final String NO_MESSAGE = "Click to Edit Message";
 	private int DB_ID = -1;
-	private Message mCurrent;
+	private static Message mCurrent;
 
 	// Variables
 	IncomingListener listener;
@@ -75,29 +76,17 @@ public class HomeScreenActivity extends TabActivity {
 	ImageButton enableButton;
 	ImageButton listButton;
 	Button selectButton;
-	static TextView inputMessage;
-	private static ListView messageList;
-	//private static AutoCompleteArrayAdapter adapter;
-	private static MessageListCursorAdapter adapter;
-	boolean enabled;
 	TextView header;
 	TabHost mTabHost;
 	TabWidget mTabWidget;
-	private DatabaseInteraction db;
-	
-	
-	
-
+	static TextView inputMessage;
+	private static ListView messageList;
 	ListView messageListView;
-	//View createMessageView;
-	
-	// Temp
-	int message_count = 5;
-	
-	static final String[] MESSAGES = new String[] {
-		"I'm in class", "Roller skating", "Playing hide and seek", "druuunnmk",
-		"At work", "Call you back when I get a chance", "Well I'd rather not talk to you" 
-	};
+
+	private static MessageListCursorAdapter adapter;
+	static DatabaseInteraction db;
+	boolean enabled;
+
 	
 	/*	onCreate
 	 * 		
@@ -108,7 +97,6 @@ public class HomeScreenActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"in onCreate");
         setContentView(R.layout.main_screen);
-        db = new DatabaseInteraction(this);
         // Set TabHost
         mTabHost 	= getTabHost();
         mTabHost.addTab(mTabHost.newTabSpec(MESSAGE).
@@ -124,17 +112,13 @@ public class HomeScreenActivity extends TabActivity {
         listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
         messageList  = 		(ListView) findViewById(R.id.auto_complete_list);
         inputMessage = 		(TextView) findViewById(R.id.message_input);
-        
+        db = new DatabaseInteraction(this);
         View theader = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.input_message_list_item, null, false);
         theader.setBackgroundColor(Color.DKGRAY);
         header = (TextView) theader.findViewById(R.id.input_message_list_item);
         header.setTextColor(Color.WHITE);
         header.setText("Create New Message");
         messageList.addHeaderView(header);
-
-        // Set adapter
-        //adapter = new AutoCompleteArrayAdapter(this, MESSAGES);
-
         adapter = new MessageListCursorAdapter(this,R.layout.input_message_list_item,db.GetAllParentMessages(),
         		new String[]{MESSAGE},new int[]{R.id.input_message_list_item});
         messageList.setAdapter(adapter);
@@ -144,21 +128,25 @@ public class HomeScreenActivity extends TabActivity {
         
         messageList.setVisibility(View.GONE);
         registerListeners();
-        noMessage();
     }
     
     @Override
     public void onStart(){
     	super.onStart();
     	Log.d(TAG,"in onStart");
-    	   	
+    	Log.d(TAG,String.valueOf(isEnabled()));
+    	switch(isEnabled()){
+    	case MESSAGE_ENABLED: enableMessage(); break;
+    	case MESSAGE_DISABLED: disableMessage(); break;
+    	case NO_MESSAGE_SELECTED: noMessage(); break;
+    	}
+
     }
     
     @Override
     public void onResume(){
     	super.onResume();
     	Log.d(TAG,"in onResume");
-    	
     }
         
     @Override
@@ -171,15 +159,26 @@ public class HomeScreenActivity extends TabActivity {
     public void onStop(){
     	super.onStop();
     	Log.d(TAG, "in onStop");
+    	SharedPreferences prefs = getSharedPreferences(PREFS,MODE_PRIVATE);
+		SharedPreferences.Editor editor = prefs.edit();
+    	if(isEnabled() != MESSAGE_ENABLED)
+    		editor.putInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
+    	else editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
+    	editor.commit();
     }
     
     @Override
     public void onDestroy(){
     	super.onDestroy();
     	Log.d(TAG,"in onDestroy");
+    		
+    	
     }
     
-    
+    public int isEnabled(){
+    	SharedPreferences prefs = getSharedPreferences(PREFS,MODE_PRIVATE);
+    	return prefs.getInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
+    }
     public void popToast(String t){
     	Toast.makeText(this, t, Toast.LENGTH_LONG);
     }
@@ -197,6 +196,12 @@ public class HomeScreenActivity extends TabActivity {
 				if(mCurrent == null)
 					createNewMessageDialog();
 				else editTextDialog();
+			}
+    	});
+    	messageList.setOnItemClickListener(new OnItemClickListener(){
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+
 			}
     	});
     	enableButton.setOnClickListener(new OnClickListener(){
@@ -230,8 +235,17 @@ public class HomeScreenActivity extends TabActivity {
 		ll.setOrientation(LinearLayout.VERTICAL);
 		final EditText input = new EditText(HomeScreenActivity.this);
 		final ListView lv = new ListView(HomeScreenActivity.this);
+		Cursor c = db.GetAllParentMessages();
+		ArrayList<String> temp = new ArrayList<String>();
+		if(c.moveToFirst()){
+			do temp.add(c.getString(c.getColumnIndex(MESSAGE))); 
+			while(c.moveToNext());
+		}
+		String[] messages = temp.toArray(new String[]{});
 		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeScreenActivity.this,
-				R.layout.dialog_message_item,R.id.textView1, MESSAGES);
+				R.layout.dialog_message_item,R.id.textView1, messages);
+		//final MessageListCursorAdapter adapter = new MessageListCursorAdapter(this,R.layout.dialog_message_item,db.GetAllParentMessages(),
+        	//	new String[]{MESSAGE},new int[]{R.id.textView1});
 		input.setLines(2);
 		input.setGravity(Gravity.TOP);
 		input.setHint("Start typing message...");
@@ -240,7 +254,7 @@ public class HomeScreenActivity extends TabActivity {
 			public void beforeTextChanged(CharSequence s, int arg1,
 					int arg2, int arg3) {}
 			public void onTextChanged(CharSequence s, int start,
-					int before, int count) {adapter.getFilter().filter(s);}			});
+					int before, int count) {adapter.getFilter().filter(s);}	});
 		ll.setBackgroundColor(myDialogColor);
 		lv.setBackgroundColor(myDialogColor);
 		lv.setCacheColorHint(myDialogColor);
@@ -248,7 +262,7 @@ public class HomeScreenActivity extends TabActivity {
 		lv.setOnItemClickListener(new OnItemClickListener(){
 			public void onItemClick(AdapterView<?> adap, View v,
 					int position, long id) {
-				input.setText(MESSAGES[position]);
+				input.setText(adapter.getItem(position));
 				input.setSelection(input.getText().length());
 			}
 		});
@@ -259,80 +273,128 @@ public class HomeScreenActivity extends TabActivity {
 		.setView(ll)
 		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-				inputMessage.setText(input.getText().toString());
-				disableMessage(); // make it so the light is red
+				String text = input.getText().toString().trim().toString();
+				mCurrent = db.GetParentByMessage(text);
+				if(mCurrent == null){
+					Log.d(TAG,"new message");
+					mCurrent = db.InsertMessage(text, new String[]{});
+					HomeScreenActivity.adapter.changeCursor(db.GetAllParentMessages());
+					//adapter.notifyDataSetChanged();
+				}
+				messageList.setVisibility(View.GONE);
+				changeCurrent();
 			}
 		});
 
 		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 		    // Canceled.
+				messageList.setVisibility(View.GONE);
 			}
 		}).create().show();
     }
     
     private void editTextDialog(){
+		int myDialogColor = Color.rgb(33, 66, 99);
+		LinearLayout ll = new LinearLayout(HomeScreenActivity.this);
+		final EditText input = new EditText(HomeScreenActivity.this);
+		ll.setOrientation(LinearLayout.VERTICAL);
+		input.setLines(2);
+		input.setGravity(Gravity.TOP);
+		input.setHint("Start typing message...");
+		ll.addView(input);
+		AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
+		builder.setTitle("Edit Message")
+		.setView(ll)
+		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+//				String text = input.getText().toString().trim().toString();
+//				mCurrent = db.getParentByMessage(text);
+//				if(mCurrent == null){
+//					Log.d(TAG,"new message");
+//					mCurrent = db.InsertMessage(text, new String[]{});
+//					HomeScreenActivity.adapter.changeCursor(db.GetAllParentMessages());
+//				}
+				
+				// update message
+				changeCurrent();
+			}
+		});
+
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {}
+		}).create().show();
     	
     }
+
     
     private void enableMessage(){
+    	Log.d(TAG,"here");
+    	Log.d(TAG,"here");
+    	Log.d(TAG,"here");
+    	Log.d(TAG,"here");
+
+    	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+    	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();
     	inputMessage.setTextColor(Color.WHITE);
     	enableButton.setImageResource(R.drawable.enabled_message_selector);
     	enabled = true;
-    	
     	// enable listener
-    	
-    	// silent phone
-    	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-    	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();
-    	editor.putInt("ringer_mode", audiomanage.getRingerMode());
-    	editor.commit();
-    	audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
     	enableButton.setClickable(true);
+    	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
+    	editor.putInt("ringer_mode", audiomanage.getRingerMode());
+    	audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    	editor.commit();
     }
     
     private void disableMessage(){
+    	SharedPreferences prefs = getSharedPreferences(PREFS, Activity.MODE_PRIVATE);
+    	SharedPreferences.Editor editor = prefs.edit();
+    	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+    	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_DISABLED);
     	inputMessage.setTextColor(Color.WHITE);
     	enableButton.setImageResource(R.drawable.disabled_button_selector);
     	enabled = false;
-    	
     	// disable listener
-    	
-    	// enable normal ringing
-    	SharedPreferences prefs = getSharedPreferences(PREFS, Activity.MODE_PRIVATE);
-    	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
     	audiomanage.setRingerMode(prefs.getInt("ringer_mode",AudioManager.RINGER_MODE_NORMAL));
     	enableButton.setClickable(true);
+    	editor.commit();
     }
     
     private void noMessage(){
+    	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();
+    	editor.putInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
     	inputMessage.setText(NO_MESSAGE);
     	inputMessage.setTextColor(Color.GRAY);
     	enableButton.setImageResource(R.drawable.nothing_button_selector);
     	enabled = false;
     	DB_ID = -1;
     	mCurrent = null;
-    	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-    	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();
-    	editor.putInt("ringer_mode", audiomanage.getRingerMode());
-    	editor.commit();
     	enableButton.setClickable(false);
+    	editor.commit();
     }
     
+    public void changeCurrent(long db_id){
+    	Log.d(TAG,"in changeCurrent");
+    	Message temp = db.GetParentById(String.valueOf(db_id));
+    	mCurrent = temp;
+    	changeCurrent();
+   	}
     
-    public void getMessageFromDB(String text){
-    	// get Message from db
-    	Log.d(TAG,text);
+    public void changeCurrent(){
+    	if(mCurrent == null)
+    		noMessage();
+    	else{
+    		inputMessage.setText(mCurrent.text);
+    		disableMessage();
+    	}
     }
-    
-    private class MessageListCursorAdapter extends SimpleCursorAdapter {
-    	private final Context context;
+    private class MessageListCursorAdapter extends CursorAdapter {
     	private final int layout;
     	private final int textview_id;
 		public MessageListCursorAdapter(Context ctx, int lout, Cursor c,
 				String[] from, int[] to){
-			super(ctx, lout, c, from, to);
-			context = ctx;
+			super(ctx, c);
 			layout = lout;
 			textview_id = to[0];
 		}
@@ -356,9 +418,11 @@ public class HomeScreenActivity extends TabActivity {
 			holder.id = cursor.getLong(cursor.getColumnIndex(ID));
 			v.setOnClickListener(new OnClickListener(){
 				public void onClick(View v) {
-					inputMessage.setText(holder.text.getText().toString());
-					messageList.setVisibility(View.GONE);
-					disableMessage(); // make button red
+					Log.d(TAG,String.valueOf(holder.id));
+					if(layout == R.layout.input_message_list_item){
+						changeCurrent(holder.id);
+						messageList.setVisibility(View.GONE);
+					}
 				}
 			});
 		}
@@ -369,46 +433,4 @@ public class HomeScreenActivity extends TabActivity {
     	}
     	
     }
-    
-    private class AutoCompleteArrayAdapter extends ArrayAdapter<String> {
-    	private final Context context;
-    	
-    	public class ViewHolder{
-    		TextView text;
-    	}
-
-		public AutoCompleteArrayAdapter(Context ctx, String[] msgs){
-			super(ctx, R.id.auto_complete_list, msgs);
-			context = ctx;
-			setNotifyOnChange(true);
-			}
-		
-		@Override
-		public View getView(final int position, View convertView, ViewGroup parent){
-			ViewHolder holder;
-			if(convertView == null){
-				LayoutInflater inflater = (LayoutInflater) context
-						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = inflater.inflate(R.layout.input_message_list_item,null);
-				holder = new ViewHolder();
-				holder.text = (TextView) convertView.findViewById(R.id.input_message_list_item);
-				convertView.setTag(holder);
-			} else holder = (ViewHolder) convertView.getTag();
-			holder.text.setText(getItem(position));
-			convertView.setOnClickListener(new OnClickListener(){
-				public void onClick(View v) {
-					inputMessage.setText(getItem(position));
-					messageList.setVisibility(View.GONE);
-					disableMessage(); // make button red
-//					editing = true;
-//					hideAutoComplete();
-				}
-			});
-			
-			return convertView;
-		}
-    	
-    }
-    
-    
 }
