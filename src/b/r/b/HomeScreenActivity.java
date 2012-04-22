@@ -28,7 +28,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;								
@@ -135,10 +137,32 @@ public class HomeScreenActivity extends TabActivity {
     	Log.d(TAG,"in onStart");
     	Log.d(TAG,String.valueOf(isEnabled()));
     	switch(isEnabled()){
-    	case MESSAGE_ENABLED: enableMessage(); break;
-    	case MESSAGE_DISABLED: disableMessage(); break;
+    	case MESSAGE_ENABLED:{
+    		int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
+    		if(db_id >= 0){
+    			changeCurrent(db_id);
+    			enableMessage();
+    		}else noMessage();
+    		break;
+    	}
+    	case MESSAGE_DISABLED:
     	case NO_MESSAGE_SELECTED: noMessage(); break;
     	}
+    	String temp = tempFunc("5182310063");
+    	if(temp == null)
+    		popToast("NONE");
+    	else popToast(temp);
+    	
+
+    }
+    private String tempFunc(String num){
+		Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num));
+		Cursor cursor = getContentResolver().query(contactUri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, 
+				null, null, null);
+		if(cursor.moveToFirst())
+			if(!cursor.isAfterLast())
+				return cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+		return null;
 
     }
     
@@ -178,8 +202,10 @@ public class HomeScreenActivity extends TabActivity {
     	SharedPreferences prefs = getSharedPreferences(PREFS,MODE_PRIVATE);
     	return prefs.getInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
     }
+    
+    
     public void popToast(String t){
-    	Toast.makeText(this, t, Toast.LENGTH_LONG);
+    	Toast.makeText(this, t, Toast.LENGTH_LONG).show();
     }
     
     /*	registerClickListeners
@@ -329,6 +355,7 @@ public class HomeScreenActivity extends TabActivity {
     	enableButton.setImageResource(R.drawable.enabled_message_selector);
     	// enable listener
     	enableButton.setClickable(true);
+    	editor.putInt(DB_ID_KEY, mCurrent.getID());
     	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
     	editor.putInt("ringer_mode", audiomanage.getRingerMode());
     	audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
