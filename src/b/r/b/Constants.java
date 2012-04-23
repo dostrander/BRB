@@ -27,13 +27,15 @@ public interface Constants extends BaseColumns {
 	public static final String RESPONSE_LOG_IDS = "response_log_ids";
 	public static final String USES = "uses";
 	
-	public static final String PREFS = "BRB_PREFERENCES";
-	public static final String DB_ID_KEY = "db_id";
+	// Prefs keywords
+	public static final String PREFS = "BRB_PREFERENCES"; // for accessing preferences
+	public static final String DB_ID_KEY = "db_id";       // get enabled db_id
 	
-	public static final String MESSAGE_ENABLED_KEY = "message_enabled";
-	public static final int MESSAGE_ENABLED = 0;
-	public static final int MESSAGE_DISABLED = 1;
-	public static final int NO_MESSAGE_SELECTED = 2;
+	public static final String MESSAGE_ENABLED_KEY = "message_enabled"; // get if the message is enabled
+	public static final int MESSAGE_ENABLED = 0;					// message enabled int
+	public static final int MESSAGE_DISABLED = 1;					// message disbled int
+	public static final int NO_MESSAGE_SELECTED = 2;				// no message selected int
+	// end prefs keywords
 	
 	public static final String CLICK_TO_EDIT = "Click to Edit Text";
 	public static final String CLICK_TO_ADD_NAMES = "Click to add Names...";
