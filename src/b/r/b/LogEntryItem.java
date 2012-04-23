@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.CharArrayBuffer;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
 import android.util.Log;
 
@@ -19,6 +20,7 @@ public class LogEntryItem {
 	int type;
 	String contact_number;
 	String response;
+	//String messageSent;
 	Boolean expanded;
 
 // hour should be given in 24 hour(0-23) time!!!
@@ -41,7 +43,7 @@ public String getDate()
 }
 public String getTime()
 {
-	DateFormat format = new SimpleDateFormat("hh:mm");
+	DateFormat format = new SimpleDateFormat("kk:mm"); //kk sets hour of the day e.g. 24 hours
 	return format.format(cal.getTime()).toString();
 }
 public String getAMPM()
@@ -49,13 +51,24 @@ public String getAMPM()
 	DateFormat format = new SimpleDateFormat("aa");
 	return format.format(cal.getTime()).toString();
 }
-public String findContact(Context ctx)
+public String findContact(Context ctx, String num)
 {
-	Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(contact_number));
-	Cursor resolver = ctx.getContentResolver().query(uri, new String[]{PhoneLookup.DISPLAY_NAME},null,null,null);
-	return(resolver.getString(0));
+	Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num));
+	Cursor cursor = ctx.getContentResolver().query(contactUri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+	if(cursor.moveToFirst())
+	if(!cursor.isAfterLast())
+		return cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+	return num;
+
 }
 public void setExpanded(){expanded = !expanded;}
+
+
+//public void getMessage()
+//{
+//Find the message to display from the database
+//}
+
 
 
 }
