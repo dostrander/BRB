@@ -151,11 +151,11 @@ public class DatabaseInteraction {
 	}
 	
 	//To search by ID (not sure why you would) just pass the id as a string
-	public Cursor SearchChildById(String id){
+	public Cursor SearchChildById(int cid){
 		SQLiteDatabase db = child.getReadableDatabase();
 		
 		return db.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID},ID+"=?"
-				, new String[]{id}, null, null, null);
+				, new String[]{String.valueOf(cid)}, null, null, null);
 	}
 	
 	//To search by childID just pass the number
