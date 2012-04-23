@@ -37,5 +37,7 @@ public interface Constants extends BaseColumns {
 	
 	public static final String CLICK_TO_EDIT = "Click to Edit Text";
 	public static final String CLICK_TO_ADD_NAMES = "Click to add Names...";
+	
+	public static final String NO_END = "No end";
    
 }

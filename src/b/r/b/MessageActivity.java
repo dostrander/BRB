@@ -192,7 +192,7 @@ public class MessageActivity extends Activity {
 			}
 			
 		});
-		final TextView tv = (TextView) header.findViewById(R.id.contact_specific_message_text); 
+		final TextView tv = (TextView) header.findViewById(R.id.contact_specific_message_text);
 		tv.setOnClickListener(new OnClickListener(){
 			public void onClick(final View v) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
@@ -234,8 +234,13 @@ public class MessageActivity extends Activity {
 		tv.setText(CLICK_TO_EDIT);
 	}
 	private static void setDates(){
-		vStartTime.setText(mMessage.startDateToText());
-		vEndTime.setText(mMessage.endDateToText());
+		if(mMessage == null){
+			vStartTime.setText(NO_END);
+			vEndTime.setText(NO_END);
+		} else {
+			vStartTime.setText(mMessage.startDateToText());
+			vEndTime.setText(mMessage.endDateToText());
+		}
 	}
 	private LinearLayout setUpDialog(){
 		LinearLayout dialoglayout =  new LinearLayout(MessageActivity.this);
@@ -351,12 +356,13 @@ public class MessageActivity extends Activity {
 		}
 
 		public int getCount() {
-			return mMessage.specificMessages.size();
+			if(mMessage == null) return 0;
+			else return mMessage.cMessages.size();
 		}
 
 		public String getItem(int position) {
 			// TODO Auto-generated method stub
-			return mMessage.specificMessages.get(position);
+			return mMessage.cMessages.get(position).text;
 		}
 
 		public long getItemId(int position) {
@@ -365,7 +371,7 @@ public class MessageActivity extends Activity {
 		}
 
 		public boolean contains(String t){
-			return mMessage.specificMessages.contains(t);
+			return mMessage.cMessages.contains(t);
 		}
 	}		
 
