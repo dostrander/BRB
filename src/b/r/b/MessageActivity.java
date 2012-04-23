@@ -2,7 +2,10 @@ package b.r.b;
 
 import static b.r.b.Constants.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Stack;
+
+
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -90,25 +93,28 @@ public class MessageActivity extends Activity {
 		setDates();
 		registerListeners();
 		vPriorityRow.setVisibility(View.GONE);
-		
-		
-		
 	}
-	
+	private boolean contains(String t){
+		if(mMessage == null) return false;
+		else return mMessage.childContainsMessage(t);
+	}
 	private void registerListeners(){
 		// TextViews
 		vStartTime.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
-				
+				Calendar cal;
 				final LinearLayout dialoglayout = setUpDialog();
 	    		final DatePicker dp = (DatePicker) dialoglayout.findViewById(0);
 	    		final TimePicker tp = (TimePicker) dialoglayout.findViewById(1);
-	    		tp.setCurrentHour(mMessage.getsHour());
-	    		tp.setCurrentMinute(mMessage.getsMinute());
+	    		if(mMessage != null)
+	    			cal = mMessage.getStartTime();
+	    		else cal = Calendar.getInstance();
+	    		tp.setCurrentHour(cal.get(Calendar.HOUR));
+	    		tp.setCurrentMinute(cal.get(Calendar.MINUTE));
 	    		tp.setOnTimeChangedListener(new OnTimeChangedListener(){
 	    			public void onTimeChanged(TimePicker view, int hourOfDay,
 							int minute) {}});
-				dp.init(mMessage.getsYear(), mMessage.getsMonth(), mMessage.getsDay(),
+				dp.init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH),
 						new OnDateChangedListener(){
 							public void onDateChanged(DatePicker view,
 									int year, int monthOfYear, int dayOfMonth) {}});
@@ -134,15 +140,19 @@ public class MessageActivity extends Activity {
 			});
 		vEndTime.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
+				Calendar cal;
 				final LinearLayout dialoglayout = setUpDialog();
 	    		final DatePicker dp = (DatePicker) dialoglayout.findViewById(0);
 	    		final TimePicker tp = (TimePicker) dialoglayout.findViewById(1);
-	    		tp.setCurrentHour(mMessage.getfHour());
-	    		tp.setCurrentMinute(mMessage.getfMinute());
+	    		if(mMessage != null)
+	    			cal = mMessage.getEndTime();
+	    		else cal = Calendar.getInstance();
+	    		tp.setCurrentHour(cal.get(Calendar.HOUR));
+	    		tp.setCurrentMinute(cal.get(Calendar.MINUTE));
 	    		tp.setOnTimeChangedListener(new OnTimeChangedListener(){
 	    			public void onTimeChanged(TimePicker view, int hourOfDay,
 							int minute) {}});
-				dp.init(mMessage.getfYear(), mMessage.getfMonth(), mMessage.getfDay(),
+				dp.init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH),
 						new OnDateChangedListener(){
 							public void onDateChanged(DatePicker view,
 									int year, int monthOfYear, int dayOfMonth) {}});
@@ -185,7 +195,6 @@ public class MessageActivity extends Activity {
 		header.findViewById(R.id.add_names_button).setOnClickListener(new OnClickListener(){
 
 			public void onClick(View v) {
-				
 				Intent intent = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
 				position_edited = -1;
 				startActivityForResult(intent,PICK_CONTACT_ID);
@@ -193,6 +202,11 @@ public class MessageActivity extends Activity {
 			
 		});
 		final TextView tv = (TextView) header.findViewById(R.id.contact_specific_message_text);
+		final TextView nv  = (TextView) header.findViewById(R.id.names);
+		nv.setOnClickListener(new OnClickListener(){
+			public void onClick(View v) {
+			}
+		});
 		tv.setOnClickListener(new OnClickListener(){
 			public void onClick(final View v) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
@@ -206,7 +220,8 @@ public class MessageActivity extends Activity {
 
 				builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-							((TextView) v).setText(input.getText().toString());
+							((TextView) v).setText(input.getText().toString().trim().toString());
+							mMessage.header.text = input.getText().toString().trim().toString();
 					}
 				});
 
@@ -223,16 +238,24 @@ public class MessageActivity extends Activity {
 		header.findViewById(R.id.add_message_button).setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
 				if(!tv.getText().toString().equals(CLICK_TO_EDIT) && 
-						!mAdapter.contains(tv.getText().toString()) &&
+						!contains(tv.getText().toString()) &&
 						tv.getText().toString().trim().length() > 0){
-					mMessage.addContactSpecificMessage("NONE",tv.getText().toString());
-					tv.setText(CLICK_TO_EDIT);
-					mAdapter.notifyDataSetChanged();
+					if(mMessage == null){
+						popToast("Please select a message prior to doing this action");
+					}else{
+						mMessage.addContactSpecificMessage("NONE",tv.getText().toString());
+						tv.setText(CLICK_TO_EDIT);
+						mAdapter.notifyDataSetChanged();
+					}
 				}
 			}
 		});
-		tv.setText(CLICK_TO_EDIT);
+		tv.setText(mMessage.header.text);
+		nv.setText(mMessage.header.namesText);
 	}
+    public void popToast(String t){
+    	Toast.makeText(this, t, Toast.LENGTH_LONG).show();
+    }
 	private static void setDates(){
 		if(mMessage == null){
 			vStartTime.setText(NO_END);
@@ -256,9 +279,12 @@ public class MessageActivity extends Activity {
 		dialoglayout.setOrientation(LinearLayout.VERTICAL);
 		return dialoglayout;
 	}
-	
-	
-	public static void changeMessage(Message current){mMessage = current;}
+	public static void changeMessage(Message current){
+		mMessage = current;
+	}
+	public static void noMessage(){
+		mMessage = null;
+	}
 	private void longClickDialog(){
 		final String[] items = new String[]{"Edit Contacts", "Edit Message", "Delete Message"};
 		AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
@@ -369,10 +395,10 @@ public class MessageActivity extends Activity {
 			// TODO Auto-generated method stub
 			return 0;
 		}
-
-		public boolean contains(String t){
-			return mMessage.cMessages.contains(t);
-		}
+//
+//		private boolean contains(String t){
+//			return mMessage.cMessages.contains(t);
+//		}
 	}		
 
 }

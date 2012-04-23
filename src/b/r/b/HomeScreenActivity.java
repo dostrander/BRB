@@ -377,6 +377,11 @@ public class HomeScreenActivity extends TabActivity {
     	editor.commit();
     }
     
+    private void noCurrent(){
+    	mCurrent = null;
+    	MessageActivity.noMessage();
+    }
+    
     private void editCurrentMessage(String t){
     	mCurrent.setText(t);
     	inputMessage.setText(mCurrent.text);
