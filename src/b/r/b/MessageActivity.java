@@ -250,8 +250,8 @@ public class MessageActivity extends Activity {
 				}
 			}
 		});
-		tv.setText(mMessage.header.text);
-		nv.setText(mMessage.header.namesText);
+		tv.setText(CLICK_TO_EDIT);
+		nv.setText(CLICK_TO_ADD_NAMES);
 	}
     public void popToast(String t){
     	Toast.makeText(this, t, Toast.LENGTH_LONG).show();
