@@ -384,7 +384,7 @@ public class HomeScreenActivity extends TabActivity {
     }
     private void changeCurrent(long db_id){
     	Log.d(TAG,"in changeCurrent");
-    	Message temp = db.GetParentById(String.valueOf(db_id));
+    	Message temp = db.GetParentById((int) db_id);
     	mCurrent = temp;
     	changeCurrent();
    	}
