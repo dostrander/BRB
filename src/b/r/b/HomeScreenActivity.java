@@ -131,17 +131,24 @@ public class HomeScreenActivity extends TabActivity {
         registerListeners();
         
     	Log.d(TAG,String.valueOf(isEnabled()));
-   		int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
-   		if(isEnabled() == MESSAGE_ENABLED && db_id >= 0){
-   			changeCurrent(db_id);
-   			enableMessage();
-   		}else noMessage();
+//   		int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
+//   		if(isEnabled() == MESSAGE_ENABLED && db_id >= 0){
+//   			changeCurrent(db_id);
+//   			enableMessage();
+//   		}else noMessage();
     }
     
     @Override
     public void onStart(){
     	super.onStart();
     	Log.d(TAG,"in onStart");
+    	Toast.makeText(this, String.valueOf(getSharedPreferences(PREFS,MODE_PRIVATE).getInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED)), Toast.LENGTH_LONG).show();
+    	
+    	int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
+    	if(isEnabled() == MESSAGE_ENABLED && db_id >= 0){
+   			changeCurrent(db_id);
+   			enableMessage();
+   		}else noMessage();
 
     }
     private String tempFunc(String num){
