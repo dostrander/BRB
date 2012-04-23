@@ -38,8 +38,6 @@ public class Message{
 	private int DB_ID;
 	
 	
-	private Map<String,Integer>	specificNumbers;										// For contact specific Messages
-	ArrayList<String>	specificMessages;
 	
 	
 	
@@ -53,7 +51,7 @@ public class Message{
 	// finish time
 	
 	
-	private class ChildMessage{
+	public class ChildMessage{
 		String text;
 		ArrayList<Integer> ids;
 		ArrayList<String> numbers;
@@ -124,9 +122,7 @@ public class Message{
 	 	startTime	= Calendar.getInstance();
 	 	endTime 	= Calendar.getInstance(); 
 		text 				= new String(t);											// Set text
-		specificNumbers 	= new HashMap<String,Integer>();							// Initialize specific messages, key is 
-																							// the number of the contact
-		specificMessages	= new ArrayList<String>();
+		cMessages			= new ArrayList<ChildMessage>();
 		DB_ID = db_id;
 	}
 	public Message(String t, int[] cids, int dbid){
@@ -134,11 +130,10 @@ public class Message{
 	 	startTime	= Calendar.getInstance();
 	 	endTime 	= Calendar.getInstance(); 
 		text 				= new String(t);											// Set text
-		specificNumbers 	= new HashMap<String,Integer>();							// Initialize specific messages, key is 
+		cMessages			= new ArrayList<ChildMessage>();
 					
 		getChildrens(cids);// get chidren from the db
 		// the number of the contact
-		specificMessages	= new ArrayList<String>();
 		DB_ID = dbid;
 	}
 	
@@ -212,8 +207,8 @@ public class Message{
 		Log.d(TAG,"in addContactSpecificMessage");
 		// Add to database
 		int db_id = 0;
-		specificNumbers.put(number, specificMessages.size());
-		specificMessages.add(t);
+		//specificNumbers.put(number, specificMessages.size());
+		//specificMessages.add(t);
 																							// make it a child message
 	}
 	
@@ -224,7 +219,8 @@ public class Message{
 	 */
 	public void sendSMS(String incomingNumber, Context context){
 		Log.d(TAG,"in sendText");
-		if(specificNumbers.containsKey(incomingNumber));								// If there is a key that matches
+		//if(specificNumbers.containsKey(incomingNumber));								// If there is a key that matches
+		if(true);
 //			specificMessages.get(incomingNumber).sendSMS(incomingNumber,context);		// Tell that message to send it
 		
 		else{																			// If not
