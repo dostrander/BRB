@@ -144,10 +144,6 @@ public class HomeScreenActivity extends TabActivity {
     	int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
     	int enabled = isEnabled();
     	Log.d(TAG,"in onStart");
-    	Log.d(TAG,String.valueOf(enabled));
-    	Log.d(TAG,String.valueOf(db_id));
-
-    	//Toast.makeText(this, String.valueOf(getSharedPreferences(PREFS,MODE_PRIVATE).getInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED)), Toast.LENGTH_LONG).show();
     	
    		if((enabled == MESSAGE_ENABLED) && (db_id >= 0)){
    			Log.d(TAG,"message Enabled");
