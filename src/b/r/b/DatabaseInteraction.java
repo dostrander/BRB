@@ -18,6 +18,7 @@ public class DatabaseInteraction {
 	private final int PCHILD_ID_COLUMN = 3;
 	private final int CNUMBERS_COLUMN = 2;
 	//initializing the local objects
+	private logDB log;
 	private parentDB parent;
 	private childDB child;
 	private StringArrayConverter strc = new StringArrayConverter();
@@ -25,9 +26,27 @@ public class DatabaseInteraction {
 	
 	public DatabaseInteraction(Context ctx){
 		context = ctx;
+		log = new logDB(context);
 		parent = new parentDB(context);
 		child = new childDB(context);
 	}
+	
+	public Message InsertLog(int pid, String time, String date, int ampm, int type, String msg, String num){
+		SQLiteDatabase db = log.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(PARENT_ID, pid);
+		values.put(TIME,time);
+		values.put(DATE, date);
+		values.put(AMPM,ampm);
+		values.put(TYPE, type);
+		values.put(MESSAGE, msg);
+		values.put(NUMBER,num);
+		long id = db.insertOrThrow(PARENT_TABLE, null, values);
+		return new Message(msg,(int) id);
+		
+		
+	}
+	
 	
 	//overloading Parent edit message so you can edit by sending the old message, or the id, if you have it
 	//returns true meant it worked, otherwise false, yo
@@ -199,6 +218,24 @@ public class DatabaseInteraction {
 		return db.query(PARENT_TABLE, new String[]{ID,MESSAGE}, null, 
 				null, null, null, null,null);
 	}
+	
+	//returns all logs, might need this
+	public Cursor GetAllLogs(){
+		SQLiteDatabase db = log.getReadableDatabase();
+		
+		return db.query(LOG_TABLE, new String[]{ID,PARENT_ID,TIME,DATE,AMPM,TYPE
+				,RECEIVED_MESSAGE,NUMBER}, null,null,null,null,null);
+		
+	}
+	//return log based on parent id
+	public Cursor SearchLogByParentId(int id){
+		SQLiteDatabase db = log.getReadableDatabase();
+		
+		return db.query(LOG_TABLE, new String[]{ID,PARENT_ID,TIME,DATE,AMPM,TYPE
+				,RECEIVED_MESSAGE,NUMBER},PARENT_ID+"=?"
+				, new String[]{String.valueOf(id)}, null, null, null);
+	}
+	
 	
 	//to SearchByMessage just pass the String of the message
 	public Cursor SearchParentByMessage(String message){
