@@ -9,6 +9,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -19,18 +21,22 @@ public class Widget extends AppWidgetProvider {
 	public static String ACTION_WIDGET_RECEIVER = "ActionReceiverWidget";
 	public static String ACTION_WIDGET_LEFT = "ActionLeftWidget";
 	public static String ACTION_WIDGET_RIGHT = "ActionRightWidget";
-	public static String NO_MESSAGE = "Enter Text Here...";
 	
 	// Variables
-	IncomingListener listener;
 	private Context context;
+	public static DatabaseInteraction db;
+	
+	
 	// View
 	RemoteViews remoteViews = new RemoteViews("b.r.b", R.layout.widget);
 	RemoteViews remoteViewsA = new RemoteViews("b.r.b", R.layout.widget);
 	RemoteViews remoteViewsLeft = new RemoteViews("b.r.b", R.layout.widget);
 	RemoteViews remoteViewsRight = new RemoteViews("b.r.b", R.layout.widget);
 	
+	
+	int db_id;
 	ImageButton enableButton;
+	Cursor cursor;
 	TextView inputMessage;
 	boolean widgetEnabled = false;
 	SharedPreferences prefs;
@@ -39,7 +45,10 @@ public class Widget extends AppWidgetProvider {
     public void onUpdate(Context ctx, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
     	context = ctx;
     	prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+    	db_id = prefs.getInt(DB_ID_KEY, -1);
     	editor = prefs.edit();
+    	db = new DatabaseInteraction(context);
+    	cursor = db.GetAllParentMessages();
     	
     	// Intent for enableButton
     	Intent active = new Intent(context, Widget.class);
@@ -79,6 +88,9 @@ public class Widget extends AppWidgetProvider {
     public void onReceive(Context ctx, Intent intent) {
     	// v1.5 fix that doesn't call onDelete Action
     	context = ctx;
+    	db = new DatabaseInteraction(context);
+    	cursor = db.GetAllParentMessages();
+    	
     	prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     	editor = prefs.edit();
     	final String action = intent.getAction();
@@ -124,14 +136,38 @@ public class Widget extends AppWidgetProvider {
     	    		editor.commit();
     	    	}
     		}
-    		else if (intent.getAction().equals(ACTION_WIDGET_TEXTVIEW)) {
-    			Toast.makeText(context, "TextView Selected", Toast.LENGTH_SHORT).show();
-    		}
     		else if (intent.getAction().equals(ACTION_WIDGET_LEFT)) {
-    			Toast.makeText(context, "Left", Toast.LENGTH_SHORT).show();
+    			db_id = prefs.getInt(DB_ID_KEY, -1);
+    			db_id--;
+    		
+    			if(db_id < 0)
+    				db_id = cursor.getCount() - 1;
+    			
+        		cursor.moveToPosition(db_id);
+        			//remoteViewsA.setTextViewText(R.id.widget_textview,"Left");
+    			remoteViewsA.setTextViewText(R.id.widget_textview,cursor.getString(cursor.getColumnIndex(MESSAGE)));
+
+    			editor.putInt(DB_ID_KEY, db_id);
+	    		editor.commit();
+    			
+       			ComponentName comn = new ComponentName(context,Widget.class);
+	    		AppWidgetManager.getInstance(context).updateAppWidget(comn, remoteViewsA);
     		}
     		else if (intent.getAction().equals(ACTION_WIDGET_RIGHT)){
-    			Toast.makeText(context, "Right", Toast.LENGTH_SHORT).show();
+    			db_id = prefs.getInt(DB_ID_KEY, -1);
+    			db_id++;
+
+    			if(db_id >= cursor.getCount())
+    				db_id = 0;
+    			
+        		cursor.moveToPosition(db_id);
+    			remoteViewsA.setTextViewText(R.id.widget_textview,cursor.getString(cursor.getColumnIndex(MESSAGE)));
+    			
+    			editor.putInt(DB_ID_KEY, db_id);
+	    		editor.commit();
+    			
+    			ComponentName comn = new ComponentName(context,Widget.class);
+	    		AppWidgetManager.getInstance(context).updateAppWidget(comn, remoteViewsA);
     		}
     		
     		super.onReceive(context, intent);

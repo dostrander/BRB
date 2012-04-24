@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="#000000" >
 
 	<TextView 
 	    android:id="@+id/widget_textview"
 		android:text="@string/english_enter_text"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
+		android:layout_height="fill_parent"
+		android:layout_width="fill_parent"
 		android:background="#FFFFFF"
-		android:layout_marginLeft="5dip"
-		android:layout_marginTop="5dip"
-		android:layout_marginBottom="5dip"
-		android:padding="10dip"
+		android:layout_marginLeft="5dp"
+		android:layout_marginTop="5dp"
+		android:layout_marginBottom="5dp"
+		android:layout_below="@+id/widget_left_button"
+		android:lines="2"
+		android:padding="5dp"
 		android:textColor="#000000"/>
 	
 	    
@@ -23,10 +25,10 @@
     	android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
 		android:background="@drawable/button_selector"
-    	android:layout_marginRight="1dip"
-    	android:layout_marginTop="5dip"
-		android:layout_marginBottom="5dip"
-		android:layout_toRightOf="@+id/widget_textview"
+    	android:layout_marginRight="1dp"
+    	android:layout_marginTop="5dp"
+		android:layout_marginBottom="5dp"
+		android:layout_toLeftOf="@+id/widget_right_button"
     	android:src="@drawable/arrow_left"
     	/>
     
@@ -36,10 +38,10 @@
     	android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
 		android:background="@drawable/button_selector"
-    	android:layout_marginRight="1dip"
-    	android:layout_marginTop="5dip"
-		android:layout_marginBottom="5dip"
-    	android:layout_toRightOf="@+id/widget_left_button"
+    	android:layout_marginRight="1dp"
+    	android:layout_marginTop="5dp"
+		android:layout_marginBottom="5dp"
+    	android:layout_toLeftOf="@+id/widget_button"
     	android:src="@drawable/arrow_right"
     	/>
 
@@ -49,12 +51,26 @@
     	android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
 		android:background="@drawable/button_selector"
-    	android:layout_marginRight="5dip"
-    	android:layout_marginTop="5dip"
-		android:layout_marginBottom="5dip"
-    	android:layout_toRightOf="@+id/widget_right_button"
+    	android:layout_marginRight="5dp"
+    	android:layout_marginTop="5dp"
+		android:layout_marginBottom="5dp"
+    	android:layout_alignParentRight="true"
     	android:src="@drawable/nothing_button"
     	/>
+	
+	<ImageView
+	    android:id="@+id/widget_icon"
+    	android:contentDescription="Icon"
+    	android:layout_height="41dp"
+		android:layout_width="41dp"
+		android:layout_marginRight="5dp"
+		android:layout_marginLeft="5dp"
+    	android:layout_marginTop="5dp"
+		android:layout_marginBottom="5dp"
+    	android:layout_alignParentLeft="true"
+    	android:layout_alignParentTop="true"
+		android:src="@drawable/ic_launcher"
+	    />
 	
 	<!-- This may seem stupid but this makes it look nice... -->
 	<TextView 
