@@ -68,7 +68,6 @@ public class HomeScreenActivity extends TabActivity {
 	private final String MESSAGE = "message";
 	private final String LOG = "log";
 	private final String NO_MESSAGE = "Click to Edit Message";
-	private int DB_ID = -1;
 	private static Message mCurrent;
 
 	// Variables
@@ -131,24 +130,37 @@ public class HomeScreenActivity extends TabActivity {
         registerListeners();
         
     	Log.d(TAG,String.valueOf(isEnabled()));
-//   		int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
-//   		if(isEnabled() == MESSAGE_ENABLED && db_id >= 0){
-//   			changeCurrent(db_id);
-//   			enableMessage();
-//   		}else noMessage();
+    	
+   		int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
+    	if(isEnabled() == MESSAGE_ENABLED && db_id >= 0){
+   			changeCurrent(db_id);
+   			enableMessage();
+   		}else noMessage();
     }
     
     @Override
     public void onStart(){
     	super.onStart();
-    	Log.d(TAG,"in onStart");
-    	Toast.makeText(this, String.valueOf(getSharedPreferences(PREFS,MODE_PRIVATE).getInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED)), Toast.LENGTH_LONG).show();
-    	
     	int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
-    	if(isEnabled() == MESSAGE_ENABLED && db_id >= 0){
+    	int enabled = isEnabled();
+    	Log.d(TAG,"in onStart");
+    	Log.d(TAG,String.valueOf(enabled));
+    	Log.d(TAG,String.valueOf(db_id));
+
+    	//Toast.makeText(this, String.valueOf(getSharedPreferences(PREFS,MODE_PRIVATE).getInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED)), Toast.LENGTH_LONG).show();
+    	
+   		if((enabled == MESSAGE_ENABLED) && (db_id >= 0)){
+   			Log.d(TAG,"message Enabled");
    			changeCurrent(db_id);
    			enableMessage();
-   		}else noMessage();
+   		}else if((enabled == MESSAGE_DISABLED) && (db_id >= 0)){
+   			Log.d(TAG,"message disabled");
+   			changeCurrent(db_id);
+   			disableMessage();
+   		} else{
+   			Log.d(TAG,"no message");
+   			noMessage();
+   		}
 
     }
     private String tempFunc(String num){
@@ -178,18 +190,18 @@ public class HomeScreenActivity extends TabActivity {
     public void onStop(){
     	super.onStop();
     	Log.d(TAG, "in onStop");
-    	SharedPreferences prefs = getSharedPreferences(PREFS,MODE_PRIVATE);
-		SharedPreferences.Editor editor = prefs.edit();
-    	if(isEnabled() != MESSAGE_ENABLED)
-    		editor.putInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
-    	else editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
-    	editor.commit();
     }
     
     @Override
     public void onDestroy(){
     	super.onDestroy();
     	Log.d(TAG,"in onDestroy");
+    	SharedPreferences prefs = getSharedPreferences(PREFS,MODE_PRIVATE);
+		SharedPreferences.Editor editor = prefs.edit();
+    	if(isEnabled() != MESSAGE_ENABLED)
+    		editor.putInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
+    	else editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
+    	editor.commit();
     		
     	
     }
@@ -378,7 +390,6 @@ public class HomeScreenActivity extends TabActivity {
     	inputMessage.setText(NO_MESSAGE);
     	inputMessage.setTextColor(Color.GRAY);
     	enableButton.setImageResource(R.drawable.nothing_button_selector);
-    	DB_ID = -1;
     	mCurrent = null;
     	enableButton.setClickable(false);
     	editor.commit();
