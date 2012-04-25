@@ -298,10 +298,25 @@ public class DatabaseInteraction {
 		
 		String a = c.getString(CNUMBERS_COLUMN);
 		int number = Integer.parseInt(a);
+		
 		return number;
+		
 	}
 	
-	public void Cleanup(){
+	public void CleanupParent(){
+		parent.close();
+	}
+	
+	public void CleanupChild(){
+		child.close();
+	}
+	
+	public void CleanupLog(){
+		log.close();
+	}
+	
+	
+	private void CleanupAll(){
 		log.close();
 		parent.close();
 		child.close();
