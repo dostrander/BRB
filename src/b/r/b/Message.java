@@ -97,10 +97,11 @@ public class Message{
 		clearHeader();
 	}
 	private void clearHeader(){
-		header.ids.clear();
-		header.numbers.clear();
-		header.text = CLICK_TO_EDIT;
-		header.namesText = CLICK_TO_ADD_NAMES;
+		header = new ChildMessage();
+//		header.ids.clear();
+//		header.numbers.clear();
+//		header.text = CLICK_TO_EDIT;
+//		header.namesText = CLICK_TO_ADD_NAMES;
 	}
 	private void addChildMessages(Cursor c){
 		String text;
@@ -121,6 +122,7 @@ public class Message{
 	 	Log.d(TAG,"in Message Constructor");
 	 	startTime	= Calendar.getInstance();
 	 	endTime 	= Calendar.getInstance(); 
+	 	header = new ChildMessage();
 		text 				= new String(t);											// Set text
 		cMessages			= new ArrayList<ChildMessage>();
 		DB_ID = db_id;
@@ -141,6 +143,13 @@ public class Message{
 	private void getChildrens(int[] cids){
 		
 	}
+	public boolean childContainsMessage(String t){
+		if(cMessages.size() > 0)
+			for(ChildMessage n : cMessages)
+				if(n.text == t)
+					return true;
+		return false;
+	}
 	public int getID(){return DB_ID;}
 	public String getStringID(){return String.valueOf(DB_ID);}
 	public void setText(String t){text = t;}
@@ -153,6 +162,12 @@ public class Message{
 		checkDates();
 	}
 	// getters
+	public Calendar getEndTime(){
+		return endTime;
+	}
+	public Calendar getStartTime(){
+		return startTime;
+	}
 	public int getsYear(){ return startTime.get(Calendar.YEAR);}
 	public int getfYear(){ return endTime.get(Calendar.YEAR);}
 	public int getsMonth(){ return startTime.get(Calendar.MONTH);}

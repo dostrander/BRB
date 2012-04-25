@@ -12,6 +12,7 @@ import android.provider.BaseColumns;
 public interface Constants extends BaseColumns {
 	public static final String PARENT_TABLE = "parent";	
 	public static final String CHILD_TABLE = "child";
+	public static final String LOG_TABLE = "log";
 
 	public static final String AUTHORITY = "b.r.b";
 	public static final Uri CONTENT_URI_PARENT = Uri.parse("content://"
@@ -20,6 +21,11 @@ public interface Constants extends BaseColumns {
 	         + AUTHORITY + "/" + CHILD_TABLE);
 
 	// Columns in the Players database
+	public static final String TIME = "time";
+	public static final String DATE = "date";
+	public static final String AMPM = "ampm";
+	public static final String TYPE = "type";
+	public static final String RECEIVED_MESSAGE = "received_message";
 	public static final String ID = "_id";
 	public static final String MESSAGE = "message";
 	public static final String PARENT_ID = "parent_id";
