@@ -1,3 +1,14 @@
+/*********************************************
+ * BRB-Android
+ * Widget.java
+ * 
+ * Created: 2012
+ * 
+ * Evan Dodge, Derek Ostrander, Max Shwenk
+ * Jason Mather, Stuart Lang, Will Stahl
+ * 
+ *********************************************/
+
 package b.r.b;
 
 import static b.r.b.Constants.*;
@@ -9,90 +20,108 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.util.Log;
-import android.widget.ImageButton;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class Widget extends AppWidgetProvider {
+	// Names for the actions so we can identify which button was called
 	public static String ACTION_WIDGET_TEXTVIEW = "ActionTextViewWidget";
-	public static String ACTION_WIDGET_RECEIVER = "ActionReceiverWidget";
-	public static String ACTION_WIDGET_LEFT = "ActionLeftWidget";
-	public static String ACTION_WIDGET_RIGHT = "ActionRightWidget";
+	public static String ACTION_WIDGET_ENABLE_BUTTON = "ActionEnableButtonWidget";
+	public static String ACTION_WIDGET_LEFT_ARROW = "ActionLeftArrowWidget";
+	public static String ACTION_WIDGET_RIGHT_ARROW = "ActionRightArrowWidget";
+	public static String ACTION_WIDGET_ICON = "ActionIconWidget";
 	
 	// Variables
-	private Context context;
-	public static DatabaseInteraction db;
+	private Context context; // Context for the Widget
+	public static DatabaseInteraction db; // Widget Database Interaction
 	
+	// Views
+	RemoteViews remoteEnableButton = new RemoteViews("b.r.b", R.layout.widget);
+	RemoteViews remoteTextView = new RemoteViews("b.r.b", R.layout.widget);
+	RemoteViews remoteLeftArrow = new RemoteViews("b.r.b", R.layout.widget);
+	RemoteViews remoteRightArrow = new RemoteViews("b.r.b", R.layout.widget);
+	RemoteViews remoteIcon = new RemoteViews("b.r.b", R.layout.widget);
 	
-	// View
-	RemoteViews remoteViews = new RemoteViews("b.r.b", R.layout.widget);
-	RemoteViews remoteViewsA = new RemoteViews("b.r.b", R.layout.widget);
-	RemoteViews remoteViewsLeft = new RemoteViews("b.r.b", R.layout.widget);
-	RemoteViews remoteViewsRight = new RemoteViews("b.r.b", R.layout.widget);
-	
-	
+	// Database Variables
 	int db_id;
-	ImageButton enableButton;
 	Cursor cursor;
-	TextView inputMessage;
-	boolean widgetEnabled = false;
+	
+	// Shared Preferences Variables
 	SharedPreferences prefs;
 	SharedPreferences.Editor editor;
 	
+	// Log tag
+	private static final String TAG = "Widget";
+	
+	
+	/*  onUpdate
+	 *
+	 */
+	@Override
     public void onUpdate(Context ctx, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-    	context = ctx;
+		Log.d(TAG, "onUpdate");
+		
+		context = ctx; 	// Set the global context equal to the context passed
+    				   	// to onUpdate
+    	
+    	// Preferences Variables Initialized
     	prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-    	db_id = prefs.getInt(DB_ID_KEY, -1);
     	editor = prefs.edit();
+    	
+    	// Database variables
+    	db_id = prefs.getInt(DB_ID_KEY, -1);
     	db = new DatabaseInteraction(context);
     	cursor = db.GetAllParentMessages();
     	
-    	// Intent for enableButton
+    	// Make intent and pending intent for on receive
     	Intent active = new Intent(context, Widget.class);
-    	active.setAction(ACTION_WIDGET_RECEIVER);
+    	PendingIntent actionPendingIntent;
     	
-    	PendingIntent actionPendingIntent = PendingIntent.getBroadcast(context, 0, active, 0);
-    	remoteViews.setOnClickPendingIntent(R.id.widget_button, actionPendingIntent);
+    	// Enable Button
+    	active.setAction(ACTION_WIDGET_ENABLE_BUTTON);
+    	actionPendingIntent = PendingIntent.getBroadcast(context, 0, active, 0);
+    	remoteEnableButton.setOnClickPendingIntent(R.id.widget_button, actionPendingIntent);
     	
-    	// Intent for textView
-    	Intent textActive = new Intent(context, Widget.class);
-    	textActive.setAction(ACTION_WIDGET_TEXTVIEW);
+    	// Left Arrow
+    	active.setAction(ACTION_WIDGET_LEFT_ARROW);
+    	actionPendingIntent = PendingIntent.getBroadcast(context, 0, active, 0);
+    	remoteLeftArrow.setOnClickPendingIntent(R.id.widget_left_button, actionPendingIntent);
     	
-    	PendingIntent textPendingIntent = PendingIntent.getBroadcast(context, 0, textActive, 0);
-    	remoteViewsA.setOnClickPendingIntent(R.id.widget_textview, textPendingIntent);
+    	// Right Arrow
+    	active.setAction(ACTION_WIDGET_RIGHT_ARROW);
+    	actionPendingIntent = PendingIntent.getBroadcast(context, 0, active, 0);
+    	remoteRightArrow.setOnClickPendingIntent(R.id.widget_right_button, actionPendingIntent);
     	
-    	// Intent for leftArrow
-    	Intent activeLeft = new Intent(context, Widget.class);
-    	activeLeft.setAction(ACTION_WIDGET_LEFT);
-    	
-    	PendingIntent leftPendingIntent = PendingIntent.getBroadcast(context, 0, activeLeft, 0);
-    	remoteViewsLeft.setOnClickPendingIntent(R.id.widget_left_button, leftPendingIntent);
-    	
-    	// Intent for rightArrow
-    	Intent activeRight = new Intent(context, Widget.class);
-    	activeRight.setAction(ACTION_WIDGET_RIGHT);
-    	
-    	PendingIntent rightPendingIntent = PendingIntent.getBroadcast(context, 0, activeRight, 0);
-    	remoteViewsRight.setOnClickPendingIntent(R.id.widget_right_button, rightPendingIntent);
+    	// Icon
+    	active.setAction(ACTION_WIDGET_ICON);
+    	actionPendingIntent = PendingIntent.getBroadcast(context, 0, active, 0);
+    	remoteIcon.setOnClickPendingIntent(R.id.widget_icon, actionPendingIntent);
 
-    	appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
-    	appWidgetManager.updateAppWidget(appWidgetIds, remoteViewsA);
-    	appWidgetManager.updateAppWidget(appWidgetIds, remoteViewsLeft);
-    	appWidgetManager.updateAppWidget(appWidgetIds, remoteViewsRight);
+    	// Update using appWidgetManager
+    	appWidgetManager.updateAppWidget(appWidgetIds, remoteEnableButton);
+    	appWidgetManager.updateAppWidget(appWidgetIds, remoteLeftArrow);
+    	appWidgetManager.updateAppWidget(appWidgetIds, remoteRightArrow);
+    	appWidgetManager.updateAppWidget(appWidgetIds, remoteIcon);
     }
    
+	
+	/*  onReceive
+	 * 
+	 */
     @Override
     public void onReceive(Context ctx, Intent intent) {
-    	// v1.5 fix that doesn't call onDelete Action
+    	Log.d(TAG, "onRecieve");
+    	
     	context = ctx;
     	db = new DatabaseInteraction(context);
     	cursor = db.GetAllParentMessages();
     	
     	prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     	editor = prefs.edit();
+    	
     	final String action = intent.getAction();
     	if (AppWidgetManager.ACTION_APPWIDGET_DELETED.equals(action)) {
     		final int appWidgetId = intent.getExtras().getInt(
@@ -103,17 +132,18 @@ public class Widget extends AppWidgetProvider {
     		}
     	} 
     	else {
-    		// check, if our Action was called
-    		if (intent.getAction().equals(ACTION_WIDGET_RECEIVER)) {
+    			// Enable button clicked
+    		if (intent.getAction().equals(ACTION_WIDGET_ENABLE_BUTTON)) {
     			SharedPreferences prefs = context.getSharedPreferences(PREFS, Activity.MODE_PRIVATE);
     	    	SharedPreferences.Editor editor = prefs.edit();
     	    	
     	    	int enableStatus = prefs.getInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
+    	    	
     	    	if (enableStatus == MESSAGE_ENABLED)
     	    	{
-    	    		remoteViews.setImageViewResource(R.id.widget_button, R.drawable.disabled_button_selector);
+    	    		remoteEnableButton.setImageViewResource(R.id.widget_button, R.drawable.disabled_button_selector);
     	    		ComponentName cn = new ComponentName(context,Widget.class);
-    	    		AppWidgetManager.getInstance(context).updateAppWidget(cn, remoteViews);
+    	    		AppWidgetManager.getInstance(context).updateAppWidget(cn, remoteEnableButton);
     	    		
     	    		Toast.makeText(context, "BRB Enabled", Toast.LENGTH_SHORT).show();
     	    		editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_DISABLED);
@@ -121,9 +151,9 @@ public class Widget extends AppWidgetProvider {
     	    	}
     	    	else if (enableStatus == MESSAGE_DISABLED)
     	    	{
-    	    		remoteViews.setImageViewResource(R.id.widget_button, R.drawable.enabled_message_selector);
+    	    		remoteEnableButton.setImageViewResource(R.id.widget_button, R.drawable.enabled_message_selector);
     	    		ComponentName cn2 = new ComponentName(context,Widget.class);
-    	    		AppWidgetManager.getInstance(context).updateAppWidget(cn2, remoteViews);
+    	    		AppWidgetManager.getInstance(context).updateAppWidget(cn2, remoteEnableButton);
     	    		
     	    		Toast.makeText(context, "BRB Disabled", Toast.LENGTH_SHORT).show();
     	    		editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
@@ -136,7 +166,7 @@ public class Widget extends AppWidgetProvider {
     	    		editor.commit();
     	    	}
     		}
-    		else if (intent.getAction().equals(ACTION_WIDGET_LEFT)) {
+    		else if (intent.getAction().equals(ACTION_WIDGET_LEFT_ARROW)) {
     			db_id = prefs.getInt(DB_ID_KEY, -1);
     			db_id--;
     		
@@ -144,16 +174,16 @@ public class Widget extends AppWidgetProvider {
     				db_id = cursor.getCount() - 1;
     			
         		cursor.moveToPosition(db_id);
-        			//remoteViewsA.setTextViewText(R.id.widget_textview,"Left");
-    			remoteViewsA.setTextViewText(R.id.widget_textview,cursor.getString(cursor.getColumnIndex(MESSAGE)));
+        			//remoteTextView.setTextViewText(R.id.widget_textview,"Left");
+    			remoteTextView.setTextViewText(R.id.widget_textview,cursor.getString(cursor.getColumnIndex(MESSAGE)));
 
     			editor.putInt(DB_ID_KEY, db_id);
 	    		editor.commit();
     			
        			ComponentName comn = new ComponentName(context,Widget.class);
-	    		AppWidgetManager.getInstance(context).updateAppWidget(comn, remoteViewsA);
+	    		AppWidgetManager.getInstance(context).updateAppWidget(comn, remoteTextView);
     		}
-    		else if (intent.getAction().equals(ACTION_WIDGET_RIGHT)){
+    		else if (intent.getAction().equals(ACTION_WIDGET_RIGHT_ARROW)){
     			db_id = prefs.getInt(DB_ID_KEY, -1);
     			db_id++;
 
@@ -161,16 +191,59 @@ public class Widget extends AppWidgetProvider {
     				db_id = 0;
     			
         		cursor.moveToPosition(db_id);
-    			remoteViewsA.setTextViewText(R.id.widget_textview,cursor.getString(cursor.getColumnIndex(MESSAGE)));
+    			remoteTextView.setTextViewText(R.id.widget_textview,cursor.getString(cursor.getColumnIndex(MESSAGE)));
     			
     			editor.putInt(DB_ID_KEY, db_id);
 	    		editor.commit();
     			
     			ComponentName comn = new ComponentName(context,Widget.class);
-	    		AppWidgetManager.getInstance(context).updateAppWidget(comn, remoteViewsA);
+	    		AppWidgetManager.getInstance(context).updateAppWidget(comn, remoteTextView);
+    		}
+    		else if (intent.getAction().equals(ACTION_WIDGET_ICON)){
+    			PackageManager pm = context.getPackageManager();
+    			try {
+    			    String packageName = "b.r.b";
+    			    Intent launchIntent = pm.getLaunchIntentForPackage(packageName);
+    			    context.startActivity(launchIntent);
+    			}
+    			catch (Exception e1) {
+    			}
     		}
     		
     		super.onReceive(context, intent);
     	}
+    }
+    
+    
+	/*  onDeleted
+	 * 
+	 */
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        Log.d(TAG, "onDeleted");
+        // Does Nothing When Deleted
+     // Just a place holder incase I want to implement this later
+    }
+    
+    
+	/*  onEnabled
+	 * 
+	 */
+    @Override
+    public void onEnabled(Context context) {
+        Log.d(TAG, "onEnabled");
+        // Does Nothing When Enabled
+        // Just a place holder incase I want to implement this later
+    }
+    
+    
+	/*  onDisabled
+	 * 
+	 */
+    @Override
+    public void onDisabled(Context context) {
+        Log.d(TAG, "onDiasbled");
+        // Does Nothing When Disabled
+        // Just a place holder incase I want to implement this later
     }
 }
