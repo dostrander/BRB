@@ -300,4 +300,10 @@ public class DatabaseInteraction {
 		int number = Integer.parseInt(a);
 		return number;
 	}
+	
+	public void Cleanup(){
+		log.close();
+		parent.close();
+		child.close();
+	}
 }
