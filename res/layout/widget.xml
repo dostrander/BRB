@@ -6,7 +6,7 @@
 
 	<TextView 
 	    android:id="@+id/widget_textview"
-		android:text="@string/english_enter_text"
+		android:text="Use the arrows to scroll through saved messages"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
 		android:background="#FFFFFF"
