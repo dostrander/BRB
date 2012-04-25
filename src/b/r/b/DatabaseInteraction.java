@@ -3,6 +3,7 @@
 //easier manner
 package b.r.b;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,7 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import static b.r.b.Constants.*;
 
-public class DatabaseInteraction {
+public class DatabaseInteraction extends Activity{
 	//Constants used to access a column using the cursor getString() method later
 	private final int PID_COLUMN = 1;
 	private final int PARENT_ID_COLUMN = 4;
@@ -316,9 +317,23 @@ public class DatabaseInteraction {
 	}
 	
 	
-	private void CleanupAll(){
+	/*private void CleanupAll(){
 		log.close();
 		parent.close();
 		child.close();
+	}*/
+	
+	@Override
+	protected void onDestroy() {
+	    super.onDestroy();
+	    if (parent != null) {
+	        parent.close();
+	    }
+	    if (child != null) {
+	        child.close();
+	    }
+	    if (log != null){
+	    	log.close();
+	    }
 	}
 }
