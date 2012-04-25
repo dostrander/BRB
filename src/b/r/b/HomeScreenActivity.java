@@ -21,6 +21,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.app.AlertDialog.Builder;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +51,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RemoteViews;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TabHost;
 import android.widget.TabWidget;
@@ -364,6 +367,15 @@ public class HomeScreenActivity extends TabActivity {
     	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
     	editor.putInt("ringer_mode", audiomanage.getRingerMode());
     	audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    	
+    	// Updates the widget's Icon
+    	Context context = this;
+    	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+    	RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
+    	ComponentName thisWidget = new ComponentName(context, Widget.class);
+    	remoteViews.setImageViewResource(R.id.widget_button, R.drawable.enabled_message_selector);
+    	appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+    	
     	editor.commit();
     }
     
@@ -377,6 +389,15 @@ public class HomeScreenActivity extends TabActivity {
     	// disable listener
     	audiomanage.setRingerMode(prefs.getInt("ringer_mode",AudioManager.RINGER_MODE_NORMAL));
     	enableButton.setClickable(true);
+    	
+    	// Updates the widget's Icon
+    	Context context = this;
+    	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+    	RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
+    	ComponentName thisWidget = new ComponentName(context, Widget.class);
+    	remoteViews.setImageViewResource(R.id.widget_button, R.drawable.disabled_button_selector);
+    	appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+    	
     	editor.commit();
     }
     
@@ -388,6 +409,16 @@ public class HomeScreenActivity extends TabActivity {
     	enableButton.setImageResource(R.drawable.nothing_button_selector);
     	mCurrent = null;
     	enableButton.setClickable(false);
+    	
+    	// Updates the widget's Icon
+    	Context context = this;
+    	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+    	RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
+    	ComponentName thisWidget = new ComponentName(context, Widget.class);
+    	remoteViews.setImageViewResource(R.id.widget_button, R.drawable.nothing_button_selector);
+    	remoteViews.setTextViewText(R.id.widget_textview, "Use the arrows to scroll through saved messages..." );
+    	appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+    	
     	editor.commit();
     }
     
@@ -399,6 +430,7 @@ public class HomeScreenActivity extends TabActivity {
     private void editCurrentMessage(String t){
     	mCurrent.setText(t);
     	inputMessage.setText(mCurrent.text);
+    	
     	MessageActivity.changeMessage(mCurrent);
     }
     private void changeCurrent(long db_id){
@@ -416,6 +448,14 @@ public class HomeScreenActivity extends TabActivity {
     		inputMessage.setText(mCurrent.text);
     		disableMessage();
     	}
+    	
+    	// Updates the Widget's Textview
+    	Context context = this;
+    	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+    	RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
+    	ComponentName thisWidget = new ComponentName(context, Widget.class);
+    	remoteViews.setTextViewText(R.id.widget_textview, mCurrent.text);
+    	appWidgetManager.updateAppWidget(thisWidget, remoteViews);
     }
     private class MessageListCursorAdapter extends CursorAdapter {
     	private final int layout;
