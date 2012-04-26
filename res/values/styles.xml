@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ParentStyle" parent="android:Theme">
+        <item name="android:textColor">?attr/primaryTextColor</item>
+        <item name="android:background">?attr/darkColor</item>
+    </style>
+    <style name="greyTheme" parent="@style/ParentStyle">
+      <item name="primaryTextColor">#FFFFFFFF</item>
+      <item name="secondaryTextColor">#FFDDDDDD</item>
+      <item name="darkColor">#FF444444</item>
+      <item name="mediumColor">#FF999999</item>
+      <item name="lightColor">#FFCCCCCC</item>
+      <item name="contrastColor">#FF4444FF</item>
+    </style>
+    <style name="blueTheme" parent="@style/ParentStyle">
+      <item name="primaryTextColor">#FFFFFFFF</item>
+      <item name="secondaryTextColor">#FFDDDDDD</item>
+      <item name="darkColor">#FF4444FF</item>
+      <item name="mediumColor">#FF9999FF</item>
+      <item name="lightColor">#FFCCCCFF</item>
+      <item name="contrastColor">#FFFF4444</item>
+    </style>
+    
+</resources>
