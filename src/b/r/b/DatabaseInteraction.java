@@ -12,6 +12,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import static b.r.b.Constants.*;
 
+//TODO delete
+// log by id
+// parent by message
+// child by message and number
+
+
 public class DatabaseInteraction extends Activity{
 	//Constants used to access a column using the cursor getString() method later
 	private final int PID_COLUMN = 1;
@@ -128,10 +134,27 @@ public class DatabaseInteraction extends Activity{
 	}
 	
 	
+	//For deletes, returns true if it worked, returns false if it doesn't
+	//deleting a child row
+	public boolean DeleteChild(String num, String message){
+		SQLiteDatabase db = child.getWritableDatabase();
+		
+		return db.delete(CHILD_TABLE, NUMBER + "=" + num + 
+				" AND " + MESSAGE + "=" + message,  null) > 0;
+	}
 	
-	
-	
-	
+	//deleting a log row
+	public boolean DeleteLog(int id){
+		SQLiteDatabase db = log.getWritableDatabase();
+		
+		return db.delete(LOG_TABLE, _ID + "=" + id, null) > 0;
+	}
+	//deleting a parent row
+	public boolean DeleteParent(String message){
+		SQLiteDatabase db = parent.getWritableDatabase();
+		
+		return db.delete(PARENT_TABLE, MESSAGE + "=" + message, null) > 0;
+	}
 	//to insert a message, you pass the string of the message, and an
 	//array of strings that contain all the numbers it is used for	
 	//For inserting into the parent, pass an id, the message, and an array of possible child 
