@@ -361,6 +361,25 @@ public class DatabaseInteraction extends Activity{
 	    if (log != null){
 	    	log.close();
 	    }
+	    if (ldbr != null){
+	    	ldbr.close();
+	    }
+	    if (ldbw != null){
+	    	ldbw.close();
+	    }
+	    if (cdbr != null){
+	    	cdbr.close();
+	    }
+	    if (cdbw != null){
+	    	cdbw.close();
+	    }
+	    if (pdbr != null){
+	    	pdbr.close();
+	    }
+	    if (pdbw != null){
+	    	pdbw.close();
+	    }
+	    
 	}
 	
 	/*private void CleanupAll(){
