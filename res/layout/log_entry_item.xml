@@ -2,91 +2,93 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-	
-    	<TextView
-    	    android:id="@+id/log_entry_date"
-    	    android:text="02/05"
-    	    android:textSize="20dp"
-    	    android:paddingLeft="5dp"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content" />
-    	
-    	<ImageView
-    	    android:id="@+id/log_entry_picture"
-    	    android:src="@drawable/phone_symbol"
-    	    android:paddingLeft="5dp"
-    	    android:paddingTop="2dp"
-        	android:layout_toRightOf="@id/log_entry_date"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content" />
 
-    	<TextView 	
-    	    android:id="@+id/log_entry_contact"
-    		android:text="(315) 555-5555"
-    		android:textSize="20dp"
-    		android:paddingLeft="5dp"
-    		android:layout_toRightOf="@id/log_entry_picture"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content" />
-    	
-    	<TextView 	
-    	    android:id="@+id/log_entry_more"
-    		android:text="more"
-    		android:textSize="18dp"
-    		android:textStyle="bold"
-    		android:textColor="#AA0000"
-    		android:layout_alignParentRight="true" 
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content" />
-    	
-    	<RelativeLayout 
-    	    android:id="@+id/log_entry_expansion"
-    	    android:layout_below="@+id/log_entry_date"
-    	    android:layout_width="fill_parent"
-    	    android:layout_height="wrap_content" >
-    	<TextView 	
-    	    android:id="@+id/log_entry_time_label"
-    		android:text="Time: "
-    		android:textStyle="bold"
-    		android:textSize="20dp"
-    		android:paddingLeft="5dp"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content" />
-    	
-    	<TextView 	
-    	    android:id="@+id/log_entry_time"
-    		android:text="5:00"
-    		android:textSize="20dp"
-    		android:layout_toRightOf="@id/log_entry_time_label"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content" />
-    	
-    	<TextView 	
-    	    android:id="@+id/log_entry_time_ampm"
-    		android:text="PM"
-    		android:textSize="14dp"
-    		android:paddingLeft="2dp"
-    		android:layout_toRightOf="@id/log_entry_time"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content" />
-    	
-    	<TextView 	
-    	    android:id="@+id/log_entry_response_label"
-    		android:text="Responded with: "
-    		android:textSize="20dp"
-    		android:textStyle="bold"
-    		android:paddingLeft="5dp"
-    		android:layout_below="@id/log_entry_time_label"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content" />
-    	
-    	<TextView 	
-    	    android:id="@+id/log_entry_response"
-    		android:text="'At the dentist...'"
-    		android:textSize="20dp"
-    		android:paddingLeft="20dp"
-    		android:layout_below="@id/log_entry_response_label"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content" />
-    	</RelativeLayout>
+    <TextView
+        android:id="@+id/log_entry_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:text="02/05"
+        android:textSize="20dp" />
+
+    <ImageView
+        android:id="@+id/log_entry_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/log_entry_date"
+        android:paddingLeft="5dp"
+        android:paddingTop="2dp"
+        android:src="@drawable/phone_symbol" />
+
+    <TextView
+        android:id="@+id/log_entry_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/log_entry_picture"
+        android:paddingLeft="5dp"
+        android:text="(315) 555-5555"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/log_entry_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="more"
+        android:textColor="?attr/contrastColor"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/log_entry_expansion"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/log_entry_date" >
+
+        <TextView
+            android:id="@+id/log_entry_time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:text="Time: "
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/log_entry_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/log_entry_time_label"
+            android:text="5:00"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/log_entry_time_ampm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/log_entry_time"
+            android:paddingLeft="2dp"
+            android:text="PM"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/log_entry_response_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/log_entry_time_label"
+            android:paddingLeft="5dp"
+            android:text="Responded with: "
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/log_entry_response"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/log_entry_response_label"
+            android:paddingLeft="20dp"
+            android:text="&apos;At the dentist...&apos;"
+            android:textSize="20dp" />
+    </RelativeLayout>
+
 </RelativeLayout>

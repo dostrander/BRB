@@ -12,12 +12,13 @@
         android:layout_toLeftOf="@+id/note"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <ImageView
         android:id="@+id/note"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/ic_launcher"/>
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_launcher" />
 
 </RelativeLayout>
