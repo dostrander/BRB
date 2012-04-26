@@ -16,9 +16,7 @@ public class DatabaseHelper extends Application{
 	@Override
 	public void onTerminate(){
 		super.onTerminate();
-		dbInt.CleanupChild();
-		dbInt.CleanupLog();
-		dbInt.CleanupParent();
+		dbInt.Cleanup();
 	}
 	
 	public static DatabaseInteraction getDatabaseInteraction(){
