@@ -46,10 +46,12 @@ import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.SlidingDrawer;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -67,6 +69,7 @@ public class HomeScreenActivity extends TabActivity {
 	private final String TAG = "HomeScreenActivity";
 	private final String MESSAGE = "message";
 	private final String LOG = "log";
+	private final String SETTINGS = "settings";
 	private final String NO_MESSAGE = "Click to Edit Message";
 	private static Message mCurrent;
 
@@ -96,6 +99,10 @@ public class HomeScreenActivity extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"in onCreate");
+        
+        Settings.Init(this);
+        setTheme(Settings.Theme());
+        
         setContentView(R.layout.main_screen);
         // Set TabHost
         mTabHost 	= getTabHost();
@@ -105,8 +112,11 @@ public class HomeScreenActivity extends TabActivity {
         mTabHost.addTab(mTabHost.newTabSpec(LOG).
         		setIndicator("Log",getResources().getDrawable(R.drawable.log_tab_selector)).
         		setContent(new Intent(this,LogActivity.class)));
+        mTabHost.addTab(mTabHost.newTabSpec(SETTINGS).
+        		setIndicator("Settings",getResources().getDrawable(R.drawable.settings_tab_selector)).
+        		setContent(new Intent(this,b.r.b.SettingsActivity.class)));
         mTabHost.setCurrentTab(0);        
-        
+
         // Find Views
         enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
         listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
@@ -114,7 +124,7 @@ public class HomeScreenActivity extends TabActivity {
         inputMessage = 		(TextView) findViewById(R.id.message_input);
         db = new DatabaseInteraction(this);
         View theader = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.input_message_list_item, null, false);
-        theader.setBackgroundColor(Color.DKGRAY);
+        theader.setBackgroundColor(R.attr.darkColor);
         header = (TextView) theader.findViewById(R.id.input_message_list_item);
         header.setTextColor(Color.WHITE);
         header.setText("Create New Message");
@@ -122,9 +132,6 @@ public class HomeScreenActivity extends TabActivity {
         adapter = new MessageListCursorAdapter(this,R.layout.input_message_list_item,db.GetAllParentMessages(),
         		new String[]{MESSAGE},new int[]{R.id.input_message_list_item});
         messageList.setAdapter(adapter);
-        
-        
-
         
         messageList.setVisibility(View.GONE);
         registerListeners();
@@ -282,8 +289,8 @@ public class HomeScreenActivity extends TabActivity {
 					int arg2, int arg3) {}
 			public void onTextChanged(CharSequence s, int start,
 					int before, int count) {adapter.getFilter().filter(s);}	});
-		ll.setBackgroundColor(myDialogColor);
-		lv.setBackgroundColor(myDialogColor);
+		ll.setBackgroundColor(R.attr.mediumColor);
+		lv.setBackgroundColor(R.attr.mediumColor);
 		lv.setCacheColorHint(myDialogColor);
 		lv.setAdapter(adapter);
 		lv.setOnItemClickListener(new OnItemClickListener(){
