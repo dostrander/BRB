@@ -12,6 +12,9 @@ public class DatabaseHelper extends Application{
 		dbInt = new DatabaseInteraction(this);
 		
 	}
+	public static DatabaseInteraction getDb(){
+		return dbInt;
+	}
 	
 	@Override
 	public void onTerminate(){
@@ -20,8 +23,4 @@ public class DatabaseHelper extends Application{
 		dbInt.CleanupLog();
 		dbInt.CleanupParent();
 	}
-	
-	public static DatabaseInteraction getDatabaseInteraction(){
-		return dbInt;
-	}
-}
+}	
