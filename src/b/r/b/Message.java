@@ -41,7 +41,7 @@ public class Message{
 	
 	
 	
-	ChildMessage header;
+	private ChildMessage header;
 	ArrayList<ChildMessage> cMessages;
 	public String 				text;													// Text of the message to be sent
 	private boolean 			no_end;													// Tells whether there is an end or not
@@ -53,35 +53,51 @@ public class Message{
 	
 	public class ChildMessage{
 		String text;
-		ArrayList<Integer> ids;
-		ArrayList<String> numbers;
+		HashMap<String,Integer> numbers;
+//		ArrayList<Integer> ids;
+//		ArrayList<String> numbers;
 		String namesText;
 		ChildMessage(){
 			text = CLICK_TO_EDIT;
 			namesText = CLICK_TO_ADD_NAMES;
-			ids = new ArrayList<Integer>();
-			numbers = new ArrayList<String>();
+//			ids = new ArrayList<Integer>();
+//			numbers = new ArrayList<String>();
+			numbers = new HashMap<String,Integer>();
 		}
 		ChildMessage(String t, int i, String num){
 			text = t;
-			ids = new ArrayList<Integer>();
-			numbers = new ArrayList<String>();
+//			ids = new ArrayList<Integer>();
+//			numbers = new ArrayList<String>();
+			numbers = new HashMap<String,Integer>();
 			addNumbers(i,num);
 			
 		}
-		public void addNumbers(int i, String num){
-			ids.add(i);
-			numbers.add(num);
+		public boolean containsNumber(String n){
+			return numbers.containsKey(n);
+//			for(String num : numbers.keySet())
+//				if(n.equals(num))
+//					return true;
+//			return false;
 		}
-		private void numbersToString(Context ctx){
+		public void addNumbers(int i, String num){
+//			ids.add(i);
+//			numbers.add(num);
+			numbers.put(num, i);
+		}
+		public void numbersToString(Context ctx){
+			boolean first = true;
 			namesText = "";
-			for(String n : numbers){
+			for(String n : numbers.keySet()){
 				String name = numberToString(n,ctx);
-				if(n != numbers.get(0))
+				if(!first)
 					namesText = namesText + "," + name;
-				else namesText = name;
+				else{
+					namesText = name;
+					first = false;
+				}
 			}
 		}
+
 		private String numberToString(String num, Context ctx){
 			Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num));
 			Cursor cursor = ctx.getContentResolver().query(contactUri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, 
@@ -92,7 +108,25 @@ public class Message{
 			return null;
 		}
 	}
-	private void addNewChildMessage(){
+	
+	public boolean headerContainsNumber(String num){
+		return header.containsNumber(num);
+	}
+	public ChildMessage getHeader(){
+		return header;
+	}
+	public String getHeaderNames(){
+		return header.namesText;
+	}
+	public String getHeaderText(){
+		return header.text;
+	}
+	public void addNewChildMessage(Context ctx){
+		
+		DatabaseInteraction db = ((MessageActivity)ctx).getDatabase();
+		for(String key : header.numbers.keySet())
+			if(header.numbers.get(key) < 0)
+				db.InsertMessage(key, header.text, DB_ID);
 		cMessages.add(header);
 		clearHeader();
 	}
@@ -102,6 +136,29 @@ public class Message{
 //		header.numbers.clear();
 //		header.text = CLICK_TO_EDIT;
 //		header.namesText = CLICK_TO_ADD_NAMES;
+	}
+	public int headerNumbersSize(){return header.numbers.size();}
+	public void setHeaderText(String t){header.text = t;}
+	public void addHeaderContacts(Context ctx,String[] nums){
+		for(String n : nums)
+			addContactHeader(n);
+		header.numbersToString(ctx);
+	}
+	private void addContactHeader(String n){
+		header.addNumbers(-1, n);
+	}
+
+	public boolean checkHeaderForDupNumbers(){
+		for(String num : header.numbers.keySet())
+			if(isDuplicateNumber(num))
+				return true;
+		return false;
+	}
+	public boolean isDuplicateNumber(String t){
+		for(ChildMessage c : cMessages)
+			if(c.containsNumber(t))
+				return true;
+		return false;
 	}
 	private void addChildMessages(Cursor c){
 		String text;
@@ -113,6 +170,13 @@ public class Message{
 				
 		
 	}
+	public ChildMessage getChild(String t){
+		for(ChildMessage c : cMessages)
+			if(c.text.equals(t))
+				return c;
+		return header;
+	}
+
 		
 	/*	Message Constructor
 	 * 		sets the text, initialize contact specificMessages,

@@ -11,7 +11,7 @@ import android.provider.BaseColumns;
 
 public interface Constants extends BaseColumns {
 	public static final String PARENT_TABLE = "parent";	
-	public static final String CHILD_TABLE = "child";
+	public static final String CHILD_TABLE = "child_table";
 	public static final String LOG_TABLE = "log";
 
 	public static final String AUTHORITY = "b.r.b";

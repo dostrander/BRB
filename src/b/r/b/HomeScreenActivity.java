@@ -70,7 +70,9 @@ public class HomeScreenActivity extends TabActivity {
 	private final String TAG = "HomeScreenActivity";
 	private final String MESSAGE = "message";
 	private final String LOG = "log";
+	private final String SETTINGS = "settings";
 	private final String NO_MESSAGE = "Click to Edit Message";
+	
 	private static Message mCurrent;
 
 	// Variables
@@ -86,6 +88,7 @@ public class HomeScreenActivity extends TabActivity {
 	static TextView inputMessage;
 	private static ListView messageList;
 	ListView messageListView;
+	DatabaseHelper dbhelper;
 
 	private static MessageListCursorAdapter adapter;
 	static DatabaseInteraction db;
@@ -100,6 +103,7 @@ public class HomeScreenActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"in onCreate");
         setContentView(R.layout.main_screen);
+        dbhelper = new DatabaseHelper();
         enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
         listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
         messageList  = 		(ListView) findViewById(R.id.auto_complete_list);
@@ -112,6 +116,12 @@ public class HomeScreenActivity extends TabActivity {
         mTabHost.addTab(mTabHost.newTabSpec(LOG).
         		setIndicator("Log",getResources().getDrawable(R.drawable.log_tab_selector)).
         		setContent(new Intent(this,LogActivity.class)));
+        mTabHost.addTab(mTabHost.newTabSpec(SETTINGS).
+        		setIndicator("Settings",getResources().getDrawable(R.drawable.settings_tab_selector)).
+        		setContent(new Intent(this,SettingsActivity.class)));
+
+        		
+        		
         mTabHost.setCurrentTab(0);        
         
         // Find Views

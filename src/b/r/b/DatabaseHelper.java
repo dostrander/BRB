@@ -12,14 +12,13 @@ public class DatabaseHelper extends Application{
 		dbInt = new DatabaseInteraction(this);
 		
 	}
+	public static DatabaseInteraction getDb(){
+		return dbInt;
+	}
 	
 	@Override
 	public void onTerminate(){
 		super.onTerminate();
 		dbInt.Cleanup();
 	}
-	
-	public static DatabaseInteraction getDatabaseInteraction(){
-		return dbInt;
-	}
-}
+}	

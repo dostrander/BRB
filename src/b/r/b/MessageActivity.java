@@ -3,6 +3,7 @@ package b.r.b;
 import static b.r.b.Constants.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Stack;
 
 
@@ -19,7 +20,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -39,11 +43,13 @@ import android.widget.CursorAdapter;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
+import android.widget.FilterQueryProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.Scroller;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -52,6 +58,7 @@ import android.widget.Toast;
 
 public class MessageActivity extends Activity {
 	private static final String TAG = "MessageActivity";
+	private static final String HEADER = "THISISTHEHEADER";
 	private static final int STARTTIME_ID = 0;
 	private static final int ENDTIME_ID = 1;
 	private static final int PICK_CONTACT_ID = 5;
@@ -67,7 +74,7 @@ public class MessageActivity extends Activity {
 	RadioButton 		vLoButton;
 	TableRow			vPriorityRow;
 	View				header;
-	
+	HomeScreenActivity homeActivity;
 	static TextView 	vStartTime;
 	static TextView 	vEndTime;
 
@@ -78,7 +85,10 @@ public class MessageActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.message_view);
+		
 
+
+		//(T)
 		vStartTime 	= (TextView) findViewById(R.id.starttime_text);
 		vEndTime 	= (TextView) findViewById(R.id.endtime_text);
 		vPriorityRow = (TableRow) findViewById(R.id.priority_row);
@@ -86,7 +96,7 @@ public class MessageActivity extends Activity {
 		vLoButton 	= (RadioButton) findViewById(R.id.low_priority_button);
 		vContactMessageList = (ListView) findViewById(R.id.contact_specific_message_list);
 		header = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.message_item, null, false);
-
+		
 		
 		mAdapter = new ContactMessageListAdapter(this);
 		vContactMessageList.addHeaderView(header);
@@ -101,6 +111,13 @@ public class MessageActivity extends Activity {
 	private boolean contains(String t){
 		if(mMessage == null) return false;
 		else return mMessage.childContainsMessage(t);
+	}
+	private boolean containsNumber(String num){
+		if(mMessage == null) return false;
+		else return mMessage.headerContainsNumber(num);
+	}
+	public DatabaseInteraction getDatabase(){
+		return homeActivity.db;
 	}
 	private void registerListeners(){
 		// TextViews
@@ -203,7 +220,7 @@ public class MessageActivity extends Activity {
 //				position_edited = -1;
 //				startActivityForResult(intent,PICK_CONTACT_ID);
 				//mMessage.header.
-				contactPickerDialog();
+				contactPickerDialog(mMessage.getHeaderText());
 			}
 			
 		});
@@ -213,6 +230,7 @@ public class MessageActivity extends Activity {
 			public void onClick(View v) {
 			}
 		});
+
 		tv.setOnClickListener(new OnClickListener(){
 			public void onClick(final View v) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
@@ -227,7 +245,7 @@ public class MessageActivity extends Activity {
 				builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 							((TextView) v).setText(input.getText().toString().trim().toString());
-							mMessage.header.text = input.getText().toString().trim().toString();
+							mMessage.setHeaderText(input.getText().toString().trim().toString());
 					}
 				});
 
@@ -248,8 +266,13 @@ public class MessageActivity extends Activity {
 						tv.getText().toString().trim().length() > 0){
 					if(mMessage == null){
 						popToast("Please select a message prior to doing this action");
-					}else{
-						mMessage.addContactSpecificMessage("NONE",tv.getText().toString());
+					}else if(mMessage.headerNumbersSize () < 1) 
+						popToast("Please Add Contacts First");
+					else if (mMessage.checkHeaderForDupNumbers())
+						popToast("You have conflicting contacts in this contact specific Message. Please Check the contacts and try adding again");
+					else{
+						//mMessage.addContactSpecificMessage("NONE",tv.getText().toString());
+						mMessage.addNewChildMessage(MessageActivity.this);
 						tv.setText(CLICK_TO_EDIT);
 						mAdapter.notifyDataSetChanged();
 					}
@@ -257,34 +280,51 @@ public class MessageActivity extends Activity {
 			}
 		});
 		tv.setText(CLICK_TO_EDIT);
+		nv.setMovementMethod(new ScrollingMovementMethod());
 		nv.setText(CLICK_TO_ADD_NAMES);
 	}
+	public void insertChild(String num, String text, long p_id){
+		//HomeScreenActivity
+	}
 	
-	public void contactPickerDialog(){
-		LinearLayout ll = new LinearLayout(MessageActivity.this);
-		ll.setOrientation(LinearLayout.VERTICAL);
+	public void contactPickerDialog(String text){
+		// Set Cursor
+	    Cursor cur = MessageActivity.this.getContentResolver().query(
+	            ContactsContract.Data.CONTENT_URI,
+	            new String[]{ContactsContract.Data._ID,ContactsContract.Data.DISPLAY_NAME, ContactsContract.Data.DATA1},
+	            ContactsContract.Data.MIMETYPE + " = '" +   ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "'",
+	            null,
+	            ContactsContract.Data.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+	    
+	    // Get Views
+		final ListView lv = new ListView(MessageActivity.this);
+        final PickContactsAdapter adap = new PickContactsAdapter(MessageActivity.this, cur,text);
 //		final EditText input = new EditText(MessageActivity.this);
+		LinearLayout ll = new LinearLayout(MessageActivity.this);
+		// Set Up Views
+		ll.setOrientation(LinearLayout.VERTICAL);
+//		ll.addView(input);
+		ll.addView(lv);
 //		input.setLines(1);
 //		input.setGravity(Gravity.TOP);
-//		input.setHint("Start Typing to Search for Contact");
-		
-		final ListView lv = new ListView(MessageActivity.this);
-		
-
-        Uri uri = ContactsContract.Contacts.CONTENT_URI;
-        String[] projection = new String[] {
-        		ContactsContract.Contacts._ID,
-                ContactsContract.CommonDataKinds.Phone.NUMBER,
-                ContactsContract.Contacts.DISPLAY_NAME
-        };
-        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
-		PickContactsAdapter adap = new PickContactsAdapter(MessageActivity.this,getContentResolver().query(uri, projection, null, null, null));
-		AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
+//		input.setHint("Filter Contacts");
+//		input.addTextChangedListener(new TextWatcher(){
+//			public void afterTextChanged(Editable e) {}
+//			public void beforeTextChanged(CharSequence s, int arg1,
+//					int arg2, int arg3) {}
+//			public void onTextChanged(CharSequence s, int start,
+//					int before, int count) {adap.getFilter().filter(input.getText().toString());}});
 		lv.setAdapter(adap);
+		
+		// Build Dialog
+		AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
 		builder.setTitle("Select Contacts")
-		.setView(lv)
+		.setView(ll)
 		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
+				//mMessage.addContactSpecificMessage(number, t)
+				mMessage.addHeaderContacts(MessageActivity.this, adap.getChecked());
+				((TextView) header.findViewById(R.id.names)).setText(mMessage.getHeaderNames());
 			}
 		});
 		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -442,23 +482,37 @@ public class MessageActivity extends Activity {
 			TextView number;
 			CheckBox checked;
 		}
-		ArrayList<String> numbers;
+		class Holder{
+			public Holder(String n,boolean c){
+				this.name = n;
+				this.checked = c;
+			}
+			boolean checked;
+			String name;
+		}
+		HashMap<String,Holder> numbers;
 		Cursor cursor;
-		boolean[] checked;
-		public PickContactsAdapter(Context context, Cursor c) {
+		public PickContactsAdapter(Context context, Cursor c, String text) {
 			super(context, c);
+			Message.ChildMessage cm = mMessage.getChild(text);
+			Holder h;
+			String key;
 			cursor = c;
-			checked = new boolean[c.getCount()];
+			numbers = new HashMap<String,Holder>();
+			Log.d(TAG,"Cursor: "+String.valueOf(cursor.getCount()));
 			if(cursor.moveToFirst())
 				do {
-					checked[cursor.getPosition()] = contains(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+					h =  new Holder(cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DISPLAY_NAME)),
+							 containsNumber(cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1))));
+					key = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1));
+					numbers.put(key,h);
 					cursor.moveToNext();
 				}
-				while(cursor.isAfterLast());
+				while(!cursor.isAfterLast());
 		}
 	
 		@Override
-		public View newView(Context context, Cursor cursor, ViewGroup parent) {
+		public View newView(Context context, Cursor c, ViewGroup parent) {
 			final ViewHolder holder = new ViewHolder();
 			View v = LayoutInflater.from(context).inflate(R.layout.pick_contact_item, null);
 			v.setTag(holder);
@@ -468,22 +522,35 @@ public class MessageActivity extends Activity {
 //        ContactsContract.CommonDataKinds.Phone.NUMBER,
 //        ContactsContract.Contacts.DISPLAY_NAME
 		@Override
-		public void bindView(View v, Context context, Cursor cursor) {
-			final int position =  cursor.getPosition();
+		public void bindView(View v, Context context, final Cursor c) {
+			Log.d(TAG,"position: " + String.valueOf(cursor.getPosition()));
+			final String key = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1));
 			final ViewHolder holder = (ViewHolder) v.getTag();
+			Log.d(TAG, "contains: " + String.valueOf(numbers.containsKey(key)));
+			Log.d(TAG, "checked: " + String.valueOf(numbers.get(key).checked));
+			Log.d(TAG,String.valueOf(numbers.get(key).name));
 			holder.name = (TextView) v.findViewById(R.id.contact_name);
 			holder.number = (TextView) v.findViewById(R.id.contact_number);
 			holder.checked = (CheckBox) v.findViewById(R.id.contact_checked);
-			holder.name.setText(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
-			holder.number.setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-			holder.checked.setChecked(checked[position]);
-			holder.checked.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-				public void onCheckedChanged(CompoundButton buttonView,
-						boolean isChecked) {checked[position] = isChecked;}});
+			holder.number.setText(key);
+			holder.name.setText(numbers.get(key).name);
+			holder.checked.setChecked(numbers.get(key).checked);
+			holder.checked.setOnClickListener(new OnClickListener(){
+				public void onClick(View v) {
+						numbers.get(key).checked = !numbers.get(key).checked;
+					
+				}
+			});
+			v.setTag(holder);
 		}
 		
 		public String[] getChecked(){
-			return (String[]) numbers.toArray(new String[]{});
+			Log.d(TAG,"in getChecked");
+			ArrayList<String> nums = new ArrayList<String>();
+			for(String n : numbers.keySet())
+				if(numbers.get(n).checked)
+					nums.add(n);
+			return (String[]) nums.toArray(new String[]{});
 		}
 
 		
