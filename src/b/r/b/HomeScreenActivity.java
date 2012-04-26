@@ -97,6 +97,10 @@ public class HomeScreenActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"in onCreate");
         setContentView(R.layout.main_screen);
+        enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
+        listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
+        messageList  = 		(ListView) findViewById(R.id.auto_complete_list);
+        inputMessage = 		(TextView) findViewById(R.id.message_input);
         // Set TabHost
         mTabHost 	= getTabHost();
         mTabHost.addTab(mTabHost.newTabSpec(MESSAGE).
@@ -108,10 +112,7 @@ public class HomeScreenActivity extends TabActivity {
         mTabHost.setCurrentTab(0);        
         
         // Find Views
-        enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
-        listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
-        messageList  = 		(ListView) findViewById(R.id.auto_complete_list);
-        inputMessage = 		(TextView) findViewById(R.id.message_input);
+
         db = new DatabaseInteraction(this);
         View theader = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.input_message_list_item, null, false);
         theader.setBackgroundColor(Color.DKGRAY);
