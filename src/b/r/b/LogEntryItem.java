@@ -16,20 +16,22 @@ import android.util.Log;
 public class LogEntryItem {
 	private int CALL = 0, TEXT = 1;   
 	private static final String TAG = "LogEntryItem";
-	Calendar cal;
+	//Calendar cal;
 	int type;
+	String time;
+	String date;
+	int ampm;
 	String contact_number;
 	String response;
 	//String messageSent;
 	Boolean expanded;
 
-// hour should be given in 24 hour(0-23) time!!!
-public LogEntryItem (int month, int day, int year, int hour, int minutes, int tempType, String num, String rsp)
+public LogEntryItem (String tempTime, String tempDate, int tempAmpm, int tempType, String rsp, String num)
 {
-	//Calendar
-	cal = Calendar.getInstance();
-	cal.set(year, month, day, hour, minutes);
 	//Log.d(TAG, response);
+	time = tempTime;
+	date = tempDate;
+	ampm = tempAmpm;
 	type = tempType;
 	contact_number = num;
 	response = rsp;
@@ -38,18 +40,30 @@ public LogEntryItem (int month, int day, int year, int hour, int minutes, int te
 
 public String getDate()
 {
-	DateFormat format = new SimpleDateFormat("MM/dd");
-	return format.format(cal.getTime()).toString();
+	//DateFormat format = new SimpleDateFormat("MM/dd");
+	//return format.format(cal.getTime()).toString();
+	return date;
 }
 public String getTime()
 {
-	DateFormat format = new SimpleDateFormat("kk:mm"); //kk sets hour of the day e.g. 24 hours
-	return format.format(cal.getTime()).toString();
+	//DateFormat format = new SimpleDateFormat("hh:mm"); //kk sets hour of the day e.g. 24 hours
+	//return format.format(cal.getTime()).toString();
+	return time;
 }
 public String getAMPM()
 {
-	DateFormat format = new SimpleDateFormat("aa");
-	return format.format(cal.getTime()).toString();
+	//DateFormat format = new SimpleDateFormat("aa");
+	//return format.format(cal.getTime()).toString();
+	
+	//AMPM is set as either 0 or 1, 0 is for AM, 1 for PM
+	String retAmpm;
+	
+	if(ampm == 0)
+		retAmpm = "AM";
+	else
+		retAmpm = "PM";
+	
+	return retAmpm;
 }
 public String findContact(Context ctx, String num)
 {
@@ -64,10 +78,10 @@ public String findContact(Context ctx, String num)
 public void setExpanded(){expanded = !expanded;}
 
 
-//public void getMessage()
-//{
-//Find the message to display from the database
-//}
+public String getResponse()
+{
+	return response;
+}
 
 
 

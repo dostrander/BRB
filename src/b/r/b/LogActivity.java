@@ -2,9 +2,9 @@ package b.r.b;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,8 +14,6 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,8 +37,10 @@ public class LogActivity extends ListActivity{
 	
 	private void fillData(){
 		Log.d(TAG,"in fillData");
+		DatabaseInteraction db = new DatabaseInteraction(this);
+		Cursor tempCursor = db.GetAllLogs();
 		if(mCurrent == null){
-			mLogItems.add(new LogEntryItem(0,0,0,0,0,0,"-1",NO_LOGS));
+			//mLogItems.add(new LogEntryItem(0,0,0,0,0,0,"-1",NO_LOGS));
 		}else {}
 	}
 	
