@@ -71,12 +71,31 @@
     	    android:layout_height="wrap_content" />
     	
     	<TextView 	
+    	    android:id="@+id/log_entry_received_label"
+    		android:text="Received Message: "
+    		android:textSize="20dp"
+    		android:textStyle="bold"
+    		android:paddingLeft="5dp"
+    		android:layout_below="@id/log_entry_time_label"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content" />
+    	
+    	<TextView 	
+    	    android:id="@+id/log_entry_received"
+    		android:text="Whats up?"
+    		android:textSize="20dp"
+    		android:paddingLeft="20dp"
+    		android:layout_below="@id/log_entry_received_label"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content" />
+    	
+    	<TextView 	
     	    android:id="@+id/log_entry_response_label"
     		android:text="Responded with: "
     		android:textSize="20dp"
     		android:textStyle="bold"
     		android:paddingLeft="5dp"
-    		android:layout_below="@id/log_entry_time_label"
+    		android:layout_below="@id/log_entry_received"
     	    android:layout_width="wrap_content"
     	    android:layout_height="wrap_content" />
     	
