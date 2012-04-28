@@ -48,7 +48,7 @@ public class Widget extends AppWidgetProvider {
 	
 	// Variables
 	private Context context; // Context for the Widget
-	public static DatabaseInteraction db; // Widget Database Interaction
+	public static ParentInteraction pDb; // Widget Database Interaction
 	
 	// Remote View - Set to the widget layout
 	RemoteViews remoteViews = new RemoteViews("b.r.b", R.layout.widget);
@@ -81,8 +81,8 @@ public class Widget extends AppWidgetProvider {
     	
     	// Database variables
     	db_id = prefs.getInt(DB_ID_KEY, -1); // Get the database ID from sharedpreferences
-    	db = new DatabaseInteraction(context);
-    	cursor = db.GetAllParentMessages();  
+    	pDb = new ParentInteraction(context);
+    	cursor = pDb.GetAllParentMessages();  
     	
     	// Make intent and pending intent for on receive
     	Intent active = new Intent(context, Widget.class);
@@ -123,8 +123,8 @@ public class Widget extends AppWidgetProvider {
     	context = ctx; // Set the context
     	
     	// Initialize the database stuff
-    	db = new DatabaseInteraction(context);
-    	cursor = db.GetAllParentMessages();
+    	pDb = new ParentInteraction(context);
+    	cursor = pDb.GetAllParentMessages();
     	
     	// Get sharedpreferences and the editor ready
     	prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);

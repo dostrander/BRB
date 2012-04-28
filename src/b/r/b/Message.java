@@ -123,10 +123,10 @@ public class Message{
 	}
 	public void addNewChildMessage(Context ctx){
 		
-		DatabaseInteraction db = ((MessageActivity)ctx).getDatabase();
+		ChildInteraction cDb = new ChildInteraction(ctx);// ((MessageActivity)ctx).getDatabase();
 		for(String key : header.numbers.keySet())
 			if(header.numbers.get(key) < 0)
-				db.InsertMessage(key, header.text, DB_ID);
+				cDb.InsertMessage(key, header.text, DB_ID);
 		cMessages.add(header);
 		clearHeader();
 	}

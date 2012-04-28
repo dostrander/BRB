@@ -116,9 +116,9 @@ public class MessageActivity extends Activity {
 		if(mMessage == null) return false;
 		else return mMessage.headerContainsNumber(num);
 	}
-	public ParentInteraction getDatabase(){
-		return homeActivity.pDb;
-	}
+//	public ChildInteraction getDatabase(){
+//		return homeActivity.pDb;
+//	}
 	private void registerListeners(){
 		// TextViews
 		vStartTime.setOnClickListener(new OnClickListener(){
