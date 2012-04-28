@@ -13,9 +13,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 public class childDB extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "child.db";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 1;
 	private static final String DATABASE_CREATE_TABLE =
-			   " CREATE TABLE " + PARENT_TABLE +
+			   " CREATE TABLE " + CHILD_TABLE +
 			   " ("+_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + NUMBER +" TEXT NOT NULL, " 
 			   + MESSAGE + " TEXT NOT NULL, " + PARENT_ID + " INTEGER NOT NULL);";
 	/*
