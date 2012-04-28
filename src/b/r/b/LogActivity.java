@@ -21,34 +21,39 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 public class LogActivity extends ListActivity{
+    private final int CALL = 0;
+	private final int TEXT = 1;
 	private static final String TAG = "LogActivity";
 	private static final String NO_LOGS = "No Log Entries for this Message";
 	private Message mCurrent;
+	private LogInteraction lDb;
 	
-	private static ArrayList<LogEntryItem> mLogItems;
 	public void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 		Log.d(TAG,"in onCreate");
-		mLogItems = new ArrayList<LogEntryItem>();
 //		setListAdapter(new LogAdapter(this));
+		lDb = new LogInteraction(this);
 		fillData();
+		getListView().setAdapter(new LogAdapter(this,lDb.GetAllLogs()));
 		mCurrent = null;
-		
+
 	}
 	
 	public void setMessage(Message current){ mCurrent = current;}
 	
 	private void fillData(){
 		Log.d(TAG,"in fillData");
+		for(int i = 0; i < 5; i++)
+			lDb.InsertLog(i, "2:30", "02/04", 1, CALL, "idk", "518-813-6375");
 		
-		if(mCurrent == null){
-			mLogItems.add(new LogEntryItem("","",0,0,NO_LOGS,"-1"));
-		}else {
-			
-			
-			mLogItems.add(new LogEntryItem("","",0,0,NO_LOGS,"-1"));
-			//tempCursor.moveToNext();
-		}
+//		if(mCurrent == null){
+//			mLogItems.add(new LogEntryItem("","",0,0,NO_LOGS,"-1"));
+//		}else {
+//			
+//			
+//			mLogItems.add(new LogEntryItem("","",0,0,NO_LOGS,"-1"));
+//			//tempCursor.moveToNext();
+//		}
 	}
 	
 	
@@ -58,8 +63,7 @@ public class LogActivity extends ListActivity{
 	    private Context context;
 	    private ParentInteraction pDb;
 	    private boolean[] expand;
-	    private final int CALL = 0;
-		private final int TEXT = 1;
+
 
 	    public LogAdapter (Context context, Cursor c) {
 	        super(context, c);

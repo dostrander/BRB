@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 public class logDB extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "log.db";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 	private static final String DATABASE_CREATE_TABLE =
 			   " CREATE TABLE " + LOG_TABLE +
 			   " ("+_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + PARENT_ID 

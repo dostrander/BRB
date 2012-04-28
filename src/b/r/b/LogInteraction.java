@@ -44,9 +44,9 @@ public class LogInteraction extends Activity{
 		values.put(DATE, date);
 		values.put(AMPM,ampm);
 		values.put(TYPE, type);
-		values.put(MESSAGE, msg);
+		values.put(RECEIVED_MESSAGE, msg);
 		values.put(NUMBER,num);
-		long id = db.insertOrThrow(PARENT_TABLE, null, values);
+		long id = db.insertOrThrow(LOG_TABLE, null, values);
 		return new Message(msg,(int) id);
 		
 		

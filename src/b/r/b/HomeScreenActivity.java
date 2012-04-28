@@ -87,7 +87,6 @@ public class HomeScreenActivity extends TabActivity {
 	static TextView inputMessage;
 	private static ListView messageList;
 	ListView messageListView;
-	DatabaseHelper dbhelper;
 
 	private static MessageListCursorAdapter adapter;
 	static ParentInteraction pDb;
@@ -103,7 +102,6 @@ public class HomeScreenActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"in onCreate");
         setContentView(R.layout.main_screen);
-        dbhelper = new DatabaseHelper();
         
         // Find views	
         enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);						// To enable the message
