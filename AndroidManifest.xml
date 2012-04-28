@@ -32,7 +32,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MessageActivity"/>
-        <activity android:name=".LogActivity"/>            
+        <activity android:name=".LogActivity"/>           
+        <activity android:name=".SettingsActivity" /> 
         <activity android:name=".DateTimePickerActivity"
         	android:theme="@android:style/Theme.Dialog" />
         
