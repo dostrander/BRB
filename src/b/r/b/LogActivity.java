@@ -70,16 +70,16 @@ public class LogActivity extends ListActivity{
 				convertView = inflater.inflate(R.layout.log_entry_item,null);
 
 				holder = new ViewHolder();
-				holder.date = (TextView) convertView.findViewById(R.id.log_entry_date);
-				holder.time = (TextView) convertView.findViewById(R.id.log_entry_time);
-				holder.number = (TextView) convertView.findViewById(R.id.log_entry_contact);
-				holder.expanded = (TextView) convertView.findViewById(R.id.log_entry_more);
-				holder.ampm = (TextView) convertView.findViewById(R.id.log_entry_time_ampm);
-				holder.response_label = (TextView) convertView.findViewById(R.id.log_entry_response_label);
-				holder.time_label = (TextView) convertView.findViewById(R.id.log_entry_time_label);
-				holder.response = (TextView) convertView.findViewById(R.id.log_entry_response);
-				holder.type = (ImageView) convertView.findViewById(R.id.log_entry_picture);
-				holder.expansion = (RelativeLayout) convertView.findViewById(R.id.log_entry_expansion);
+				holder.date 			= (TextView)		convertView.findViewById(R.id.log_entry_date);
+				holder.time 			= (TextView)		convertView.findViewById(R.id.log_entry_time);
+				holder.number 			= (TextView) 		convertView.findViewById(R.id.log_entry_contact);
+				holder.expanded 		= (TextView) 		convertView.findViewById(R.id.log_entry_more);
+				holder.ampm 			= (TextView) 		convertView.findViewById(R.id.log_entry_time_ampm);
+				holder.response_label 	= (TextView) 		convertView.findViewById(R.id.log_entry_response_label);
+				holder.time_label 		= (TextView) 		convertView.findViewById(R.id.log_entry_time_label);
+				holder.response 		= (TextView) 		convertView.findViewById(R.id.log_entry_response);
+				holder.type 			= (ImageView) 		convertView.findViewById(R.id.log_entry_picture);
+				holder.expansion 		= (RelativeLayout) 	convertView.findViewById(R.id.log_entry_expansion);
 //				if(tempObject.message == NO_LOGS){
 //					holder.response.setText(tempObject.message);
 //					Log.d("here","here");
