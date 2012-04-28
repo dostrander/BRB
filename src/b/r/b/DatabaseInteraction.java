@@ -3,6 +3,7 @@
 //easier manner
 package b.r.b;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,7 +12,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import static b.r.b.Constants.*;
 
-public class DatabaseInteraction {
+//TODO delete
+// log by id
+// parent by message
+// child by message and number
+
+
+public class DatabaseInteraction extends Activity{
 	//Constants used to access a column using the cursor getString() method later
 	private final int PID_COLUMN = 1;
 	private final int PARENT_ID_COLUMN = 4;
@@ -21,6 +28,7 @@ public class DatabaseInteraction {
 	private logDB log;
 	private parentDB parent;
 	private childDB child;
+	
 	private StringArrayConverter strc = new StringArrayConverter();
 	private Context context;
 	
@@ -29,6 +37,7 @@ public class DatabaseInteraction {
 		log = new logDB(context);
 		parent = new parentDB(context);
 		child = new childDB(context);
+		
 	}
 	
 	public Message InsertLog(int pid, String time, String date, int ampm, int type, String msg, String num){
@@ -69,7 +78,7 @@ public class DatabaseInteraction {
 		Log.d("stuff",String.valueOf(pid));
 		SQLiteDatabase db = parent.getWritableDatabase();
 		String stringPid = "";
-		// What are we doing here????
+		
 		stringPid = String.valueOf(pid);
 		
 		// END
@@ -127,10 +136,27 @@ public class DatabaseInteraction {
 	}
 	
 	
+	//For deletes, returns true if it worked, returns false if it doesn't
+	//deleting a child row
+	public boolean DeleteChild(String num, String message){
+		SQLiteDatabase db = child.getWritableDatabase();
+		
+		return db.delete(CHILD_TABLE, NUMBER + "=" + num + 
+				" AND " + MESSAGE + "=" + message,  null) > 0;
+	}
 	
-	
-	
-	
+	//deleting a log row
+	public boolean DeleteLog(int id){
+		SQLiteDatabase db = log.getWritableDatabase();
+		
+		return db.delete(LOG_TABLE, _ID + "=" + id, null) > 0;
+	}
+	//deleting a parent row
+	public boolean DeleteParent(String message){
+		SQLiteDatabase db = parent.getWritableDatabase();
+		
+		return db.delete(PARENT_TABLE, MESSAGE + "=" + message, null) > 0;
+	}
 	//to insert a message, you pass the string of the message, and an
 	//array of strings that contain all the numbers it is used for	
 	//For inserting into the parent, pass an id, the message, and an array of possible child 
@@ -298,6 +324,53 @@ public class DatabaseInteraction {
 		
 		String a = c.getString(CNUMBERS_COLUMN);
 		int number = Integer.parseInt(a);
+		
 		return number;
+		
+	}
+	
+	public void CleanupParent(){
+		parent.close();
+	}
+	
+	public void CleanupChild(){
+		child.close();
+	}
+	
+	public void CleanupLog(){
+		log.close();
+	}
+	
+	public void Cleanup(){
+		if (parent != null) {
+	        parent.close();
+	    }
+	    if (child != null) {
+	        child.close();
+	    }
+	    if (log != null){
+	    	log.close();
+	    }
+	   	    
+	}
+	
+	/*private void CleanupAll(){
+		log.close();
+		parent.close();
+		child.close();
+	}*/
+	
+	@Override
+	protected void onDestroy() {
+	    super.onDestroy();
+	    if (parent != null) {
+	        parent.close();
+	    }
+	    if (child != null) {
+	        child.close();
+	    }
+	    if (log != null){
+	    	log.close();
+	    }
 	}
 }

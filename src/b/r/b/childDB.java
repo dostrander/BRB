@@ -12,7 +12,7 @@ import static b.r.b.Constants.*;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 public class childDB extends SQLiteOpenHelper {
-	private static final String DATABASE_NAME = "parent.db";
+	private static final String DATABASE_NAME = "child.db";
 	private static final int DATABASE_VERSION = 2;
 	private static final String DATABASE_CREATE_TABLE =
 			   " CREATE TABLE " + PARENT_TABLE +

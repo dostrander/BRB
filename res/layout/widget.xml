@@ -6,11 +6,12 @@
 
 	<TextView 
 	    android:id="@+id/widget_textview"
-		android:text="Use the arrows to scroll through saved messages"
+		android:text="Use the arrows to scroll through your saved messages"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent"
 		android:background="#FFFFFF"
 		android:layout_marginLeft="5dp"
+		android:layout_marginRight="5dp"
 		android:layout_marginTop="5dp"
 		android:layout_marginBottom="5dp"
 		android:layout_below="@+id/widget_left_button"

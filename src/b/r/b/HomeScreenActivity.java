@@ -21,6 +21,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.app.AlertDialog.Builder;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +51,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RemoteViews;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TabHost;
 import android.widget.TabWidget;
@@ -67,7 +70,9 @@ public class HomeScreenActivity extends TabActivity {
 	private final String TAG = "HomeScreenActivity";
 	private final String MESSAGE = "message";
 	private final String LOG = "log";
+	private final String SETTINGS = "settings";
 	private final String NO_MESSAGE = "Click to Edit Message";
+	
 	private static Message mCurrent;
 
 	// Variables
@@ -83,6 +88,7 @@ public class HomeScreenActivity extends TabActivity {
 	static TextView inputMessage;
 	private static ListView messageList;
 	ListView messageListView;
+	DatabaseHelper dbhelper;
 
 	private static MessageListCursorAdapter adapter;
 	static DatabaseInteraction db;
@@ -97,6 +103,11 @@ public class HomeScreenActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"in onCreate");
         setContentView(R.layout.main_screen);
+        dbhelper = new DatabaseHelper();
+        enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
+        listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
+        messageList  = 		(ListView) findViewById(R.id.auto_complete_list);
+        inputMessage = 		(TextView) findViewById(R.id.message_input);
         // Set TabHost
         mTabHost 	= getTabHost();
         mTabHost.addTab(mTabHost.newTabSpec(MESSAGE).
@@ -105,13 +116,16 @@ public class HomeScreenActivity extends TabActivity {
         mTabHost.addTab(mTabHost.newTabSpec(LOG).
         		setIndicator("Log",getResources().getDrawable(R.drawable.log_tab_selector)).
         		setContent(new Intent(this,LogActivity.class)));
+        mTabHost.addTab(mTabHost.newTabSpec(SETTINGS).
+        		setIndicator("Settings",getResources().getDrawable(R.drawable.settings_tab_selector)).
+        		setContent(new Intent(this,SettingsActivity.class)));
+
+        		
+        		
         mTabHost.setCurrentTab(0);        
         
         // Find Views
-        enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
-        listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
-        messageList  = 		(ListView) findViewById(R.id.auto_complete_list);
-        inputMessage = 		(TextView) findViewById(R.id.message_input);
+
         db = new DatabaseInteraction(this);
         View theader = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.input_message_list_item, null, false);
         theader.setBackgroundColor(Color.DKGRAY);
@@ -364,6 +378,15 @@ public class HomeScreenActivity extends TabActivity {
     	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
     	editor.putInt("ringer_mode", audiomanage.getRingerMode());
     	audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    	
+    	// Updates the widget's Icon
+    	Context context = this;
+    	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+    	RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
+    	ComponentName thisWidget = new ComponentName(context, Widget.class);
+    	remoteViews.setImageViewResource(R.id.widget_button, R.drawable.enabled_message_selector);
+    	appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+    	
     	editor.commit();
     }
     
@@ -377,6 +400,15 @@ public class HomeScreenActivity extends TabActivity {
     	// disable listener
     	audiomanage.setRingerMode(prefs.getInt("ringer_mode",AudioManager.RINGER_MODE_NORMAL));
     	enableButton.setClickable(true);
+    	
+    	// Updates the widget's Icon
+    	Context context = this;
+    	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+    	RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
+    	ComponentName thisWidget = new ComponentName(context, Widget.class);
+    	remoteViews.setImageViewResource(R.id.widget_button, R.drawable.disabled_button_selector);
+    	appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+    	
     	editor.commit();
     }
     
@@ -388,6 +420,16 @@ public class HomeScreenActivity extends TabActivity {
     	enableButton.setImageResource(R.drawable.nothing_button_selector);
     	mCurrent = null;
     	enableButton.setClickable(false);
+    	
+    	// Updates the widget's Icon
+    	Context context = this;
+    	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+    	RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
+    	ComponentName thisWidget = new ComponentName(context, Widget.class);
+    	remoteViews.setImageViewResource(R.id.widget_button, R.drawable.nothing_button_selector);
+    	remoteViews.setTextViewText(R.id.widget_textview, "Use the arrows to scroll through saved messages..." );
+    	appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+    	
     	editor.commit();
     }
     
@@ -399,6 +441,7 @@ public class HomeScreenActivity extends TabActivity {
     private void editCurrentMessage(String t){
     	mCurrent.setText(t);
     	inputMessage.setText(mCurrent.text);
+    	
     	MessageActivity.changeMessage(mCurrent);
     }
     private void changeCurrent(long db_id){
@@ -416,6 +459,14 @@ public class HomeScreenActivity extends TabActivity {
     		inputMessage.setText(mCurrent.text);
     		disableMessage();
     	}
+    	
+    	// Updates the Widget's Textview
+    	Context context = this;
+    	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+    	RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
+    	ComponentName thisWidget = new ComponentName(context, Widget.class);
+    	remoteViews.setTextViewText(R.id.widget_textview, mCurrent.text);
+    	appWidgetManager.updateAppWidget(thisWidget, remoteViews);
     }
     private class MessageListCursorAdapter extends CursorAdapter {
     	private final int layout;
