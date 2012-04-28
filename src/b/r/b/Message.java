@@ -242,6 +242,7 @@ public class Message{
 	public int getfHour(){ return endTime.get(Calendar.HOUR_OF_DAY);}
 	public int getsMinute(){ return startTime.get(Calendar.MINUTE);}
 	public int getfMinute(){ return endTime.get(Calendar.MINUTE);}
+	public String getMessageText(){return text;}
 	public String startDateToText(){
 		DateFormat format = new SimpleDateFormat("MM/dd/yy hh:mm aa");
 		return format.format(startTime.getTime()).toString();
