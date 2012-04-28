@@ -15,7 +15,6 @@
 package b.r.b;
 // our stuff
 import static b.r.b.Constants.*;
-import static b.r.b.DatabaseInteraction.*;
 // for android
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -91,7 +90,8 @@ public class HomeScreenActivity extends TabActivity {
 	DatabaseHelper dbhelper;
 
 	private static MessageListCursorAdapter adapter;
-	static DatabaseInteraction db;
+	static ParentInteraction pDb;
+	//static DatabaseInteraction db;
 
 	
 	/*	onCreate
@@ -131,14 +131,14 @@ public class HomeScreenActivity extends TabActivity {
         mTabHost.setCurrentTab(0);        
 
 
-        db = new DatabaseInteraction(this);
+        pDb = new ParentInteraction(this);
         View theader = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.input_message_list_item, null, false);
         theader.setBackgroundColor(Color.DKGRAY);
         header = (TextView) theader.findViewById(R.id.input_message_list_item);
         header.setTextColor(Color.WHITE);
         header.setText("Create New Message");
         messageList.addHeaderView(header);
-        adapter = new MessageListCursorAdapter(this,R.layout.input_message_list_item,db.GetAllParentMessages(),
+        adapter = new MessageListCursorAdapter(this,R.layout.input_message_list_item,pDb.GetAllParentMessages(),
         		new String[]{MESSAGE},new int[]{R.id.input_message_list_item});
         messageList.setAdapter(adapter);
         //
@@ -263,7 +263,8 @@ public class HomeScreenActivity extends TabActivity {
     	listButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
 				if(messageList.getVisibility() == View.GONE){
-					adapter.changeCursor(db.GetAllParentMessages());
+					pDb.Cleanup();
+					adapter.changeCursor(pDb.GetAllParentMessages());
 					messageList.setVisibility(View.VISIBLE);
 					messageList.bringToFront();
 				}
@@ -285,12 +286,13 @@ public class HomeScreenActivity extends TabActivity {
 		ll.setOrientation(LinearLayout.VERTICAL);
 		final EditText input = new EditText(HomeScreenActivity.this);
 		final ListView lv = new ListView(HomeScreenActivity.this);
-		Cursor c = db.GetAllParentMessages();
+		Cursor c = pDb.GetAllParentMessages();
 		ArrayList<String> temp = new ArrayList<String>();
 		if(c.moveToFirst()){
 			do temp.add(c.getString(c.getColumnIndex(MESSAGE))); 
 			while(c.moveToNext());
 		}
+		pDb.Cleanup();
 		String[] messages = temp.toArray(new String[]{});
 		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeScreenActivity.this,
 				R.layout.dialog_message_item,R.id.textView1, messages);
@@ -322,16 +324,19 @@ public class HomeScreenActivity extends TabActivity {
 		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				String text = input.getText().toString().trim().toString();
-				mCurrent = db.GetParentByMessage(text);
+				mCurrent = pDb.GetParentByMessage(text);
 				
 				if(mCurrent == null){
 					Log.d(TAG,"new message");
-					mCurrent = db.InsertMessage(text);
+					mCurrent = pDb.InsertMessage(text);
 					//mCurrent = db.InsertMessage(text, new String[]{});
-					HomeScreenActivity.adapter.changeCursor(db.GetAllParentMessages());
+					HomeScreenActivity.adapter.changeCursor(pDb.GetAllParentMessages());
 				}
 				messageList.setVisibility(View.GONE);
 				changeCurrent();
+				
+				// MAYBE?
+				//pDb.Cleanup();
 			}
 		});
 
@@ -361,7 +366,7 @@ public class HomeScreenActivity extends TabActivity {
 				String text = input.getText().toString().trim().toString();
 				Log.d(TAG,String.valueOf(mCurrent.getID()));
 				if(text.length() > 0){
-					if(db.ParentEditMessage(mCurrent.getID(), text))
+					if(pDb.ParentEditMessage(mCurrent.getID(), text))
 						editCurrentMessage(text);
 				}
 			}
@@ -453,7 +458,7 @@ public class HomeScreenActivity extends TabActivity {
     }
     private void changeCurrent(long db_id){
     	Log.d(TAG,"in changeCurrent");
-    	Message temp = db.GetParentById((int) db_id);
+    	Message temp = pDb.GetParentById((int) db_id);
     	mCurrent = temp;
     	changeCurrent();
    	}

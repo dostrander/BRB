@@ -116,8 +116,8 @@ public class MessageActivity extends Activity {
 		if(mMessage == null) return false;
 		else return mMessage.headerContainsNumber(num);
 	}
-	public DatabaseInteraction getDatabase(){
-		return homeActivity.db;
+	public ParentInteraction getDatabase(){
+		return homeActivity.pDb;
 	}
 	private void registerListeners(){
 		// TextViews
