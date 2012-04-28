@@ -31,6 +31,7 @@ public class LogActivity extends ListActivity{
 		fillData();
 		mCurrent = null;
 		
+		
 	}
 	
 	public void setMessage(Message current){ mCurrent = current;}
@@ -67,6 +68,7 @@ public class LogActivity extends ListActivity{
 
 			if(convertView == null){
 				convertView = inflater.inflate(R.layout.log_entry_item,null);
+
 				holder = new ViewHolder();
 				holder.date = (TextView) convertView.findViewById(R.id.log_entry_date);
 				holder.time = (TextView) convertView.findViewById(R.id.log_entry_time);
@@ -103,6 +105,7 @@ public class LogActivity extends ListActivity{
 //				holder.response
 //				holder.type
 				convertView.setTag(holder);
+				
 			}else {
 				holder = (ViewHolder) convertView.getTag();
 			}

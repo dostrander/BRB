@@ -249,7 +249,7 @@ public class DatabaseInteraction extends Activity{
 	public Cursor GetAllLogs(){
 		SQLiteDatabase db = log.getReadableDatabase();
 		
-		return db.query(LOG_TABLE, new String[]{ID,PARENT_ID,TIME,DATE,AMPM,TYPE
+		return db.query(LOG_TABLE, new String[]{PARENT_ID,TIME,DATE,AMPM,TYPE
 				,RECEIVED_MESSAGE,NUMBER}, null,null,null,null,null);
 		
 	}
@@ -288,6 +288,7 @@ public class DatabaseInteraction extends Activity{
 		
 	public Message GetParentById(int id){
 		Cursor c = SearchParentById(id);
+		Log.d("DatabaseInteraction", String.valueOf(c.getCount()));
 		if(c.moveToFirst()){
 			return new Message(c.getString(c.getColumnIndex(MESSAGE)),Integer.valueOf(id));
 		} else return null;

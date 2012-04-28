@@ -104,27 +104,32 @@ public class HomeScreenActivity extends TabActivity {
         Log.d(TAG,"in onCreate");
         setContentView(R.layout.main_screen);
         dbhelper = new DatabaseHelper();
-        enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);
-        listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);
-        messageList  = 		(ListView) findViewById(R.id.auto_complete_list);
-        inputMessage = 		(TextView) findViewById(R.id.message_input);
-        // Set TabHost
-        mTabHost 	= getTabHost();
-        mTabHost.addTab(mTabHost.newTabSpec(MESSAGE).
-        		setIndicator("Message",getResources().getDrawable(R.drawable.message_tab_selector)).
-        		setContent(new Intent(this,MessageActivity.class)));
-        mTabHost.addTab(mTabHost.newTabSpec(LOG).
-        		setIndicator("Log",getResources().getDrawable(R.drawable.log_tab_selector)).
-        		setContent(new Intent(this,LogActivity.class)));
-        mTabHost.addTab(mTabHost.newTabSpec(SETTINGS).
-        		setIndicator("Settings",getResources().getDrawable(R.drawable.settings_tab_selector)).
-        		setContent(new Intent(this,SettingsActivity.class)));
-
-        		
-        		
-        mTabHost.setCurrentTab(0);        
         
-        // Find Views
+        // Find views	
+        enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);						// To enable the message
+        listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);							// Show messages
+        messageList  = 		(ListView) findViewById(R.id.auto_complete_list);							// List of Messages 
+        inputMessage = 		(TextView) findViewById(R.id.message_input);								// Textview showing current Message
+        
+        // Set Tabs to correct Activities 
+        mTabHost 	= getTabHost();																		// Get TabHost
+        
+        // Message Tab
+        mTabHost.addTab(mTabHost.newTabSpec(MESSAGE).													// Add Message Tab
+        		setIndicator("Message",getResources().getDrawable(R.drawable.message_tab_selector)).	// Set MessageIcon Selector
+        		setContent(new Intent(this,MessageActivity.class)));									// Set Intent for MessageActivity
+        // Log Tab
+        mTabHost.addTab(mTabHost.newTabSpec(LOG).														// Add Log Tab
+        		setIndicator("Log",getResources().getDrawable(R.drawable.log_tab_selector)).			// Set LogIcon selector
+        		setContent(new Intent(this,LogActivity.class)));										// Set Intent for LogActivity
+        // Settings Tab
+        mTabHost.addTab(mTabHost.newTabSpec(SETTINGS).													// Add Settings Tab
+        		setIndicator("Settings",getResources().getDrawable(R.drawable.settings_tab_selector)).	// Set SettingsIcon selector
+        		setContent(new Intent(this,SettingsActivity.class)));									// Set Intent for SettingsActivity
+        
+        // Set Current Tab
+        mTabHost.setCurrentTab(0);        
+
 
         db = new DatabaseInteraction(this);
         View theader = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.input_message_list_item, null, false);
@@ -136,7 +141,7 @@ public class HomeScreenActivity extends TabActivity {
         adapter = new MessageListCursorAdapter(this,R.layout.input_message_list_item,db.GetAllParentMessages(),
         		new String[]{MESSAGE},new int[]{R.id.input_message_list_item});
         messageList.setAdapter(adapter);
-        
+        //
         
 
         
@@ -146,7 +151,9 @@ public class HomeScreenActivity extends TabActivity {
     	Log.d(TAG,String.valueOf(isEnabled()));
     	
    		int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
+   		Log.d(TAG,String.valueOf(db_id));
     	if(isEnabled() == MESSAGE_ENABLED && db_id >= 0){
+    		Log.d(TAG,"message is enabled in onCreate");
    			changeCurrent(db_id);
    			enableMessage();
    		}else noMessage();
