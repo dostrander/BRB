@@ -155,16 +155,22 @@ public class Message{
 		String tt;
 		String num; 
 		int id;
-
+		ChildMessage cmm;
+		
+		Log.d(TAG, "cursor length: " + String.valueOf(c.getCount()));
 		if(c.moveToFirst())
 			do{
+				Log.d(TAG,"here");
 				tt 	= c.getString(c.getColumnIndex(MESSAGE));
 				num = c.getString(c.getColumnIndex(NUMBER));
 				id 	= (int) c.getLong(c.getColumnIndex(ID));
-				if(childContainsMessage(t))
+				cmm = getChild(t);
+				if(cmm != null){
 					getChild(t).numbers.put(num,id);
-				else cMessages.add(new ChildMessage(tt,id,num,ctx));
-			}while(c.isAfterLast());
+					Log.d(TAG,"containts message");
+				}else cMessages.add(new ChildMessage(tt,id,num,ctx));
+				c.moveToNext();
+			}while(!c.isAfterLast());
 		for(ChildMessage cm: cMessages)
 			cm.numbersToString(ctx);
 		c.close();
@@ -259,7 +265,7 @@ public class Message{
 		for(ChildMessage c : cMessages)
 			if(c.text.equals(t))
 				return c;
-		return header;
+		return null;
 	}
 	
 	

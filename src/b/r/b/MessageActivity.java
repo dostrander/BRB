@@ -89,13 +89,14 @@ public class MessageActivity extends Activity {
 		vHiButton 			= (RadioButton) findViewById(R.id.high_priority_button);
 		vLoButton 			= (RadioButton) findViewById(R.id.low_priority_button);
 		vContactMessageList = (ListView) 	findViewById(R.id.contact_specific_message_list);
-		
-		header 				= ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE))
-					.inflate(R.layout.message_item, null, false);
+//		
+//		header 				= ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE))
+//					.inflate(R.layout.message_item, null, false);
+		header				= 				findViewById(R.id.header);
 		
 		
 		mAdapter 			= new ContactMessageListAdapter(this);
-		vContactMessageList.addHeaderView(header);
+		//vContactMessageList.addHeaderView(header);
 		vContactMessageList.setAdapter(mAdapter);
 		vContactMessageList.setLongClickable(true);
 
@@ -234,6 +235,8 @@ public class MessageActivity extends Activity {
 				builder.setTitle("Edit Message Text");
 				// Set an EditText view to get user input 
 				final EditText input = new EditText(MessageActivity.this);
+				if(tv.getText().toString() != CLICK_TO_EDIT)
+					input.setText(tv.getText().toString());
 				input.setLines(2);
 				input.setGravity(Gravity.TOP);
 				builder.setView(input);
@@ -269,6 +272,7 @@ public class MessageActivity extends Activity {
 					else{
 						mMessage.addHeaderToChild(MessageActivity.this);
 						mAdapter.notifyDataSetChanged();
+						setViewToHeader();
 					}
 				}
 			}
