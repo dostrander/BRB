@@ -30,7 +30,7 @@ public class LogInteraction extends Activity{
 	private childDB child;
 	private StringArrayConverter strc = new StringArrayConverter();
 	private Context context;
-	
+	private boolean deleteSuccess;
 	public LogInteraction(Context ctx){
 		context = ctx;
 		log = new logDB(context);
@@ -60,8 +60,9 @@ public class LogInteraction extends Activity{
 	//deleting a log row
 	public boolean DeleteLog(int id){
 		SQLiteDatabase db = log.getWritableDatabase();
-		
-		return db.delete(LOG_TABLE, ID + "=" + id, null) > 0;
+		deleteSuccess = db.delete(LOG_TABLE, ID + "=" + id, null) > 0;
+		db.close();
+		return deleteSuccess;
 	}
 	//deleting a parent row
 	public Cursor GetAllLogs(){
