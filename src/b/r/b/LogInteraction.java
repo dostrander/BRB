@@ -20,10 +20,10 @@ import static b.r.b.Constants.*;
 
 public class LogInteraction extends Activity{
 	//Constants used to access a column using the cursor getString() method later
-	private final int PID_COLUMN = 1;
-	private final int PARENT_ID_COLUMN = 4;
-	private final int PCHILD_ID_COLUMN = 3;
-	private final int CNUMBERS_COLUMN = 2;
+	//private final int PID_COLUMN = 1;
+	//private final int PARENT_ID_COLUMN = 4;
+	//private final int PCHILD_ID_COLUMN = 3;
+	//private final int CNUMBERS_COLUMN = 2;
 	//initializing the local objects
 	private logDB log;
 	private parentDB parent;
@@ -73,12 +73,12 @@ public class LogInteraction extends Activity{
 		
 	}
 	//return log based on parent id
-	public Cursor SearchLogByParentId(int id){
+	public Cursor SearchLogByParentId(int pid){
 		SQLiteDatabase db = log.getReadableDatabase();
 		
 		return db.query(LOG_TABLE, new String[]{ID,PARENT_ID,TIME,DATE,AMPM,TYPE
 				,RECEIVED_MESSAGE,NUMBER},PARENT_ID+"=?"
-				, new String[]{String.valueOf(id)}, null, null, null);
+				, new String[]{String.valueOf(pid)}, null, null, null);
 	}
 	
 	
