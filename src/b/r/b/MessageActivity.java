@@ -57,55 +57,50 @@ import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.Toast;
 
 public class MessageActivity extends Activity {
+	// Convience
 	private static final String TAG = "MessageActivity";
 	private static final String HEADER = "THISISTHEHEADER";
-	private static final int STARTTIME_ID = 0;
-	private static final int ENDTIME_ID = 1;
-	private static final int PICK_CONTACT_ID = 5;
-
-
+	private static final int 	STARTTIME_ID = 0;
+	private static final int 	ENDTIME_ID = 1;
+	private static final int 	PICK_CONTACT_ID = 5;
 	
+	// Variables
+	private static Message 	mMessage;
+	private static TextView vStartTime;
+	private static TextView vEndTime;
 	
-	private static Message mMessage;
-	private ContactMessageListAdapter mAdapter;
-	private ListView 	vContactMessageList;
-	TextView 			vPriority;
-	RadioButton 		vHiButton;
-	RadioButton 		vLoButton;
-	TableRow			vPriorityRow;
-	View				header;
-	HomeScreenActivity homeActivity;
-	static TextView 	vStartTime;
-	static TextView 	vEndTime;
-
+	private ContactMessageListAdapter 	mAdapter;
+	private ListView 					vContactMessageList;
+	private TextView 					vPriority;
+	private RadioButton					vHiButton;
+	private RadioButton 				vLoButton;
+	private TableRow					vPriorityRow;
+	private View						header;
 	
-	
-	private int position_edited;
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.message_view);
 		
-
-
-		//(T)
-		vStartTime 	= (TextView) findViewById(R.id.starttime_text);
-		vEndTime 	= (TextView) findViewById(R.id.endtime_text);
-		vPriorityRow = (TableRow) findViewById(R.id.priority_row);
-		vHiButton 	= (RadioButton) findViewById(R.id.high_priority_button);
-		vLoButton 	= (RadioButton) findViewById(R.id.low_priority_button);
-		vContactMessageList = (ListView) findViewById(R.id.contact_specific_message_list);
-		header = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.message_item, null, false);
+		vStartTime 			= (TextView) 	findViewById(R.id.starttime_text);
+		vEndTime 			= (TextView) 	findViewById(R.id.endtime_text);
+		vPriorityRow		= (TableRow) 	findViewById(R.id.priority_row);
+		vHiButton 			= (RadioButton) findViewById(R.id.high_priority_button);
+		vLoButton 			= (RadioButton) findViewById(R.id.low_priority_button);
+		vContactMessageList = (ListView) 	findViewById(R.id.contact_specific_message_list);
+		
+		header 				= ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE))
+					.inflate(R.layout.message_item, null, false);
 		
 		
-		mAdapter = new ContactMessageListAdapter(this);
+		mAdapter 			= new ContactMessageListAdapter(this);
 		vContactMessageList.addHeaderView(header);
 		vContactMessageList.setAdapter(mAdapter);
 		vContactMessageList.setLongClickable(true);
 
-		position_edited = -1;
 		setDates();
 		registerListeners();
+		
 		vPriorityRow.setVisibility(View.GONE);
 	}
 	private boolean contains(String t){
@@ -271,9 +266,8 @@ public class MessageActivity extends Activity {
 					else if (mMessage.checkHeaderForDupNumbers())
 						popToast("You have conflicting contacts in this contact specific Message. Please Check the contacts and try adding again");
 					else{
-						//mMessage.addContactSpecificMessage("NONE",tv.getText().toString());
-						mMessage.addNewChildMessage(MessageActivity.this);
-						tv.setText(CLICK_TO_EDIT);
+						mMessage.addHeaderToChild(MessageActivity.this);
+						
 						mAdapter.notifyDataSetChanged();
 					}
 				}
@@ -282,6 +276,15 @@ public class MessageActivity extends Activity {
 		tv.setText(CLICK_TO_EDIT);
 		nv.setMovementMethod(new ScrollingMovementMethod());
 		nv.setText(CLICK_TO_ADD_NAMES);
+	}
+	
+	public void setViewToHeader(){
+		if(mMessage != null){
+			((TextView)header.findViewById(R.id.contact_specific_message_text))
+				.setText(mMessage.getHeaderText());
+			((TextView)header.findViewById(R.id.names))
+				.setText(mMessage.getHeaderNames());
+		}
 	}
 	public void insertChild(String num, String text, long p_id){
 		//HomeScreenActivity
@@ -322,7 +325,6 @@ public class MessageActivity extends Activity {
 		.setView(ll)
 		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-				//mMessage.addContactSpecificMessage(number, t)
 				mMessage.addHeaderContacts(MessageActivity.this, adap.getChecked());
 				((TextView) header.findViewById(R.id.names)).setText(mMessage.getHeaderNames());
 			}
@@ -448,10 +450,6 @@ public class MessageActivity extends Activity {
             	});
         	convertView.findViewById(R.id.add_names_button).setOnClickListener(new OnClickListener(){
     				public void onClick(View v) {
-
-    					Intent intent = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
-    					position_edited = position;
-    					startActivityForResult(intent,PICK_CONTACT_ID);
     				}
             	});
 //    		holder.text = (TextView) convertView.findViewById(R.id.message_item_text);
@@ -518,9 +516,6 @@ public class MessageActivity extends Activity {
 			v.setTag(holder);
 			return v;
 		}
-//		ContactsContract.Contacts._ID,
-//        ContactsContract.CommonDataKinds.Phone.NUMBER,
-//        ContactsContract.Contacts.DISPLAY_NAME
 		@Override
 		public void bindView(View v, Context context, final Cursor c) {
 			Log.d(TAG,"position: " + String.valueOf(cursor.getPosition()));
@@ -538,7 +533,6 @@ public class MessageActivity extends Activity {
 			holder.checked.setOnClickListener(new OnClickListener(){
 				public void onClick(View v) {
 						numbers.get(key).checked = !numbers.get(key).checked;
-					
 				}
 			});
 			v.setTag(holder);

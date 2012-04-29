@@ -96,16 +96,14 @@ public class ChildInteraction extends Activity{
 				" AND " + MESSAGE + "=" + message,  null) > 0;
 	}
 	
-	public Message InsertMessage(String number, String message, long pid){
+	public long InsertMessage(String number, String message, long pid){
 		String p = String.valueOf(pid);
 		SQLiteDatabase db = child.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(NUMBER, number);
 		values.put(MESSAGE, message);
 		values.put(PARENT_ID, p);
-		
-		long id = db.insertOrThrow(CHILD_TABLE, null, values);
-		return new Message(message,(int) id);
+		return db.insertOrThrow(CHILD_TABLE, null, values);
 	}
 	
 	
