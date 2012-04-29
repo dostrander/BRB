@@ -247,7 +247,7 @@ public class MessageActivity extends Activity {
 
 				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-				    // Canceled.
+				    //  Canceled.
 					}
 				});
 
@@ -268,24 +268,27 @@ public class MessageActivity extends Activity {
 						popToast("You have conflicting contacts in this contact specific Message. Please Check the contacts and try adding again");
 					else{
 						mMessage.addHeaderToChild(MessageActivity.this);
-						
 						mAdapter.notifyDataSetChanged();
 					}
 				}
 			}
 		});
-		tv.setText(CLICK_TO_EDIT);
+
 		nv.setMovementMethod(new ScrollingMovementMethod());
-		nv.setText(CLICK_TO_ADD_NAMES);
+		setViewToHeader();
 	}
 	
 	public void setViewToHeader(){
+		String t,n;
 		if(mMessage != null){
-			((TextView)header.findViewById(R.id.contact_specific_message_text))
-				.setText(mMessage.getHeaderText());
-			((TextView)header.findViewById(R.id.names))
-				.setText(mMessage.getHeaderNames());
+			t = mMessage.getHeaderText();
+			n = mMessage.getHeaderNames();
+		}else {
+			t = CLICK_TO_EDIT;
+			n = CLICK_TO_ADD_NAMES;
 		}
+		((TextView)header.findViewById(R.id.contact_specific_message_text)).setText(t);
+		((TextView)header.findViewById(R.id.names)).setText(n);
 	}
 	public void insertChild(String num, String text, long p_id){
 		//HomeScreenActivity
