@@ -124,7 +124,7 @@ public class ParentInteraction extends Activity{
 			int id = c.getInt(c.getColumnIndex(ID));
 			Cursor cc = cDb.SearchChildByParentId(id);
 			if(cc != null){
-				Message m = new Message(c.getString(c.getColumnIndex(MESSAGE)),id,cc);
+				Message m = new Message(c.getString(c.getColumnIndex(MESSAGE)),id,cc,context);
 				c.close();
 				cDb.Cleanup();
 				return m;
@@ -149,7 +149,7 @@ public class ParentInteraction extends Activity{
 		if(c.moveToFirst()){
 			Cursor cc = cDb.SearchChildByParentId(id);
 			if(cc != null){
-				Message m = new Message(c.getString(c.getColumnIndex(MESSAGE)),id,cc);
+				Message m = new Message(c.getString(c.getColumnIndex(MESSAGE)),id,cc,context);
 				c.close();
 				cDb.Cleanup();
 				return m;

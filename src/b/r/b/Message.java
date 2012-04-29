@@ -75,25 +75,27 @@ public class Message{
 		}
 			// For NonHeader, initializes everything and sets the numbers
 			// for already made ones
-		ChildMessage(String t, int ids[], String nums[]){				
+		ChildMessage(String t, int ids[], String nums[],Context ctx){				
 			text = t;											// Set text for child
 			numbers = new HashMap<String,Integer>();			// init numbers hashmap
-			addNumbers(ids,nums);								
+			addNumbers(ids,nums,ctx);								
 		}
-		ChildMessage(String t, int id, String num){
+		ChildMessage(String t, int id, String num,Context ctx){
 			text = t;
 			numbers = new HashMap<String,Integer>();
 			numbers.put(num, id);
+			numbersToString(ctx);
 		}
 		// Boolean Instructions
-		public boolean containsNumber(String n){				// to see if the cMessage selected 
+		public boolean containsNumber(String n){	// to see if the cMessage selected 
 			return numbers.containsKey(n);}							// contains the number
 		// Getters
 
 		// Setters
-		public void addNumbers(int ids[], String nums[]){
+		public void addNumbers(int ids[], String nums[], Context c){
 			for(int n =0; n < ids.length; n++)
 				numbers.put(nums[n],ids[n]);
+			numbersToString(c);
 		}
 //		public void addNumber(int i, String num){
 //			numbers.put(num, i);
@@ -141,7 +143,7 @@ public class Message{
 		cMessages			= new ArrayList<ChildMessage>();
 		DB_ID = db_id;
 	}
-	public Message(String t, int dbid, Cursor c){
+	public Message(String t, int dbid, Cursor c,Context ctx){
 		Log.d(TAG,"old Message Contructor");
 	 	startTime	= Calendar.getInstance();
 	 	endTime 	= Calendar.getInstance();
@@ -161,8 +163,10 @@ public class Message{
 				id 	= (int) c.getLong(c.getColumnIndex(ID));
 				if(childContainsMessage(t))
 					getChild(t).numbers.put(num,id);
-				else cMessages.add(new ChildMessage(tt,id,num));
+				else cMessages.add(new ChildMessage(tt,id,num,ctx));
 			}while(c.isAfterLast());
+		for(ChildMessage cm: cMessages)
+			cm.numbersToString(ctx);
 		c.close();
 	}
 	
@@ -268,6 +272,7 @@ public class Message{
 		for(String key : header.numbers.keySet())
 			if(header.numbers.get(key) < 0)
 				header.numbers.put(key, (int)cDb.InsertMessage(key, header.text, DB_ID));
+		header.numbersToString(ctx);
 		cDb.Cleanup();
 		cMessages.add(header);
 		clearHeader();
@@ -282,11 +287,12 @@ public class Message{
 	public void setHeaderText(String t){header.text = t;}
 	public void addHeaderContacts(Context ctx,String[] nums){
 		for(String n : nums)
-			addContactHeader(n);
+			addContactHeader(n,ctx);
 		header.numbersToString(ctx);
 	}
-	private void addContactHeader(String n){
+	private void addContactHeader(String n,Context ctx){
 		header.numbers.put(n, -1);
+		header.numbersToString(ctx);
 	}
 
 	
