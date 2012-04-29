@@ -32,6 +32,7 @@ public class ChildInteraction extends Activity{
 	//private StringArrayConverter strc = new StringArrayConverter();
 	private Context context;
 	private boolean editSuccess;
+	private boolean deleteSuccess;
 	public ChildInteraction(Context ctx){
 		context = ctx;
 		
@@ -121,9 +122,10 @@ public class ChildInteraction extends Activity{
 	//deleting a child row
 	public boolean DeleteChild(String num, String message){
 		SQLiteDatabase db = child.getWritableDatabase();
-		
-		return db.delete(CHILD_TABLE, NUMBER + "=" + num + 
+		deleteSuccess = db.delete(CHILD_TABLE, NUMBER + "=" + num + 
 				" AND " + MESSAGE + "=" + message,  null) > 0;
+		db.close();
+		return deleteSuccess;
 	}
 	
 	public long InsertMessage(String number, String message, long pid){
@@ -162,7 +164,7 @@ public class ChildInteraction extends Activity{
 	public Cursor SearchChildByParentId(int pid){
 		SQLiteDatabase db = child.getReadableDatabase();
 		
-		return db.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID},ID+"=?"
+		return db.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID},PARENT_ID+"=?"
 				, new String[]{String.valueOf(pid)}, null, null, null);
 	}
 	
