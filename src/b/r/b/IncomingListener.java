@@ -38,7 +38,7 @@ public class IncomingListener extends BroadcastReceiver {
 		Log.d(TAG,"in onReceive");
 		Log.d(TAG, intent.getAction().toString());
 		if(intent.getAction().equals(INCOMING_TEXT))							// If it is an incoming text
-			handleText(intent);													// handle it
+			handleText(intent,context);													// handle it
 		else if(intent.getAction().equals(PHONE_STATE))							// If it is a call
 			handleCall(context,intent);											// handle it
 	}
@@ -47,7 +47,7 @@ public class IncomingListener extends BroadcastReceiver {
 	/*	handleText
 	 * 
 	 */
-	private void handleText(Intent intent){
+	private void handleText(Intent intent,Context context){
 		Log.d(TAG,"in incomingText");
 		Bundle bundle = intent.getExtras();
 		if (bundle != null)	{
@@ -67,7 +67,8 @@ public class IncomingListener extends BroadcastReceiver {
 				if(isValidNumber(											// Check if Valid Number
 						incomingMessage.getOriginatingAddress().toString()))
 					sendBackText(											// Tell the Message to handle sending
-						incomingMessage.getOriginatingAddress().toString());	// a text back
+						incomingMessage.getOriginatingAddress().toString(),		// a text back
+						context);
 			}	
 		}
 	}
@@ -77,8 +78,10 @@ public class IncomingListener extends BroadcastReceiver {
 	 */
 	
 	
-	private void sendBackText(String incNum){
+	private void sendBackText(String incNum,Context context){
 		Log.d(TAG,"in sendBackText");
+		if(HomeScreenActivity.mCurrent != null)
+			HomeScreenActivity.mCurrent.sendSMS(incNum, context);
 		//Log.d(TAG,currentMessage.text);
 		//currentMessage.sendSMS(incNum);
 	}
@@ -88,7 +91,7 @@ public class IncomingListener extends BroadcastReceiver {
 	 * 
 	 */
 	
-	private void handleCall(Context context,Intent intent){
+	private void handleCall(final Context context,Intent intent){
 		
 		// ---Handle Phone Call---
 		telephonyManager	= (TelephonyManager)context.getSystemService(		// Make Telephony manager
@@ -116,7 +119,7 @@ public class IncomingListener extends BroadcastReceiver {
 																					// response log 
 																					// (null indicates call)
 					if(isValidNumber(incomingNumber))							// Check the validity of the number
-						sendBackText(incomingNumber);							// Tell the Message to handle sending
+						sendBackText(incomingNumber,context);					// Tell the Message to handle sending
 																					// a text back 
 				} else Log.d(TAG,String.valueOf(state));
 			}

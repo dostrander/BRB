@@ -349,7 +349,7 @@ public class Message{
 	public void sendSMS(String incomingNumber, Context context){
 		Log.d(TAG,"in sendText");
 		//if(specificNumbers.containsKey(incomingNumber));								// If there is a key that matches
-		if(true);
+		if(false);
 //			specificMessages.get(incomingNumber).sendSMS(incomingNumber,context);		// Tell that message to send it
 		
 		else{																			// If not
@@ -365,56 +365,70 @@ public class Message{
 	}
 	
 	private void send(String incomingNumber,Context context){
-        String 			SENT 				= "SENT_INTENT";							// Name of the sent intent
-        String 			DELIVERED 			= "DELIVERED_INTENT";						// Name of the delivered intent
+        String 			SENT 				= "SMS_SENT";
+        String 			DELIVERED 			= "SMS_DELIVERED";
         PendingIntent 	sentIntent			= PendingIntent.getBroadcast(context, 0,	// Set up sent Pending Intent
         										new Intent(SENT), 0);
         PendingIntent 	deliveryIntent	= PendingIntent.getBroadcast(context, 0,		// Set up delivery Pending Intent
         										new Intent(DELIVERED), 0);
         SmsManager		smsManager			= SmsManager.getDefault();					// Get SmsManager
         
-        //---When the SMS has been send---
-        context.registerReceiver(new BroadcastReceiver(){								// Register Receiver from main context
-        	@Override
-            public void onReceive(Context c, Intent i) {								// When the sent signal is received
-                switch (getResultCode())
-                {
-                    case Activity.RESULT_OK:											// If result was sent
-                        Log.d(TAG,"sent");
-                        break;
-                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:						// If result failed to send
-                        Log.d(TAG,"Generic Failure");
-                        break;
-                    case SmsManager.RESULT_ERROR_NO_SERVICE:							// If there is no service
-                        Log.d(TAG,"No Service");
-                        break;	
-                    case SmsManager.RESULT_ERROR_NULL_PDU:								// If there is a null pdu
-                    	Log.d(TAG,"Null PDU");
-                    	break;
-                    case SmsManager.RESULT_ERROR_RADIO_OFF:								// If radio is off
-                    	Log.d(TAG,"Radio off?");
-                        break;
-                }
-            }
-        }, new IntentFilter(SENT));														// Name the intent SENT
- 
-        //---when the SMS has been delivered---
-        context.registerReceiver(new BroadcastReceiver(){
-            @Override
-            public void onReceive(Context c, Intent i) {								// When delivered signal received
-                switch (getResultCode())
-                {
-                    case Activity.RESULT_OK:											// If result was delivered
-                    	Log.d(TAG,"SMS Delivered");
-                        break;
-                    case Activity.RESULT_CANCELED:										// If result was not delivered
-                    	Log.d(TAG,"SMS Canceled");
-                        break;                        
-                }
-            }
-        }, new IntentFilter(DELIVERED));												// Name the intent DELIVERED
-        
-        smsManager.sendTextMessage(														// Send the text
+//        //---When the SMS has been send---
+//        context.registerReceiver(new BroadcastReceiver(){								// Register Receiver from main context
+//        	@Override
+//            public void onReceive(Context c, Intent i) {								// When the sent signal is received
+//                switch (getResultCode())
+//                {
+//                    case Activity.RESULT_OK:											// If result was sent
+//                        Log.d(TAG,"sent");
+//                        break;
+//                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:						// If result failed to send
+//                        Log.d(TAG,"Generic Failure");
+//                        break;
+//                    case SmsManager.RESULT_ERROR_NO_SERVICE:							// If there is no service
+//                        Log.d(TAG,"No Service");
+//                        break;	
+//                    case SmsManager.RESULT_ERROR_NULL_PDU:								// If there is a null pdu
+//                    	Log.d(TAG,"Null PDU");
+//                    	break;
+//                    case SmsManager.RESULT_ERROR_RADIO_OFF:								// If radio is off
+//                    	Log.d(TAG,"Radio off?");
+//                        break;
+//                }
+//            }
+//        }, new IntentFilter(SENT));														// Name the intent SENT
+// 
+//        //---when the SMS has been delivered---
+//        context.registerReceiver(new BroadcastReceiver(){
+//            @Override
+//            public void onReceive(Context c, Intent i) {								// When delivered signal received
+//                switch (getResultCode())
+//                {
+//                    case Activity.RESULT_OK:											// If result was delivered
+//                    	Log.d(TAG,"SMS Delivered");
+//                        break;
+//                    case Activity.RESULT_CANCELED:										// If result was not delivered
+//                    	Log.d(TAG,"SMS Canceled");
+//                        break;                        
+//                }
+//            }
+//        }, new IntentFilter(DELIVERED));												// Name the intent DELIVERED
+        Log.d(incomingNumber,text);
+		  try {
+	        smsManager.sendTextMessage(														// Send the text
         			incomingNumber, null, text, sentIntent, deliveryIntent);
+			Toast.makeText(context, "SMS Sent!",
+						Toast.LENGTH_LONG).show();
+		  } catch (Exception e) {
+			Toast.makeText(context,
+				"SMS faild, please try again later!",
+				Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+		  }
+		  
+		  
+		  ////
+		  
+
 	}
 }
