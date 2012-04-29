@@ -43,8 +43,8 @@ public class LogActivity extends ListActivity{
 	
 	private void fillData(){
 		Log.d(TAG,"in fillData");
-		for(int i = 0; i < 5; i++)
-			lDb.InsertLog(i, "2:30", "02/04", 1, CALL, "idk", "518-813-6375");
+		//for(int i = 0; i < 5; i++)
+			//lDb.InsertLog(i, "2:30", "02/04", 1, CALL, "idk", "518-813-6375");
 		
 //		if(mCurrent == null){
 //			mLogItems.add(new LogEntryItem("","",0,0,NO_LOGS,"-1"));

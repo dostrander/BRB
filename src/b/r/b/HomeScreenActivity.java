@@ -463,8 +463,9 @@ public class HomeScreenActivity extends TabActivity {
     
     private void changeCurrent(){
     	MessageActivity.changeMessage(mCurrent);
-    	if(mCurrent == null)
+    	if(mCurrent == null){
     		noMessage();
+    	}
     	else{
     		inputMessage.setText(mCurrent.text);
     		disableMessage();

@@ -73,6 +73,7 @@ public class ChildInteraction extends Activity{
 		
 		int pid = c.getInt(c.getColumnIndex(PARENT_ID));
 		String stringPid = String.valueOf(pid);
+		c.close();
 		
 		int number = GetNumberFromChild(cid);
 		String stringNumbers = String.valueOf(number);
@@ -167,6 +168,7 @@ public class ChildInteraction extends Activity{
 		, null, null, null);
 		
 		String a = c.getString(CNUMBERS_COLUMN);
+		c.close();
 		int number = Integer.parseInt(a);
 		
 		return number;

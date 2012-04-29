@@ -19,6 +19,7 @@ import static b.r.b.Constants.*;
 
 
 public class ParentInteraction extends Activity{
+	private static final String TAG = "ParentInteraction";
 	//Constants used to access a column using the cursor getString() method later
 	private final int PID_COLUMN = 1;
 	private final int PARENT_ID_COLUMN = 4;
@@ -52,7 +53,7 @@ public class ParentInteraction extends Activity{
 		Cursor c = dbr.query(PARENT_TABLE, new String[] {ID,MESSAGE}, MESSAGE+"=?"
 				, new String[]{oldMessage}, null, null, null);
 		String pid = c.getString(PID_COLUMN);
-		
+		c.close();
 		ContentValues values = new ContentValues();
 		values.put(ID, pid);
 		values.put(MESSAGE,newMessage);
@@ -100,12 +101,14 @@ public class ParentInteraction extends Activity{
 	//an array of the parent ids
 	
 	public Cursor GetAllParentMessages(){
+		Log.d(TAG,"in GetAllParentMessages");
 		SQLiteDatabase db = parent.getReadableDatabase();
 		
 		return db.query(PARENT_TABLE, new String[]{ID,MESSAGE}, null, 
 				null, null, null, null,null);
 	}
 	public Cursor SearchParentByMessage(String message){
+		Log.d(TAG,"in SearchParentByMessage");
 		SQLiteDatabase db = parent.getReadableDatabase();
 	
 		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE}, MESSAGE+"=?"
@@ -113,14 +116,26 @@ public class ParentInteraction extends Activity{
 	
 	}
 	public Message GetParentByMessage(String message){
+		Log.d(TAG,"in GetParentByMessage");
+		ChildInteraction cDb = new ChildInteraction(context);
 		Cursor c = SearchParentByMessage(message);
+			
 		if(c.moveToFirst()){
-			return new Message(c.getString(c.getColumnIndex(MESSAGE)),c.getInt(c.getColumnIndex(ID)));
-		} else return null;
+			int id = c.getInt(c.getColumnIndex(ID));
+			Cursor cc = cDb.SearchChildByParentId(id);
+			if(cc != null){
+				Message m = new Message(c.getString(c.getColumnIndex(MESSAGE)),id,cc);
+				c.close();
+				cDb.Cleanup();
+				return m;
+			}
+		}
+		return null;
 	}
 	
 		//To search by ID (not sure why you would) just pass the id as a string
 	public Cursor SearchParentById(int id){
+		Log.d(TAG,"in SearchParentById");
 		SQLiteDatabase db = parent.getReadableDatabase();
 		
 		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE},ID+"=?"
@@ -128,12 +143,23 @@ public class ParentInteraction extends Activity{
 	}
 		
 	public Message GetParentById(int id){
+		Log.d(TAG,"in GetParentById");
+		ChildInteraction cDb = new ChildInteraction(context);
 		Cursor c = SearchParentById(id);
-		Log.d("DatabaseInteraction", String.valueOf(c.getCount()));
 		if(c.moveToFirst()){
-			return new Message(c.getString(c.getColumnIndex(MESSAGE)),Integer.valueOf(id));
-		} else return null;
+			Cursor cc = cDb.SearchChildByParentId(id);
+			if(cc != null){
+				Message m = new Message(c.getString(c.getColumnIndex(MESSAGE)),id,cc);
+				c.close();
+				cDb.Cleanup();
+				return m;
+			}
+		}
+		return null;
 	}
+			//return new Message(c.getString(c.getColumnIndex(MESSAGE)),Integer.valueOf(id));
+//		} else return null;
+//	}
 		//To search by childID just pass the number
 		//remember, c may be null so make sure you try catch when you call
 		//also I'm not sure if this will return all the messages with the sent child ID

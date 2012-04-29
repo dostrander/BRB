@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Stack;
 
+import b.r.b.Message.ChildMessage;
+
 
 
 import android.app.Activity;
@@ -65,11 +67,10 @@ public class MessageActivity extends Activity {
 	private static final int 	PICK_CONTACT_ID = 5;
 	
 	// Variables
-	private static Message 	mMessage;
-	private static TextView vStartTime;
-	private static TextView vEndTime;
-	
-	private ContactMessageListAdapter 	mAdapter;
+	private static Message 						mMessage;
+	private static TextView 					vStartTime;
+	private static TextView 					vEndTime;
+	private static ContactMessageListAdapter 	mAdapter;
 	private ListView 					vContactMessageList;
 	private TextView 					vPriority;
 	private RadioButton					vHiButton;
@@ -363,6 +364,7 @@ public class MessageActivity extends Activity {
 	}
 	public static void changeMessage(Message current){
 		mMessage = current;
+		mAdapter.notifyDataSetChanged();
 	}
 	public static void noMessage(){
 		mMessage = null;
@@ -386,28 +388,28 @@ public class MessageActivity extends Activity {
 	private class ContactMessageListAdapter extends BaseAdapter {
 		private class ViewHolder{		// holder class for the view
 			TextView text;
+			TextView names;
 			ImageView add;
+			ImageView addNames;
 		}
 		private LayoutInflater inflater;
-		private Context context;
-		MessageActivity messageActivity;;
 	
 		public ContactMessageListAdapter(Context ctx){
 			inflater = LayoutInflater.from(ctx);
-			context = ctx;
-			messageActivity = (MessageActivity) ctx;
 		}
 		
 		public View getView(final int position, View convertView, ViewGroup parent){
         	final ViewHolder holder;
         	
-        	final String tempObject = getItem(position);
+        	final ChildMessage tempObject = getItem(position);
          
         	if (convertView == null) {
         		convertView = inflater.inflate(R.layout.message_item, null);
         		holder = new ViewHolder();
-        		holder.text = (TextView) 	convertView.findViewById(R.id.contact_specific_message_text);
-        		holder.add  = (ImageView)	convertView.findViewById(R.id.add_message_button);
+        		holder.text 	= (TextView) 	convertView.findViewById(R.id.contact_specific_message_text);
+        		holder.names 	= (TextView)	convertView.findViewById(R.id.names);
+        		holder.addNames = (ImageView) 	convertView.findViewById(R.id.add_names_button);
+        		holder.add  	= (ImageView)	convertView.findViewById(R.id.add_message_button);
         		holder.add.setVisibility(View.GONE);
         		holder.text.setTag(getItem(position));
         		convertView.setTag(holder);
@@ -422,7 +424,7 @@ public class MessageActivity extends Activity {
 
 				}
         	});
-        	convertView.findViewById(R.id.contact_specific_message_text).setOnClickListener(new OnClickListener(){
+        	holder.names.setOnClickListener(new OnClickListener(){
     				public void onClick(View v) {
     					AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);
 
@@ -448,14 +450,15 @@ public class MessageActivity extends Activity {
     					alert.show();
     				}
             	});
-        	convertView.findViewById(R.id.add_names_button).setOnClickListener(new OnClickListener(){
+        	holder.addNames.setOnClickListener(new OnClickListener(){
     				public void onClick(View v) {
     				}
             	});
 //    		holder.text = (TextView) convertView.findViewById(R.id.message_item_text);
 //    		holder.select = (Button) convertView.findViewById(R.id.message_item_select_button);
 //    		holder.edit = (Button) convertView.findViewById(R.id.message_item_edit_button);
-    		holder.text.setText(getItem(position));
+    		holder.text.setText(tempObject.text);
+    		holder.names.setText(tempObject.namesText);
 			return convertView;
 		}
 
@@ -464,9 +467,9 @@ public class MessageActivity extends Activity {
 			else return mMessage.cMessages.size();
 		}
 
-		public String getItem(int position) {
+		public ChildMessage getItem(int position) {
 			// TODO Auto-generated method stub
-			return mMessage.cMessages.get(position).text;
+			return mMessage.cMessages.get(position);
 		}
 
 		public long getItemId(int position) {
@@ -532,7 +535,9 @@ public class MessageActivity extends Activity {
 			holder.checked.setChecked(numbers.get(key).checked);
 			holder.checked.setOnClickListener(new OnClickListener(){
 				public void onClick(View v) {
-						numbers.get(key).checked = !numbers.get(key).checked;
+					boolean checked = !numbers.get(key).checked;
+					String n = numbers.get(key).name;
+					numbers.put(key, new Holder(n,checked));
 				}
 			});
 			v.setTag(holder);

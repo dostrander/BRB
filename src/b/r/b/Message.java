@@ -38,10 +38,6 @@ public class Message{
 	// Variables
 	private int DB_ID;
 	
-	
-	
-	
-	
 	private ChildMessage header;
 	ArrayList<ChildMessage> cMessages;
 	public String 				text;													// Text of the message to be sent
@@ -83,6 +79,11 @@ public class Message{
 			text = t;											// Set text for child
 			numbers = new HashMap<String,Integer>();			// init numbers hashmap
 			addNumbers(ids,nums);								
+		}
+		ChildMessage(String t, int id, String num){
+			text = t;
+			numbers = new HashMap<String,Integer>();
+			numbers.put(num, id);
 		}
 		// Boolean Instructions
 		public boolean containsNumber(String n){				// to see if the cMessage selected 
@@ -132,7 +133,7 @@ public class Message{
 	 * 		tells whether or not it is a child and gets database id
 	 */
 	public Message(String t,int db_id){
-	 	Log.d(TAG,"in Message Constructor");
+		Log.d(TAG,"new Message Constructor");
 	 	startTime	= Calendar.getInstance();
 	 	endTime 	= Calendar.getInstance(); 
 	 	header = new ChildMessage();
@@ -140,16 +141,29 @@ public class Message{
 		cMessages			= new ArrayList<ChildMessage>();
 		DB_ID = db_id;
 	}
-	public Message(String t, int[] cids, int dbid){
-	 	Log.d(TAG,"in Message Constructor");
+	public Message(String t, int dbid, Cursor c){
+		Log.d(TAG,"old Message Contructor");
 	 	startTime	= Calendar.getInstance();
-	 	endTime 	= Calendar.getInstance(); 
+	 	endTime 	= Calendar.getInstance();
+	 	header = new ChildMessage();
 		text 				= new String(t);											// Set text
 		cMessages			= new ArrayList<ChildMessage>();
-					
-		getChildrens(cids);// get chidren from the db
-		// the number of the contact
 		DB_ID = dbid;
+		
+		String tt;
+		String num; 
+		int id;
+
+		if(c.moveToFirst())
+			do{
+				tt 	= c.getString(c.getColumnIndex(MESSAGE));
+				num = c.getString(c.getColumnIndex(NUMBER));
+				id 	= (int) c.getLong(c.getColumnIndex(ID));
+				if(childContainsMessage(t))
+					getChild(t).numbers.put(num,id);
+				else cMessages.add(new ChildMessage(tt,id,num));
+			}while(c.isAfterLast());
+		c.close();
 	}
 	
 	// setters
@@ -249,10 +263,12 @@ public class Message{
 	// Setters
 		// For Header
 	public void addHeaderToChild(Context ctx){
+		Log.d(TAG,"in addHeaderToChild");
 		ChildInteraction cDb = new ChildInteraction(ctx);// ((MessageActivity)ctx).getDatabase();
 		for(String key : header.numbers.keySet())
 			if(header.numbers.get(key) < 0)
 				header.numbers.put(key, (int)cDb.InsertMessage(key, header.text, DB_ID));
+		cDb.Cleanup();
 		cMessages.add(header);
 		clearHeader();
 	}
