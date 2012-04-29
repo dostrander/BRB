@@ -20,7 +20,7 @@ public class logDB extends SQLiteOpenHelper {
 			   + " INTEGER NOT NULL, " + TIME + " TEXT NOT NULL, " + DATE 
 			   + " TEXT NOT NULL, " + AMPM + " INTEGER NOT NULL, " + TYPE 
 			   + " INTEGER NOT NULL, " + RECEIVED_MESSAGE + " TEXT NOT NULL, " 
-			   + NUMBER + " TEXT NOT NULL);";
+			   + SENT_MESSAGE + " TEXT NOT NULL, " +NUMBER + " TEXT NOT NULL);";
 	/*
 	private static final String DATABASE_CREATE_TABLE_2 =
 			   " CREATE TABLE " + CHILD_TABLE +
