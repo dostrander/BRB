@@ -37,18 +37,19 @@ public class LogInteraction extends Activity{
 		
 	}
 	
-	public Message InsertLog(int pid, String time, String date, int ampm, int type, String msg, String num){
+	public Message InsertLog(int pid, String time, String date, int ampm, int type, String r_msg, String s_msg, String num){
 		SQLiteDatabase db = log.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		values.put(PARENT_ID, pid);
+		
 		values.put(TIME,time);
 		values.put(DATE, date);
 		values.put(AMPM,ampm);
 		values.put(TYPE, type);
-		values.put(RECEIVED_MESSAGE, msg);
+		values.put(RECEIVED_MESSAGE, r_msg);
+		values.put(SENT_MESSAGE, s_msg);
 		values.put(NUMBER,num);
 		long id = db.insertOrThrow(LOG_TABLE, null, values);
-		return new Message(msg,(int) id);
+		return new Message(r_msg,(int) id);
 		
 		
 	}
@@ -68,16 +69,16 @@ public class LogInteraction extends Activity{
 	public Cursor GetAllLogs(){
 		SQLiteDatabase db = log.getReadableDatabase();
 		
-		return db.query(LOG_TABLE, new String[]{ID,PARENT_ID,TIME,DATE,AMPM,TYPE
-				,RECEIVED_MESSAGE,NUMBER}, null,null,null,null,null);
+		return db.query(LOG_TABLE, new String[]{ID,TIME,DATE,AMPM,TYPE
+				,RECEIVED_MESSAGE,SENT_MESSAGE,NUMBER}, null,null,null,null,null);
 		
 	}
 	//return log based on parent id
 	public Cursor SearchLogByParentId(int pid){
 		SQLiteDatabase db = log.getReadableDatabase();
 		
-		return db.query(LOG_TABLE, new String[]{ID,PARENT_ID,TIME,DATE,AMPM,TYPE
-				,RECEIVED_MESSAGE,NUMBER},PARENT_ID+"=?"
+		return db.query(LOG_TABLE, new String[]{ID,TIME,DATE,AMPM,TYPE
+				,RECEIVED_MESSAGE,SENT_MESSAGE,NUMBER},PARENT_ID+"=?"
 				, new String[]{String.valueOf(pid)}, null, null, null);
 	}
 	

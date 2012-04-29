@@ -26,6 +26,7 @@ public interface Constants extends BaseColumns {
 	public static final String AMPM = "ampm";
 	public static final String TYPE = "type";
 	public static final String RECEIVED_MESSAGE = "received_message";
+	public static final String SENT_MESSAGE = "sent_message";
 	public static final String ID = "_id";
 	public static final String MESSAGE = "message";
 	public static final String PARENT_ID = "parent_id";
