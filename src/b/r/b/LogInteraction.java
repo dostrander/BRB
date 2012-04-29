@@ -61,13 +61,13 @@ public class LogInteraction extends Activity{
 	public boolean DeleteLog(int id){
 		SQLiteDatabase db = log.getWritableDatabase();
 		
-		return db.delete(LOG_TABLE, _ID + "=" + id, null) > 0;
+		return db.delete(LOG_TABLE, ID + "=" + id, null) > 0;
 	}
 	//deleting a parent row
 	public Cursor GetAllLogs(){
 		SQLiteDatabase db = log.getReadableDatabase();
 		
-		return db.query(LOG_TABLE, new String[]{_ID,PARENT_ID,TIME,DATE,AMPM,TYPE
+		return db.query(LOG_TABLE, new String[]{ID,PARENT_ID,TIME,DATE,AMPM,TYPE
 				,RECEIVED_MESSAGE,NUMBER}, null,null,null,null,null);
 		
 	}
@@ -75,7 +75,7 @@ public class LogInteraction extends Activity{
 	public Cursor SearchLogByParentId(int id){
 		SQLiteDatabase db = log.getReadableDatabase();
 		
-		return db.query(LOG_TABLE, new String[]{_ID,PARENT_ID,TIME,DATE,AMPM,TYPE
+		return db.query(LOG_TABLE, new String[]{ID,PARENT_ID,TIME,DATE,AMPM,TYPE
 				,RECEIVED_MESSAGE,NUMBER},PARENT_ID+"=?"
 				, new String[]{String.valueOf(id)}, null, null, null);
 	}
