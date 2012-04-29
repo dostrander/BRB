@@ -29,7 +29,8 @@ public class ParentInteraction extends Activity{
 	private logDB log;
 	private parentDB parent;
 	private childDB child;
-	
+	private boolean editSuccess;
+	private boolean deleteSuccess;
 	//private StringArrayConverter strc = new StringArrayConverter();
 	private Context context;
 	
@@ -58,7 +59,10 @@ public class ParentInteraction extends Activity{
 		values.put(ID, pid);
 		values.put(MESSAGE,newMessage);
 		//did it work?
-		return dbw.update(PARENT_TABLE, values, null, null) > 0;
+		editSuccess = dbw.update(PARENT_TABLE, values, null, null) > 0;
+		dbr.close();
+		dbw.close();
+		return editSuccess;
 	}
 	
 	public boolean ParentEditMessage(int pid, String newMessage){
@@ -74,15 +78,19 @@ public class ParentInteraction extends Activity{
 		values.put(ID, stringPid);
 		values.put(MESSAGE,newMessage);
 		//did it work?
-		return db.update(PARENT_TABLE, values, null, null) > 0;
+		editSuccess = db.update(PARENT_TABLE, values, null, null) > 0;
+		db.close();
+		
+		return editSuccess;
 	}
 	
 	
 	//deleting a parent row
 	public boolean DeleteParent(String message){
 		SQLiteDatabase db = parent.getWritableDatabase();
-		
-		return db.delete(PARENT_TABLE, MESSAGE + "=" + message, null) > 0;
+		deleteSuccess = db.delete(PARENT_TABLE, MESSAGE + "=" + message, null) > 0;
+		db.close();
+		return deleteSuccess;
 	}
 	//to insert a message, you pass the string of the message, and an
 	//array of strings that contain all the numbers it is used for	
@@ -93,6 +101,7 @@ public class ParentInteraction extends Activity{
 		ContentValues values = new ContentValues();
 		values.put(MESSAGE, message);
 		long id = db.insertOrThrow(PARENT_TABLE, null, values);
+		db.close();
 		return new Message(message,(int) id);
 	}
 	

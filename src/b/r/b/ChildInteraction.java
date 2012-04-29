@@ -31,7 +31,7 @@ public class ChildInteraction extends Activity{
 	
 	//private StringArrayConverter strc = new StringArrayConverter();
 	private Context context;
-	
+	private boolean editSuccess;
 	public ChildInteraction(Context ctx){
 		context = ctx;
 		
@@ -40,7 +40,30 @@ public class ChildInteraction extends Activity{
 	}
 	
 	
-	
+	public boolean ChildEditMessage(String oldMessage, int pid, String newMessage){
+		SQLiteDatabase dbr = child.getReadableDatabase();
+		SQLiteDatabase dbw = child.getWritableDatabase();
+		
+		Cursor c = dbr.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID} 
+				,MESSAGE+"=?"+" AND " + PARENT_ID + "=?"
+				, new String[]{oldMessage,String.valueOf(pid)}, null, null, null);
+		//although confusing, this just means get from column 1
+		int cid = c.getInt(PID_COLUMN);
+		//int pid = c.getInt(c.getColumnIndex(PARENT_ID));
+		String stringPid = String.valueOf(pid);
+		int number = GetNumberFromChild(cid);
+		String stringNumbers = String.valueOf(number);
+		ContentValues values = new ContentValues();
+		values.put(ID, cid);
+		values.put(NUMBER, stringNumbers);
+		values.put(MESSAGE,newMessage);
+		values.put(PARENT_ID,stringPid);
+		//did it work?
+		editSuccess = dbw.update(CHILD_TABLE, values, null, null) > 0;
+		dbr.close();
+		dbw.close();
+		return dbw.update(CHILD_TABLE, values, null, null) > 0;
+	}
 	
 	public boolean ChildEditMessage(String oldMessage, String newMessage){
 		SQLiteDatabase dbr = child.getReadableDatabase();
@@ -59,6 +82,9 @@ public class ChildInteraction extends Activity{
 		values.put(MESSAGE,newMessage);
 		values.put(PARENT_ID,stringPid);
 		//did it work?
+		editSuccess = dbw.update(CHILD_TABLE, values, null, null) > 0;
+		dbr.close();
+		dbw.close();
 		return dbw.update(CHILD_TABLE, values, null, null) > 0;
 	}
 	
@@ -84,7 +110,10 @@ public class ChildInteraction extends Activity{
 		values.put(NUMBER, stringNumbers);
 		values.put(PARENT_ID,stringPid);
 		//did it work?
-		return dbw.update(CHILD_TABLE, values, null, null) > 0;
+		editSuccess = dbw.update(CHILD_TABLE, values, null, null) > 0;
+		dbr.close();
+		dbw.close();
+		return editSuccess;
 	}
 	
 	
