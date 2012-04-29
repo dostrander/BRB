@@ -31,6 +31,7 @@ import android.widget.Toast;
  * 			messages, adding to databases, and changing the text
  */
 public class Message{
+	// Convenience 
 	private final String TAG = "Message";
 	private static final String CLICK_TO_EDIT = "Click to Edit Text";
 	
@@ -51,39 +52,54 @@ public class Message{
 	// finish time
 	
 	
-	public class ChildMessage{
-		String text;
-		HashMap<String,Integer> numbers;
-//		ArrayList<Integer> ids;
-//		ArrayList<String> numbers;
-		String namesText;
-		ChildMessage(){
-			text = CLICK_TO_EDIT;
-			namesText = CLICK_TO_ADD_NAMES;
-//			ids = new ArrayList<Integer>();
-//			numbers = new ArrayList<String>();
-			numbers = new HashMap<String,Integer>();
-		}
-		ChildMessage(String t, int i, String num){
-			text = t;
-//			ids = new ArrayList<Integer>();
-//			numbers = new ArrayList<String>();
-			numbers = new HashMap<String,Integer>();
-			addNumbers(i,num);
+	
+	/* 	ChildMessage
+	 * 		Basically the contact specific messages, but that was too long of
+	 * 		a name. 
+	 * 		Contains text - to send to the appropriate contacts
+	 * 		numbers - hashmap of numbers and there ids. Needs to check hashmap
+	 * 			for number if its in there then send the text if not send the norm
+	 * 		namesText - convenience for the view, just contains the names of the
+	 * 			contacts, if they are in the your contacts list, if not just
+	 * 			contains the number
+	 */
+	public class ChildMessage{ 
+		private final String TAG = "ChildMessage";				// for logs
+		String text;											// text to send
+		HashMap<String,Integer> numbers;						// numbers and db_ids
+		String namesText;										// String to set in view
 			
+		// Constructors
+			// For Header, initializes the numbers hashmap and sets the
+			// strings that will be shown in the view to the header defaults
+		ChildMessage(){
+			text = CLICK_TO_EDIT;								// Set to Header default
+			namesText = CLICK_TO_ADD_NAMES;						// Set to Header default
+			numbers = new HashMap<String,Integer>();			// init numbers to none
 		}
-		public boolean containsNumber(String n){
-			return numbers.containsKey(n);
-//			for(String num : numbers.keySet())
-//				if(n.equals(num))
-//					return true;
-//			return false;
+			// For NonHeader, initializes everything and sets the numbers
+			// for already made ones
+		ChildMessage(String t, int ids[], String nums[]){				
+			text = t;											// Set text for child
+			numbers = new HashMap<String,Integer>();			// init numbers hashmap
+			addNumbers(ids,nums);								
 		}
-		public void addNumbers(int i, String num){
-//			ids.add(i);
-//			numbers.add(num);
-			numbers.put(num, i);
+		// Boolean Instructions
+		public boolean containsNumber(String n){				// to see if the cMessage selected 
+			return numbers.containsKey(n);}							// contains the number
+		// Getters
+
+		// Setters
+		public void addNumbers(int ids[], String nums[]){
+			for(int n =0; n < ids.length; n++)
+				numbers.put(nums[n],ids[n]);
 		}
+//		public void addNumber(int i, String num){
+//			numbers.put(num, i);
+//		}
+			// For Headers
+
+		// Convenience 
 		public void numbersToString(Context ctx){
 			boolean first = true;
 			namesText = "";
@@ -97,7 +113,6 @@ public class Message{
 				}
 			}
 		}
-
 		private String numberToString(String num, Context ctx){
 			Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num));
 			Cursor cursor = ctx.getContentResolver().query(contactUri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, 
@@ -107,75 +122,9 @@ public class Message{
 					return cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
 			return null;
 		}
-	}
+	}// End of Child Class
 	
-	public boolean headerContainsNumber(String num){
-		return header.containsNumber(num);
-	}
-	public ChildMessage getHeader(){
-		return header;
-	}
-	public String getHeaderNames(){
-		return header.namesText;
-	}
-	public String getHeaderText(){
-		return header.text;
-	}
-	public void addNewChildMessage(Context ctx){
-		
-		ChildInteraction cDb = new ChildInteraction(ctx);// ((MessageActivity)ctx).getDatabase();
-		for(String key : header.numbers.keySet())
-			if(header.numbers.get(key) < 0)
-				cDb.InsertMessage(key, header.text, DB_ID);
-		cMessages.add(header);
-		clearHeader();
-	}
-	private void clearHeader(){
-		header = new ChildMessage();
-//		header.ids.clear();
-//		header.numbers.clear();
-//		header.text = CLICK_TO_EDIT;
-//		header.namesText = CLICK_TO_ADD_NAMES;
-	}
-	public int headerNumbersSize(){return header.numbers.size();}
-	public void setHeaderText(String t){header.text = t;}
-	public void addHeaderContacts(Context ctx,String[] nums){
-		for(String n : nums)
-			addContactHeader(n);
-		header.numbersToString(ctx);
-	}
-	private void addContactHeader(String n){
-		header.addNumbers(-1, n);
-	}
 
-	public boolean checkHeaderForDupNumbers(){
-		for(String num : header.numbers.keySet())
-			if(isDuplicateNumber(num))
-				return true;
-		return false;
-	}
-	public boolean isDuplicateNumber(String t){
-		for(ChildMessage c : cMessages)
-			if(c.containsNumber(t))
-				return true;
-		return false;
-	}
-	private void addChildMessages(Cursor c){
-		String text;
-		int id;
-		String num;
-
-		//if(c.moveToFirst())
-			//do{
-				
-		
-	}
-	public ChildMessage getChild(String t){
-		for(ChildMessage c : cMessages)
-			if(c.text.equals(t))
-				return c;
-		return header;
-	}
 
 		
 	/*	Message Constructor
@@ -267,30 +216,102 @@ public class Message{
 					startTime.get(Calendar.MONTH), 
 					startTime.get(Calendar.DAY_OF_MONTH));
 		}
-		Log.d(TAG,"start" +String.valueOf(startTime.get(Calendar.YEAR)) + " " + 
-				String.valueOf(startTime.get(Calendar.MONTH)) + " " +
-				String.valueOf(startTime.get(Calendar.DAY_OF_MONTH)) + " " +
-				String.valueOf(startTime.get(Calendar.HOUR)) + " " +
-				String.valueOf(startTime.get(Calendar.MINUTE)));
-		Log.d(TAG,"end" +String.valueOf(endTime.get(Calendar.YEAR)) + " " + 
-				String.valueOf(endTime.get(Calendar.MONTH)) + " " +
-				String.valueOf(endTime.get(Calendar.DAY_OF_MONTH)) + " " +
-				String.valueOf(endTime.get(Calendar.HOUR)) + " " +
-				String.valueOf(endTime.get(Calendar.MINUTE)));
+	}
+	
+
+	
+	// MESSAGE FUNCTIONS
+	
+	// Getters
+		// For Header
+	public ChildMessage getHeader(){
+		return header;
+	}
+	public String getHeaderNames(){
+		return header.namesText;
+	}
+	public String getHeaderText(){
+		return header.text;
+	}	
+	public int headerNumbersSize(){return header.numbers.size();}
+	
+	
+		// For nonHeaders 
+	public ChildMessage getChild(String t){
+		for(ChildMessage c : cMessages)
+			if(c.text.equals(t))
+				return c;
+		return header;
 	}
 	
 	
-	/*	addContactSpecificMessage
-	 * 		Adds a child Message to specificMessages
-	 */
-	public void addContactSpecificMessage(String number, String t){
-		Log.d(TAG,"in addContactSpecificMessage");
-		// Add to database
-		int db_id = 0;
-		//specificNumbers.put(number, specificMessages.size());
-		//specificMessages.add(t);
-																							// make it a child message
+	
+	// Setters
+		// For Header
+	public void addHeaderToChild(Context ctx){
+		ChildInteraction cDb = new ChildInteraction(ctx);// ((MessageActivity)ctx).getDatabase();
+		for(String key : header.numbers.keySet())
+			if(header.numbers.get(key) < 0)
+				header.numbers.put(key, (int)cDb.InsertMessage(key, header.text, DB_ID));
+		cMessages.add(header);
+		clearHeader();
 	}
+	private void clearHeader(){
+		header = new ChildMessage();
+//		header.ids.clear();
+//		header.numbers.clear();
+//		header.text = CLICK_TO_EDIT;
+//		header.namesText = CLICK_TO_ADD_NAMES;
+	}
+	public void setHeaderText(String t){header.text = t;}
+	public void addHeaderContacts(Context ctx,String[] nums){
+		for(String n : nums)
+			addContactHeader(n);
+		header.numbersToString(ctx);
+	}
+	private void addContactHeader(String n){
+		header.numbers.put(n, -1);
+	}
+
+	
+	// Boolean Operations
+		// Header
+	public boolean checkHeaderForDupNumbers(){
+		for(String num : header.numbers.keySet())
+			if(isDuplicateNumber(num))
+				return true;
+		return false;
+	}	
+		// nonHeader
+	public boolean isDuplicateNumber(String t){
+		for(ChildMessage c : cMessages)
+			if(c.containsNumber(t))
+				return true;
+		return false;
+	}
+	public boolean headerContainsNumber(String num){
+		return header.containsNumber(num);}
+
+	
+	
+	
+	
+	
+	
+	private void addChildMessages(Cursor c){
+		String text;
+		int id;
+		String num;
+	}
+	
+
+	
+	
+	
+	
+	
+	
+	
 	
 	/*	sendSMS
 	 * 		check whether or not there is a contact
