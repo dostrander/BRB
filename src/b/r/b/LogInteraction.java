@@ -26,7 +26,8 @@ public class LogInteraction extends Activity{
 	private final int CNUMBERS_COLUMN = 2;
 	//initializing the local objects
 	private logDB log;
-	
+	private parentDB parent;
+	private childDB child;
 	private StringArrayConverter strc = new StringArrayConverter();
 	private Context context;
 	
@@ -66,7 +67,7 @@ public class LogInteraction extends Activity{
 	public Cursor GetAllLogs(){
 		SQLiteDatabase db = log.getReadableDatabase();
 		
-		return db.query(LOG_TABLE, new String[]{PARENT_ID,TIME,DATE,AMPM,TYPE
+		return db.query(LOG_TABLE, new String[]{_ID,PARENT_ID,TIME,DATE,AMPM,TYPE
 				,RECEIVED_MESSAGE,NUMBER}, null,null,null,null,null);
 		
 	}
@@ -74,7 +75,7 @@ public class LogInteraction extends Activity{
 	public Cursor SearchLogByParentId(int id){
 		SQLiteDatabase db = log.getReadableDatabase();
 		
-		return db.query(LOG_TABLE, new String[]{ID,PARENT_ID,TIME,DATE,AMPM,TYPE
+		return db.query(LOG_TABLE, new String[]{_ID,PARENT_ID,TIME,DATE,AMPM,TYPE
 				,RECEIVED_MESSAGE,NUMBER},PARENT_ID+"=?"
 				, new String[]{String.valueOf(id)}, null, null, null);
 	}
@@ -101,6 +102,12 @@ public class LogInteraction extends Activity{
 	@Override
 	protected void onDestroy() {
 	    super.onDestroy();
+	    if (parent != null) {
+	        parent.close();
+	    }
+	    if (child != null) {
+	        child.close();
+	    }
 	    if (log != null){
 	    	log.close();
 	    }

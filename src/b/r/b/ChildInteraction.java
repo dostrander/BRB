@@ -21,15 +21,15 @@ import static b.r.b.Constants.*;
 public class ChildInteraction extends Activity{
 	//Constants used to access a column using the cursor getString() method later
 	private final int PID_COLUMN = 1;
-	private final int PARENT_ID_COLUMN = 4;
-	private final int PCHILD_ID_COLUMN = 3;
+	//private final int PARENT_ID_COLUMN = 4;
+	//private final int PCHILD_ID_COLUMN = 3;
 	private final int CNUMBERS_COLUMN = 2;
 	//initializing the local objects
 	private logDB log;
 	private parentDB parent;
 	private childDB child;
 	
-	private StringArrayConverter strc = new StringArrayConverter();
+	//private StringArrayConverter strc = new StringArrayConverter();
 	private Context context;
 	
 	public ChildInteraction(Context ctx){
