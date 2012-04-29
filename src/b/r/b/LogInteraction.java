@@ -40,7 +40,7 @@ public class LogInteraction extends Activity{
 	public Message InsertLog(int pid, String time, String date, int ampm, int type, String r_msg, String s_msg, String num){
 		SQLiteDatabase db = log.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		
+		values.put(PARENT_ID, pid);
 		values.put(TIME,time);
 		values.put(DATE, date);
 		values.put(AMPM,ampm);
