@@ -23,6 +23,8 @@ import android.widget.TextView;
 public class LogActivity extends ListActivity{
     private final int CALL = 0;
 	private final int TEXT = 1;
+	private final int AM = 0;
+	private final int PM = 1;
 	private static final String TAG = "LogActivity";
 	private static final String NO_LOGS = "No Log Entries for this Message";
 	private Message mCurrent;
@@ -56,8 +58,8 @@ public class LogActivity extends ListActivity{
 //			mLogItems.add(new LogEntryItem("","",0,0,NO_LOGS,"-1"));
 //			//tempCursor.moveToNext();
 //		}
-		//lDb.InsertLog(05342234234, "10:23", "3/23", 1, TEXT, "What are you up to?", "Shut up!", "3663823901");
-		//lDb.InsertLog(12343530, "4:67", "5/7", 0, CALL, "", "Shut up77!", "1234567890");
+		lDb.InsertLog(05342234234, "10:23", "3/23", PM, TEXT, "What are you up to?", "Shut up!", "3663823901");
+		lDb.InsertLog(12343530, "4:67", "5/7", AM, CALL, "", "Shut up77!", "1234567890");
 	}
 	
 	
@@ -139,11 +141,11 @@ public class LogActivity extends ListActivity{
 	    	
 	    	if(expand[position]){
 				Log.d(TAG,"expanded");
-				holder.expanded.setVisibility(View.VISIBLE);
+				holder.expansion.setVisibility(View.VISIBLE);
 			}
 			else{
 				Log.d(TAG,"not expanded");
-				holder.expanded.setVisibility(View.GONE);
+				holder.expansion.setVisibility(View.GONE);
 			}
 
 	        
