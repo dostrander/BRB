@@ -10,8 +10,6 @@
     </uses-permission>
     <uses-permission android:name="android.permission.RECEIVE_SMS">
     </uses-permission>
-	<uses-permission android:name="android.permission.WRITE_SMS">
-    </uses-permission>
     <uses-permission android:name="android.permission.READ_PHONE_STATE">
     </uses-permission>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS">
@@ -47,16 +45,20 @@
 		  android:configChanges="orientation"
 		  android:screenOrientation="portrait"/>
         
-         <receiver android:name=".IncomingListener"> 
-            <intent-filter> 
+         <receiver android:name=".IncomingListener"
+             android:enabled="true"
+             android:exported="true"> 
+            <intent-filter>
                 <action android:name=
         		    "android.intent.action.PHONE_STATE" />
                 <action android:name=
-                    "android.provider.Telephony.SMS_RECEIVED" /> 
+                    "android.provider.Telephony.SMS_RECEIVED" />
+                <action android:name="android.provider.Telephony.SMS_SENT" />  
             </intent-filter> 
         </receiver>
-         <receiver android:name=".Message"  android:enabled="true">
-            <intent-filter>
+         <receiver android:name=".Message"  android:enabled="true" 
+             android:exported="true">
+            <intent-filter >
                 <action android:name="android.provider.Telephony.SMS_SENT" />
             </intent-filter>
         </receiver>
