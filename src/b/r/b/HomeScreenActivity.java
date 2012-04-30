@@ -17,7 +17,9 @@ package b.r.b;
 import static b.r.b.Constants.*;
 // for android
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.TabActivity;
 import android.app.AlertDialog.Builder;
 import android.appwidget.AppWidgetManager;
@@ -59,6 +61,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 // java stuff
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /*	HomeScreenActivity
  * 		Starts the application bringing up the main screen	
@@ -87,6 +90,8 @@ public class HomeScreenActivity extends TabActivity {
 	static TextView inputMessage;
 	private static ListView messageList;
 	ListView messageListView;
+	
+	AlarmManager alarmManager;
 
 	private static MessageListCursorAdapter adapter;
 	static ParentInteraction pDb;
@@ -376,8 +381,36 @@ public class HomeScreenActivity extends TabActivity {
     	
     }
 
+    private int getEndTime(){
+    	SharedPreferences prefs = this.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+    	Calendar current = Calendar.getInstance(); 
+    	Calendar end = Calendar.getInstance();
+    	
+    	end.set(prefs.getInt("END_TIME_YEAR", 0), prefs.getInt("END_TIME_MONTH", 0), 
+    			prefs.getInt("END_TIME_DAY", 0), prefs.getInt("END_TIME_HOUR", 0), 
+    			prefs.getInt("END_TIME_MIN", 0));
+    	
+    	if(end.getTimeInMillis() == 0)
+    		return(-1);
+    	
+    	int difference = (int)(end.getTimeInMillis() - current.getTimeInMillis());
+    	difference = difference - end.get(end.SECOND)*1000;
+    	
+    	return(difference);
+    }
     
     private void enableMessage(){
+    	// Make an alarm for the end time
+    	int time = getEndTime();
+    	if(time >= 0)
+    	{
+    		Intent intent = new Intent(this, AlarmReceiver.class);
+    		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+    		alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    		alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+time, pendingIntent);
+    	}
+    	
     	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
     	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();
     	inputMessage.setTextColor(Color.WHITE);
@@ -401,6 +434,18 @@ public class HomeScreenActivity extends TabActivity {
     }
     
     private void disableMessage(){
+    	
+    	// Cancel the alarm
+    	int time = getEndTime();
+    	if(time >= 0)
+    	{
+    		Intent intent = new Intent(this, AlarmReceiver.class);
+    		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+    		alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    		alarmManager.cancel(pendingIntent);
+    	}
+    	
     	SharedPreferences prefs = getSharedPreferences(PREFS, Activity.MODE_PRIVATE);
     	SharedPreferences.Editor editor = prefs.edit();
     	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);

@@ -2,6 +2,7 @@ package b.r.b;
 
 // Java Imports
 import static b.r.b.Constants.*;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -34,6 +36,7 @@ public class Message{
 	// Convenience 
 	private final String TAG = "Message";
 	private static final String CLICK_TO_EDIT = "Click to Edit Text";
+	Context context;
 	
 	// Variables
 	private int DB_ID;
@@ -145,6 +148,7 @@ public class Message{
 	}
 	public Message(String t, int dbid, Cursor c,Context ctx){
 		Log.d(TAG,"old Message Contructor");
+		context = ctx;
 	 	startTime	= Calendar.getInstance();
 	 	endTime 	= Calendar.getInstance();
 	 	header = new ChildMessage();
@@ -196,6 +200,16 @@ public class Message{
 	}
 	public void setEndDate(int m, int d, int y, int h, int mi){
 		endTime.set(y,m,d,h,mi);
+		SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+    	SharedPreferences.Editor editor = prefs.edit();
+    	
+    	editor.putInt("END_TIME_YEAR", y);
+    	editor.putInt("END_TIME_MONTH", m);
+    	editor.putInt("END_TIME_DAY", d);
+    	editor.putInt("END_TIME_HOUR", h);
+    	editor.putInt("END_TIME_MIN", mi);
+    	editor.commit();
+    	
 		checkDates();
 	}
 	// getters

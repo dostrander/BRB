@@ -167,8 +167,6 @@ public class Widget extends AppWidgetProvider {
     	    		ComponentName cn = new ComponentName(context,Widget.class);
     	    		AppWidgetManager.getInstance(context).updateAppWidget(cn, remoteViews);
     	    		
-    	    		// Change the main app button
-    	    		
     	    		// Silence Ringer
     	    		AudioManager audiomanage = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     	    		editor.putInt("ringer_mode", audiomanage.getRingerMode());
@@ -191,8 +189,6 @@ public class Widget extends AppWidgetProvider {
     	    		remoteViews.setImageViewResource(R.id.widget_button, R.drawable.disabled_button_selector);
     	    		ComponentName cn = new ComponentName(context,Widget.class);
     	    		AppWidgetManager.getInstance(context).updateAppWidget(cn, remoteViews);
-    	    		
-    	    		// Change the main app button
     	    		
     	    		// Reset ringer
     	    		AudioManager audiomanage = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
