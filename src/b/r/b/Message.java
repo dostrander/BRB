@@ -363,11 +363,11 @@ public class Message{
 	public void sendSMS(String incomingNumber, Context context){
 		Log.d(TAG,"in sendText");
 		//if(specificNumbers.containsKey(incomingNumber));								// If there is a key that matches
-		if(false);
-//			specificMessages.get(incomingNumber).sendSMS(incomingNumber,context);		// Tell that message to send it
-		
-		else{																			// If not
-			SmsManager smsManager = SmsManager.getDefault();							// Get the SmsManager
+//		if(false);
+////			specificMessages.get(incomingNumber).sendSMS(incomingNumber,context);		// Tell that message to send it
+//		
+//		else{																			// If not
+			//SmsManager smsManager = SmsManager.getDefault();							// Get the SmsManager
 			
 			// if we want to track whether or not it was sent we need to change this 
 			//smsManager.sendTextMessage(incomingNumber, 									// And send the text message
@@ -375,7 +375,7 @@ public class Message{
 			send(incomingNumber,context);
 			
 			
-		}
+//		}
 	}
 	
 	private void send(String incomingNumber,Context context){
@@ -387,7 +387,7 @@ public class Message{
         										new Intent(DELIVERED), 0);
         SmsManager		smsManager			= SmsManager.getDefault();					// Get SmsManager
         
-//        //---When the SMS has been send---
+        //---When the SMS has been send---
 //        context.registerReceiver(new BroadcastReceiver(){								// Register Receiver from main context
 //        	@Override
 //            public void onReceive(Context c, Intent i) {								// When the sent signal is received

@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
+import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 public class IncomingListener extends BroadcastReceiver {
 	private final String 		TAG 			= "IncomingListener";
@@ -80,10 +82,9 @@ public class IncomingListener extends BroadcastReceiver {
 	
 	private void sendBackText(String incNum,Context context){
 		Log.d(TAG,"in sendBackText");
-		if(HomeScreenActivity.mCurrent != null)
-			HomeScreenActivity.mCurrent.sendSMS(incNum, context);
-		//Log.d(TAG,currentMessage.text);
-		//currentMessage.sendSMS(incNum);
+		Message current = HomeScreenActivity.mCurrent;
+		if(current != null)
+			current.sendSMS(incNum, context);
 	}
 	
 	
@@ -101,20 +102,13 @@ public class IncomingListener extends BroadcastReceiver {
 			public void onCallStateChanged(int state, String incomingNumber){	// Handle Incoming PhoneState 
 				Log.d(TAG,"in onCallStateChanged");
 				if(state == TelephonyManager.CALL_STATE_RINGING){				// If ringing
-					Log.d(TAG,"in RINGING");
+					Log.d( TAG,"in RINGING");
 					Log.d(TAG, incomingNumber);
 					// * Check if a valid number * 
 					
 					// * Check if more than 1 caller *
 					// * End call or turn off volume or at least stop incoming call
 					//		Screen from showing up*
-																	
-					Log.d(TAG,"DeviceID: " 
-						+ telephonyManager.getDeviceId().toString());
-					Log.d(TAG,"Phone Type: " 
-						+ String.valueOf(telephonyManager.getPhoneType()));
-					Log.d(TAG, "Network Operator: " 
-						+ telephonyManager.getNetworkOperator().toString());
 					addToResponseLog(incomingNumber,null);						// Add a call entry to the 
 																					// response log 
 																					// (null indicates call)
