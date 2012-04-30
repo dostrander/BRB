@@ -338,7 +338,12 @@ public class Message{
 	
 	
 	
-	
+	public String getContactText(String num){
+		for(ChildMessage c : cMessages)
+			if(c.containsNumber(num))
+				return c.text;
+		return null;
+	}
 	
 	private void addChildMessages(Cursor c){
 		String text;
@@ -363,11 +368,12 @@ public class Message{
 	public void sendSMS(String incomingNumber, Context context){
 		Log.d(TAG,"in sendText");
 		//if(specificNumbers.containsKey(incomingNumber));								// If there is a key that matches
-		if(false);
-//			specificMessages.get(incomingNumber).sendSMS(incomingNumber,context);		// Tell that message to send it
-		
+		if(getContactText(incomingNumber) != null)
+			send(incomingNumber,context,getContactText(incomingNumber));
+////			specificMessages.get(incomingNumber).sendSMS(incomingNumber,context);		// Tell that message to send it
+//		
 		else{																			// If not
-			SmsManager smsManager = SmsManager.getDefault();							// Get the SmsManager
+			//SmsManager smsManager = SmsManager.getDefault();							// Get the SmsManager
 			
 			// if we want to track whether or not it was sent we need to change this 
 			//smsManager.sendTextMessage(incomingNumber, 									// And send the text message
@@ -377,7 +383,28 @@ public class Message{
 			
 		}
 	}
-	
+	private void send(String incomingNumber,Context context, String stext){
+        Log.d(incomingNumber,text);
+        String 			SENT 				= "SMS_SENT";
+        String 			DELIVERED 			= "SMS_DELIVERED";
+        PendingIntent 	sentIntent			= PendingIntent.getBroadcast(context, 0,	// Set up sent Pending Intent
+        										new Intent(SENT), 0);
+        PendingIntent 	deliveryIntent	= PendingIntent.getBroadcast(context, 0,		// Set up delivery Pending Intent
+        										new Intent(DELIVERED), 0);
+        SmsManager		smsManager			= SmsManager.getDefault();					// Get SmsManager
+        
+		  try {
+	        smsManager.sendTextMessage(														// Send the text
+        			incomingNumber, null, stext, sentIntent, deliveryIntent);
+			Toast.makeText(context, "SMS Sent!",
+						Toast.LENGTH_LONG).show();
+		  } catch (Exception e) {
+			Toast.makeText(context,
+				"SMS faild, please try again later!",
+				Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+		  }
+	}
 	private void send(String incomingNumber,Context context){
         String 			SENT 				= "SMS_SENT";
         String 			DELIVERED 			= "SMS_DELIVERED";
@@ -387,7 +414,7 @@ public class Message{
         										new Intent(DELIVERED), 0);
         SmsManager		smsManager			= SmsManager.getDefault();					// Get SmsManager
         
-//        //---When the SMS has been send---
+        //---When the SMS has been send---
 //        context.registerReceiver(new BroadcastReceiver(){								// Register Receiver from main context
 //        	@Override
 //            public void onReceive(Context c, Intent i) {								// When the sent signal is received
