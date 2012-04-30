@@ -1,5 +1,7 @@
 package b.r.b;
 
+import java.util.Calendar;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,10 +15,14 @@ public class IncomingListener extends BroadcastReceiver {
 	private final String 		TAG 			= "IncomingListener";
 	private final String 		INCOMING_TEXT 	= "android.provider.Telephony.SMS_RECEIVED";
 	private final String		PHONE_STATE		= "android.intent.action.PHONE_STATE";
+    private final int CALL = 0;
+	private final int TEXT = 1;
 	
 	
 	private TelephonyManager	telephonyManager;
 	public 	Message 			currentMessage;		
+	
+	public static LogInteraction lDb;
 	
 	/*	onReceive
 	 * 		Handles if there is an incoming text or phone state
@@ -37,6 +43,9 @@ public class IncomingListener extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		Log.d(TAG,"in onReceive");
 		Log.d(TAG, intent.getAction().toString());
+		
+		lDb = new LogInteraction(context);
+		
 		if(intent.getAction().equals(INCOMING_TEXT))							// If it is an incoming text
 			handleText(intent,context);													// handle it
 		else if(intent.getAction().equals(PHONE_STATE))							// If it is a call
@@ -138,11 +147,21 @@ public class IncomingListener extends BroadcastReceiver {
 	private void addToResponseLog(String incNum, String msg){
 		if(msg == null){
 			Log.d(TAG,"adding call to response log");
-			// add call to response log
+			Calendar cal = Calendar.getInstance();
+			
+			currentMessage = lDb.InsertLog(HomeScreenActivity.mCurrent.getID(), 
+					String.valueOf(cal.get(Calendar.HOUR))+":"+String.valueOf(cal.get(Calendar.MINUTE)),
+					String.valueOf(cal.get(Calendar.MONTH))+"/"+String.valueOf(cal.get(Calendar.DAY_OF_MONTH)), 
+					cal.AM_PM, CALL, "", HomeScreenActivity.mCurrent.getMessageText(), incNum);
 		}
 		else{
 			Log.d(TAG,"adding text to response log");
-			// add text to response log
+			Calendar cal = Calendar.getInstance();
+
+			currentMessage = lDb.InsertLog(HomeScreenActivity.mCurrent.getID(), 
+					String.valueOf(cal.get(Calendar.HOUR))+":"+String.valueOf(cal.get(Calendar.MINUTE)),
+					String.valueOf(cal.get(Calendar.MONTH))+"/"+String.valueOf(cal.get(Calendar.DAY_OF_MONTH)), 
+					cal.AM_PM, TEXT, msg, HomeScreenActivity.mCurrent.getMessageText(), incNum);
 		}
 				
 	}
