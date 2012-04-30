@@ -72,7 +72,7 @@ public class HomeScreenActivity extends TabActivity {
 	private final String SETTINGS = "settings";
 	private final String NO_MESSAGE = "Click to Edit Message";
 	
-	private static Message mCurrent;
+	public static Message mCurrent;
 
 	// Variables
 	IncomingListener listener;
