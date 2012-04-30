@@ -23,6 +23,8 @@ import android.widget.TextView;
 public class LogActivity extends ListActivity{
     private final int CALL = 0;
 	private final int TEXT = 1;
+	private final int AM = 0;
+	private final int PM = 1;
 	private static final String TAG = "LogActivity";
 	private static final String NO_LOGS = "No Log Entries for this Message";
 	private Message mCurrent;
@@ -34,7 +36,9 @@ public class LogActivity extends ListActivity{
 //		setListAdapter(new LogAdapter(this));
 		lDb = new LogInteraction(this);
 		fillData();
+		Cursor temp = lDb.GetAllLogs();
 		getListView().setAdapter(new LogAdapter(this,lDb.GetAllLogs()));
+		Log.d(TAG,"Count = "+temp.getCount());
 		mCurrent = null;
 
 	}
@@ -54,6 +58,8 @@ public class LogActivity extends ListActivity{
 //			mLogItems.add(new LogEntryItem("","",0,0,NO_LOGS,"-1"));
 //			//tempCursor.moveToNext();
 //		}
+		lDb.InsertLog(05342234234, "10:23", "3/23", PM, TEXT, "What are you up to?", "Shut up!", "3663823901");
+		lDb.InsertLog(12343530, "4:67", "5/7", AM, CALL, "", "Shut up77!", "1234567890");
 	}
 	
 	
@@ -69,6 +75,7 @@ public class LogActivity extends ListActivity{
 	        super(context, c);
 	        this.context = context;
 	        expand = new boolean[c.getCount()];
+	        Log.d(TAG,"Count2 = "+c.getCount());
 	        pDb = new ParentInteraction(LogActivity.this);
 	    }
 
@@ -104,12 +111,12 @@ public class LogActivity extends ListActivity{
 	    	
 	    	final int position = c.getPosition();
 	    	ViewHolder holder = (ViewHolder) v.getTag();
-	    	Message parent = pDb.GetParentById(c.getInt(c.getColumnIndex(PARENT_ID)));
+	    	
 	    	
 	    	holder.date.setText(c.getString(c.getColumnIndex(DATE)));
 	    	holder.time.setText(c.getString(c.getColumnIndex(TIME)));
 	    	holder.number.setText(c.getString(c.getColumnIndex(NUMBER)));
-	    	holder.response.setText(parent.getMessageText());
+	    	holder.response.setText(c.getString(c.getColumnIndex(SENT_MESSAGE)));
 	    	
 	    	//Image for call or text
 	    	if(c.getInt(c.getColumnIndex(TYPE)) == CALL){
@@ -134,11 +141,11 @@ public class LogActivity extends ListActivity{
 	    	
 	    	if(expand[position]){
 				Log.d(TAG,"expanded");
-				holder.expanded.setVisibility(View.VISIBLE);
+				holder.expansion.setVisibility(View.VISIBLE);
 			}
 			else{
 				Log.d(TAG,"not expanded");
-				holder.expanded.setVisibility(View.GONE);
+				holder.expansion.setVisibility(View.GONE);
 			}
 
 	        
