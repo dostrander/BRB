@@ -1,3 +1,14 @@
+/* * * * * * * * * * * * * * * * * * * * * * * 
+ * BRB-Android
+ * AlarmReceiver.java
+ * 
+ * Created: 2012
+ * 
+ * Evan Dodge, Derek Ostrander, Max Shwenk
+ * Jason Mather, Stuart Lang, Will Stahl
+ * 
+ * * * * * * * * * * * * * * * * * * * * * * */
+
 package b.r.b;
 
 import static b.r.b.Constants.MESSAGE_DISABLED;

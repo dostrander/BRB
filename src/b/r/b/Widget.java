@@ -16,10 +16,6 @@
  * 	- Green = Enabled
  */
 
-// To Do:
-//  - Get app to change message on widget enable
-//  - Start the listener on enable
-
 package b.r.b;
 
 import static b.r.b.Constants.*;
