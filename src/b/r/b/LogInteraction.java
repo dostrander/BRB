@@ -1,4 +1,6 @@
-//BRB Derek Ostrander, Stu Lang, Will Stahl, Evan Dodge, Jason Mather
+//BRB Written by Jason Mather on 4/28/12
+
+//project: Derek Ostrander, Stu Lang, Will Stahl, Evan Dodge, Jason Mather
 //This class allows us to store and retrieve data to and from the database in an
 //easier manner
 package b.r.b;
@@ -12,10 +14,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import static b.r.b.Constants.*;
 
-//TODO delete
-// log by id
-// parent by message
-// child by message and number
+
 
 
 public class LogInteraction extends Activity{
@@ -37,9 +36,11 @@ public class LogInteraction extends Activity{
 		
 	}
 	
+	//To insert a log pass the parent id, time, date, ampm (1 for pm, 0 for am), type, recieved message, sent message, and number
 	public Message InsertLog(int pid, String time, String date, int ampm, int type, String r_msg, String s_msg, String num){
 		SQLiteDatabase db = log.getWritableDatabase();
 		ContentValues values = new ContentValues();
+		//prepare the row for insertion
 		values.put(PARENT_ID, pid);
 		values.put(TIME,time);
 		values.put(DATE, date);
@@ -48,6 +49,7 @@ public class LogInteraction extends Activity{
 		values.put(RECEIVED_MESSAGE, r_msg);
 		values.put(SENT_MESSAGE, s_msg);
 		values.put(NUMBER,num);
+		//try to insert the values, return the recieved message if it worked and the id of the log
 		long id = db.insertOrThrow(LOG_TABLE, null, values);
 		return new Message(r_msg,(int) id);
 		
@@ -55,20 +57,19 @@ public class LogInteraction extends Activity{
 	}
 	
 	
-	//overloading Parent edit message so you can edit by sending the old message, or the id, if you have it
-	//returns true meant it worked, otherwise false, yo
-		
 	//deleting a log row
 	public boolean DeleteLog(int id){
 		SQLiteDatabase db = log.getWritableDatabase();
+		//store the success of the delete
 		deleteSuccess = db.delete(LOG_TABLE, ID + "=" + id, null) > 0;
+		//cleanup
 		db.close();
 		return deleteSuccess;
 	}
-	//deleting a parent row
+	//return ALL THE LOGS
 	public Cursor GetAllLogs(){
 		SQLiteDatabase db = log.getReadableDatabase();
-		
+		//cutting out the middle man, just return the query for speed
 		return db.query(LOG_TABLE, new String[]{ID,TIME,DATE,AMPM,TYPE
 				,RECEIVED_MESSAGE,SENT_MESSAGE,NUMBER}, null,null,null,null,null);
 		
@@ -76,14 +77,14 @@ public class LogInteraction extends Activity{
 	//return log based on parent id
 	public Cursor SearchLogByParentId(int pid){
 		SQLiteDatabase db = log.getReadableDatabase();
-		
+		//returns the rows which have the right parent id
 		return db.query(LOG_TABLE, new String[]{ID,TIME,DATE,AMPM,TYPE
 				,RECEIVED_MESSAGE,SENT_MESSAGE,NUMBER},PARENT_ID+"=?"
 				, new String[]{String.valueOf(pid)}, null, null, null);
 	}
 	
 	
-	
+	//some maintenance functions we may need
 	public void CleanupLog(){
 		log.close();
 	}
@@ -100,7 +101,7 @@ public class LogInteraction extends Activity{
 		parent.close();
 		child.close();
 	}*/
-	
+	//make sure we close any open database onDestroy
 	@Override
 	protected void onDestroy() {
 	    super.onDestroy();
