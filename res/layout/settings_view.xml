@@ -3,20 +3,32 @@
     android:id="@+id/message_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:padding="50dp" >
 
-    <!-- <TableRow -->
-    <!-- android:id="@+id/priority_row" -->
-    <!-- android:layout_width="fill_parent" -->
-    <!-- android:layout_height="wrap_content" -->
-    <!-- android:layout_alignParentTop="true" > -->
+    <Spinner
+        android:id="@+id/style_selector"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
 
+    <Button
+        android:id="@+id/apply_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/style_selector"
+        android:layout_marginTop="20dp"
+        android:text="Apply" />
 
-    <!-- <Spinner -->
-    <!-- android:id="@+id/style_selector" -->
-    <!-- android:layout_width="wrap_content" -->
-    <!-- android:layout_height="wrap_content" -->
-    <!-- android:layout_gravity="center_vertical" /> -->
-    <!-- </TableRow> -->
+    <TextView
+        android:id="@+id/styleRefTestButton"
+        style="?attr/styleRefTest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/apply_button"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="Style Test"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
