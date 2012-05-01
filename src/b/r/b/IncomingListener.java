@@ -1,3 +1,14 @@
+/* * * * * * * * * * * * * * * * * * * * * * * 
+ * BRB-Android
+ * AlarmReceiver.java
+ * 
+ * Created: 2012
+ * 
+ * Evan Dodge, Derek Ostrander, Max Shwenk
+ * Jason Mather, Stuart Lang, Will Stahl
+ * 
+ * * * * * * * * * * * * * * * * * * * * * * */
+
 package b.r.b;
 
 import java.util.Calendar;
@@ -48,8 +59,10 @@ public class IncomingListener extends BroadcastReceiver {
 		
 		lDb = new LogInteraction(context);
 		
+		// If its a text then handle a text
 		if(intent.getAction().equals(INCOMING_TEXT))							// If it is an incoming text
-			handleText(intent,context);													// handle it
+			handleText(intent,context);		
+		// If its a call handle a call
 		else if(intent.getAction().equals(PHONE_STATE))							// If it is a call
 			handleCall(context,intent);											// handle it
 	}
@@ -139,25 +152,55 @@ public class IncomingListener extends BroadcastReceiver {
 	 * 		(Probably going to change/get rid of)
 	 */
 	private void addToResponseLog(String incNum, String msg){
-		if(msg == null){
+		
+		/* * * * * * * * * * * * * * * * * * *
+		 * Add a call to the response log
+		 * * * * * * * * * * * * * * * * * * */
+		if(msg == null){ // If there is no message (It's a call)
 			Log.d(TAG,"adding call to response log");
+			
+			// Create a new calendar to use for the current time and date
 			Calendar cal = Calendar.getInstance();
 			
-			currentMessage = lDb.InsertLog(HomeScreenActivity.mCurrent.getID(), 
-					String.valueOf(cal.get(Calendar.HOUR))+":"+String.valueOf(cal.get(Calendar.MINUTE)),
-					String.valueOf(cal.get(Calendar.MONTH))+"/"+String.valueOf(cal.get(Calendar.DAY_OF_MONTH)), 
-					cal.AM_PM, CALL, "", HomeScreenActivity.mCurrent.getMessageText(), incNum);
+			if(cal.get(Calendar.MINUTE) < 10) { // This handles times where the minutes is single digits
+				// Add the call to the log
+				currentMessage = lDb.InsertLog(HomeScreenActivity.mCurrent.getID(), 
+						String.valueOf(cal.get(Calendar.HOUR))+":0"+String.valueOf(cal.get(Calendar.MINUTE)),
+						String.valueOf(cal.get(Calendar.MONTH))+"/"+String.valueOf(cal.get(Calendar.DAY_OF_MONTH)), 
+						cal.get(Calendar.AM_PM), CALL, "", HomeScreenActivity.mCurrent.getMessageText(), incNum);
+			}
+			else {
+				// Add the call to the log
+				currentMessage = lDb.InsertLog(HomeScreenActivity.mCurrent.getID(), 
+						String.valueOf(cal.get(Calendar.HOUR))+":"+String.valueOf(cal.get(Calendar.MINUTE)),
+						String.valueOf(cal.get(Calendar.MONTH))+"/"+String.valueOf(cal.get(Calendar.DAY_OF_MONTH)), 
+						cal.get(Calendar.AM_PM), CALL, "", HomeScreenActivity.mCurrent.getMessageText(), incNum);
+			}
 		}
+		/* * * * * * * * * * * * * * * * * * *
+		 * Add a text to the response log
+		 * * * * * * * * * * * * * * * * * * */
 		else{
 			Log.d(TAG,"adding text to response log");
+			
+			// Create a new calendar to use for the current time and date
 			Calendar cal = Calendar.getInstance();
 
-			currentMessage = lDb.InsertLog(HomeScreenActivity.mCurrent.getID(), 
-					String.valueOf(cal.get(Calendar.HOUR))+":"+String.valueOf(cal.get(Calendar.MINUTE)),
-					String.valueOf(cal.get(Calendar.MONTH))+"/"+String.valueOf(cal.get(Calendar.DAY_OF_MONTH)), 
-					cal.AM_PM, TEXT, msg, HomeScreenActivity.mCurrent.getMessageText(), incNum);
-		}
-				
+			if(cal.get(Calendar.MINUTE) < 10) { // This handles times where the minutes is single digits
+				// Add the text to the log
+				currentMessage = lDb.InsertLog(HomeScreenActivity.mCurrent.getID(), 
+						String.valueOf(cal.get(Calendar.HOUR))+":0"+String.valueOf(cal.get(Calendar.MINUTE)),
+						String.valueOf(cal.get(Calendar.MONTH))+"/"+String.valueOf(cal.get(Calendar.DAY_OF_MONTH)), 
+						cal.get(Calendar.AM_PM), TEXT, msg, HomeScreenActivity.mCurrent.getMessageText(), incNum);
+			}
+			else {
+				// Add the text to the log
+				currentMessage = lDb.InsertLog(HomeScreenActivity.mCurrent.getID(), 
+						String.valueOf(cal.get(Calendar.HOUR))+":"+String.valueOf(cal.get(Calendar.MINUTE)),
+						String.valueOf(cal.get(Calendar.MONTH))+"/"+String.valueOf(cal.get(Calendar.DAY_OF_MONTH)), 
+						cal.get(Calendar.AM_PM), TEXT, msg, HomeScreenActivity.mCurrent.getMessageText(), incNum);
+			}
+		}		
 	}
 	
 	/*	isValidNumber
