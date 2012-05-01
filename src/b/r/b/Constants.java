@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 public interface Constants extends BaseColumns {
+	
 	public static final String PARENT_TABLE = "parent";	
 	public static final String CHILD_TABLE = "child";
 	public static final String LOG_TABLE = "log";
@@ -20,7 +21,9 @@ public interface Constants extends BaseColumns {
 	public static final Uri CONTENT_URI_CHILD = Uri.parse("content://"
 	         + AUTHORITY + "/" + CHILD_TABLE);
 
-	// Columns in the Players database
+	
+	//These are constants used to make the SQL statements in childDB, parentDB, and
+		//logDB easier to read
 	public static final String TIME = "time";
 	public static final String DATE = "date";
 	public static final String AMPM = "ampm";

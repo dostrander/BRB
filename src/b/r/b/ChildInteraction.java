@@ -1,4 +1,6 @@
-//BRB Derek Ostrander, Stu Lang, Will Stahl, Evan Dodge, Jason Mather
+//BRB This class written by Jason Mather on 4/28/2012
+
+// Project: Derek Ostrander, Stu Lang, Will Stahl, Evan Dodge, Jason Mather
 //This class allows us to store and retrieve data to and from the database in an
 //easier manner
 package b.r.b;
@@ -12,17 +14,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import static b.r.b.Constants.*;
 
-//TODO delete
-// log by id
-// parent by message
-// child by message and number
+
 
 
 public class ChildInteraction extends Activity{
-	//Constants used to access a column using the cursor getString() method later
+	//this is just a fancy way of saying the _id is found in column 1 and the 
+	//numbers can be found in column 2
 	private final int PID_COLUMN = 1;
-	//private final int PARENT_ID_COLUMN = 4;
-	//private final int PCHILD_ID_COLUMN = 3;
+	
 	private final int CNUMBERS_COLUMN = 2;
 	//initializing the local objects
 	private logDB log;
@@ -35,41 +34,54 @@ public class ChildInteraction extends Activity{
 	private boolean deleteSuccess;
 	public ChildInteraction(Context ctx){
 		context = ctx;
-		
+		//Since this is the childInteraction, we deal only with the child dB
 		child = new childDB(context);
 		
 	}
 	
-	
+	//This is the first of the overloaded ChildEditMessage methods
+	//This version takes in the old message, AND the parent id, and replaces it with
+	//the new message.
 	public boolean ChildEditMessage(String oldMessage, int pid, String newMessage){
+		//we need both a readable and a writable for this function
 		SQLiteDatabase dbr = child.getReadableDatabase();
 		SQLiteDatabase dbw = child.getWritableDatabase();
 		
+		//c now contains the row/s which have a message AND parent id which match the 
+		//ones passed to the function
 		Cursor c = dbr.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID} 
 				,MESSAGE+"=?"+" AND " + PARENT_ID + "=?"
 				, new String[]{oldMessage,String.valueOf(pid)}, null, null, null);
 		//although confusing, this just means get from column 1
+		//need to grab the other columns locally so we can put them in again for safety
 		int cid = c.getInt(PID_COLUMN);
-		//int pid = c.getInt(c.getColumnIndex(PARENT_ID));
+		
 		String stringPid = String.valueOf(pid);
 		int number = GetNumberFromChild(cid);
 		String stringNumbers = String.valueOf(number);
+		c.close();
 		ContentValues values = new ContentValues();
+		//get the row all ready for insert
 		values.put(ID, cid);
 		values.put(NUMBER, stringNumbers);
 		values.put(MESSAGE,newMessage);
 		values.put(PARENT_ID,stringPid);
 		//did it work?
 		editSuccess = dbw.update(CHILD_TABLE, values, null, null) > 0;
+		//clean up
 		dbr.close();
 		dbw.close();
-		return dbw.update(CHILD_TABLE, values, null, null) > 0;
+		return editSuccess;
 	}
 	
+	//This version just takes in the old message and replaces it
 	public boolean ChildEditMessage(String oldMessage, String newMessage){
+		//We need both a readable and a writable database for this function
 		SQLiteDatabase dbr = child.getReadableDatabase();
 		SQLiteDatabase dbw = child.getWritableDatabase();
-		
+
+		//c now contains the row/s which have a message which matches the 
+		//one passed to the function
 		Cursor c = dbr.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID}, MESSAGE+"=?"
 				, new String[]{oldMessage}, null, null, null);
 		int cid = c.getInt(PID_COLUMN);
@@ -77,24 +89,27 @@ public class ChildInteraction extends Activity{
 		String stringPid = String.valueOf(pid);
 		int number = GetNumberFromChild(cid);
 		String stringNumbers = String.valueOf(number);
+		c.close();
 		ContentValues values = new ContentValues();
+		//prepare the row for insertion
 		values.put(ID, cid);
 		values.put(NUMBER, stringNumbers);
 		values.put(MESSAGE,newMessage);
 		values.put(PARENT_ID,stringPid);
 		//did it work?
 		editSuccess = dbw.update(CHILD_TABLE, values, null, null) > 0;
+		//cleanup
 		dbr.close();
 		dbw.close();
-		return dbw.update(CHILD_TABLE, values, null, null) > 0;
+		return editSuccess;
 	}
 	
 	
-
+	//This version just replaces the message by the id
 	public boolean ChildEditMessage(int cid, String newMessage){
 		SQLiteDatabase dbr = child.getReadableDatabase();
 		SQLiteDatabase dbw = child.getWritableDatabase();
-		
+		//here c has the row which had the id passed to the function
 		Cursor c = dbr.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID}, ID+"=?"
 				, new String[]{String.valueOf(cid)}, null, null, null);
 		
@@ -105,13 +120,14 @@ public class ChildInteraction extends Activity{
 		int number = GetNumberFromChild(cid);
 		String stringNumbers = String.valueOf(number);
 		ContentValues values = new ContentValues();
-		
+		//preparing the row for insertion
 		values.put(ID, cid);
 		values.put(MESSAGE,newMessage);
 		values.put(NUMBER, stringNumbers);
 		values.put(PARENT_ID,stringPid);
 		//did it work?
 		editSuccess = dbw.update(CHILD_TABLE, values, null, null) > 0;
+		//cleanup
 		dbr.close();
 		dbw.close();
 		return editSuccess;
