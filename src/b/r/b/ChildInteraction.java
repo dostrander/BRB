@@ -134,16 +134,24 @@ public class ChildInteraction extends Activity{
 	}
 	
 	
-	//For deletes, returns true if it worked, returns false if it doesn't
+	//For delete, returns true if it worked, returns false if it doesn't
 	//deleting a child row
+	//It takes in a string which represents the number (3155555555)
+	//and the message ("I'll be back later")
 	public boolean DeleteChild(String num, String message){
+		//Just need to write
 		SQLiteDatabase db = child.getWritableDatabase();
+		
+		//the boolean contains truth value of the success of the delete statement,
+		//which is looking for a row with the correct number AND message and then
+		//deleting the entry if it exists
 		deleteSuccess = db.delete(CHILD_TABLE, NUMBER + "=" + num + 
 				" AND " + MESSAGE + "=" + message,  null) > 0;
 		db.close();
 		return deleteSuccess;
 	}
-	
+	//In order to insert a message into the child database, you just pass a number,
+	//the message, and the parent id
 	public long InsertMessage(String number, String message, long pid){
 		String p = String.valueOf(pid);
 		SQLiteDatabase db = child.getWritableDatabase();
@@ -159,55 +167,41 @@ public class ChildInteraction extends Activity{
 	//to SearchByMessage just pass the String of the message
 	public Cursor SearchChildByMessage(String message){
 		SQLiteDatabase db = child.getReadableDatabase();
-		
+		//returns cursor which contains the rows with a message which matches the one passed
 		return db.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID}, MESSAGE+"=?"
 				, new String[]{message}, null, null, null);
 		
 	}
 	
-	//To search by ID (not sure why you would) just pass the id as a string
+	//To search by ID (not sure why you would) just pass the id as an int
 	public Cursor SearchChildById(int cid){
 		SQLiteDatabase db = child.getReadableDatabase();
-		
+		//returns cursor which contains the row with an id which matches the one passed
+
 		return db.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID},ID+"=?"
 				, new String[]{String.valueOf(cid)}, null, null, null);
 	}
 	
-	//To search by childID just pass the number
-	//remember, c may be null so make sure you try catch when you call
-	//also I'm not sure if this will return all the messages with the sent child ID
-	//or just the last one
+	//To search by Parent id just pass the id as an int
 	public Cursor SearchChildByParentId(int pid){
 		SQLiteDatabase db = child.getReadableDatabase();
-		
+		//returns cursor which contains the rows with a parent id which matches the one passed
+
 		return db.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID},PARENT_ID+"=?"
 				, new String[]{String.valueOf(pid)}, null, null, null);
 	}
 	
+	
+	//To search for a child by number just pass the number as an int
 	public Cursor SearchChildByNumber(int number){
 		SQLiteDatabase db = child.getReadableDatabase();
 		
 		return db.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID},NUMBER+"=?"
 				, new String[]{String.valueOf(number)}, null, null, null);
 	}
-	//Just send the parent id and you will get an array of the child ids back
-	/*
-	 public int[] GetChildIdsFromParent(String pid){
-	 
-		SQLiteDatabase db = parent.getWritableDatabase();
-		
-		Cursor c = db.query(PARENT_TABLE, new String[]{ID}, ID+"=?", new String[]{pid}, null, null, null);
-		
-		// HERE
-		String a = c.getString(PARENT_ID_COLUMN);
-		String[] b = strc.convertStringToArray(a);
-		int[] cids = new int[b.length];
-		for(int i = 0; i < cids.length; i++){
-			cids[i] = Integer.parseInt(b[i]);
-		}
-		return cids;
-	}
-	*/
+	
+	
+	//To get a child's number just pass the id
 	public int GetNumberFromChild(int cid){
 		SQLiteDatabase db = child.getWritableDatabase();
 		
@@ -222,7 +216,7 @@ public class ChildInteraction extends Activity{
 		
 	}
 	
-	
+	//some cleanup functions
 	public void CleanupChild(){
 		child.close();
 	}
@@ -234,12 +228,8 @@ public class ChildInteraction extends Activity{
 	   	    
 	}
 	
-	/*private void CleanupAll(){
-		log.close();
-		parent.close();
-		child.close();
-	}*/
 	
+	//for extra safety, onDestroy close any open databases
 	@Override
 	protected void onDestroy() {
 	    super.onDestroy();
