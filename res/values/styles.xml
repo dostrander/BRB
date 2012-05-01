@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="ParentStyle" parent="android:Theme">
-        <item name="android:textColor">?attr/primaryTextColor</item>
-        <item name="android:background">?attr/darkColor</item>
+
+    <style name="ParentTheme" parent="android:Theme"></style>
+
+    <style name="TestStyle" parent="android:Theme">
+        <item name="android:textColor">?attr/secondaryTextColor</item>
     </style>
-    <style name="greyTheme" parent="@style/ParentStyle">
-      <item name="primaryTextColor">#FFFFFFFF</item>
-      <item name="secondaryTextColor">#FFDDDDDD</item>
-      <item name="darkColor">#FF444444</item>
-      <item name="mediumColor">#FF999999</item>
-      <item name="lightColor">#FFCCCCCC</item>
-      <item name="contrastColor">#FF4444FF</item>
+
+    <style name="Theme.Default" parent="ParentTheme">
+        <item name="primaryTextColor">#FFFFFFFF</item>
+        <item name="secondaryTextColor">#EEEEEE</item>
+        <item name="darkColor">#FF444444</item>
+        <item name="mediumColor">#FF999999</item>
+        <item name="lightColor">#FFCCCCCC</item>
+        <item name="contrastColor">#FF4444FF</item>
+        <item name="styleRefTest">@style/TestStyle</item>
     </style>
-    <style name="blueTheme" parent="@style/ParentStyle">
-      <item name="primaryTextColor">#FFFFFFFF</item>
-      <item name="secondaryTextColor">#FFDDDDDD</item>
-      <item name="darkColor">#FF4444FF</item>
-      <item name="mediumColor">#FF9999FF</item>
-      <item name="lightColor">#FFCCCCFF</item>
-      <item name="contrastColor">#FFFF4444</item>
+
+    <style name="Theme.Night" parent="ParentTheme">
+        <item name="primaryTextColor">#FFFFFFFF</item>
+        <item name="secondaryTextColor">#666666</item>
+        <item name="darkColor">#FF4444FF</item>
+        <item name="mediumColor">#FF9999FF</item>
+        <item name="lightColor">#FFCCCCFF</item>
+        <item name="contrastColor">#FFFF4444</item>
+        <item name="styleRefTest">@style/TestStyle</item>
     </style>
-    
+
 </resources>
