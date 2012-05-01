@@ -1,84 +1,99 @@
 package b.r.b;
 
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 public class Settings {
 	
 	private static final String PREFS_NAME = "BRBPrefsFile";
-
-	private static HashMap<String,Integer> _themes;
-	
+	public static final boolean DEBUG_MODE = !System.getProperty("java.vm.info", "").contains("sharing");
 	private static Activity _home;
+	private static SharedPreferences _settings;
+	private static SharedPreferences.Editor _editor;
 	
-	private static View _settings;
+	private static String _themeName;
+	public static String ThemeName() {
+		return _themeName;
+	}
 	
 	private static int _theme;
 	public static int Theme() {
 		return _theme;
 	}
 	
-	private static void SetTheme(String theme_request) {
-		for (String theme_string : _themes.keySet()) {
-			if (theme_string == theme_request) {
-			  int old_theme = _theme;
-			  _theme = _themes.get(theme_string);
-			  if (old_theme == _theme) { break; }
-			  SharedPreferences settings = _home.getSharedPreferences(PREFS_NAME, 0);
-		      SharedPreferences.Editor editor = settings.edit();
-		      editor.putInt("theme", _theme);
-	
-		      // Commit the edits!
-		      editor.commit();
-	
-				_home.finish();
-				_home.startActivity(new Intent(_home, _home.getClass()));
-			}
+	public static void SetTheme(int input) {
+		int id = _theme;
+		String name = "";
+		
+		// Look for a theme in the style resources that corresponds with the given id
+		for (Field f : R.style.class.getDeclaredFields()) {
+			try {
+				// Make sure input matches field's value
+				if (f.getInt(null) != input) continue;
+				
+				name = f.getName();
+				
+				// Make sure given resource is a Theme
+				if (!name.startsWith("Theme_")) break;
+				
+				// Get name part
+				name = name.substring(6); 
+				id = input;
+				break;
+			} catch (Exception e) {}
 		}
+		
+		// Make sure we found a theme which needs to be assigned
+		if (_theme == id) return;
+			
+		_theme = id;
+		_themeName = name;
+		
+		_editor.putString("theme", name);
+		_editor.commit();
+
+		_home.finish();
+		_home.startActivity(new Intent(_home, _home.getClass()));
 	}
 	
 	static public void Init(Activity home) {
+		// Get homescreen activity and settings editor
 		_home = home;
-		SharedPreferences settings = home.getSharedPreferences(PREFS_NAME, 0);
-		_theme = settings.getInt("theme", R.style.greyTheme);
-
-//		_themes = new HashMap<String,Integer>();
-//		
-//		_themes.put("Grey", R.style.greyTheme);
-//		_themes.put("Blue", R.style.blueTheme);
-//		
-//		String[] aStrings = new String[_themes.keySet().size()];
-//		aStrings = _themes.keySet().toArray(aStrings);
+		_settings = home.getSharedPreferences(PREFS_NAME, 0);
+		_editor = _settings.edit();
 		
-//		_settings = LayoutInflater.from(_home).inflate(R.layout.settings_view, null);
-//		
-//		Spinner style_selecter = (Spinner) _settings.findViewById(R.id.style_selector);
-//		
-//		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(_home,
-//				android.R.layout.simple_spinner_dropdown_item, aStrings);
-//		
-//		style_selecter.setAdapter(dataAdapter);
-//		
-//		style_selecter.setOnItemSelectedListener(new OnItemSelectedListener(){
-//			public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
-//				SetTheme(parent.getItemAtPosition(pos).toString());
-//			}
-//
-//			public void onNothingSelected(AdapterView<?> arg0) {
-//			}
-//		});
+//		if (DEBUG_MODE) _editor.clear(); // Uncomment if you want settings to clear when running in debug mode 
+
+		_editor.commit();
+		
+		// Try to get name of saved theme, otherwise use default
+		_themeName = _settings.getString("theme", "Default");
+		_theme = R.style.Theme_Default;
+		try {
+			// Try to find the theme in the style resources that corresponds with the given name (using reflection).
+			// The "Theme_" prefix needs to be attached because the Themes were saved with the format "Theme.<Name>"
+			_theme = R.style.class.getField("Theme_" + _themeName).getInt(null);
+		} catch (Exception e) {}
+		
+		// If we had a problem finding the saved theme, use and save the default theme as current
+		if (_theme == R.style.Theme_Default) {
+			_themeName = "Default";
+		}
+		
+		// Write settings
+		_editor.putString("theme", _themeName);
+		
+		// Commit settings
+		_editor.commit();
 	}
+	
+	
 
 }
