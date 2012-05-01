@@ -74,9 +74,9 @@
             android:layout_height="fill_parent" />
 
     <ListView android:id="@+id/auto_complete_list"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:background="#FFFFFF"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="1dp"
+        android:background="@drawable/rounded_gradient"
         android:cacheColorHint="#FFFFFF"
         android:layout_alignLeft="@+id/message_input"
         android:layout_alignRight="@+id/message_input"
