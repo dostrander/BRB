@@ -33,6 +33,7 @@ public class LogActivity extends ListActivity{
 	public void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 		Log.d(TAG,"in onCreate");
+    setTheme(Settings.Theme());
 //		setListAdapter(new LogAdapter(this));
 		lDb = new LogInteraction(this);
 		fillData();

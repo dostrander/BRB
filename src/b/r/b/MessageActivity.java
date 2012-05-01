@@ -62,6 +62,7 @@ public class MessageActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+    setTheme(Settings.Theme());
 		setContentView(R.layout.message_view);
 		
 		vStartTime 			= (TextView) 	findViewById(R.id.starttime_text);

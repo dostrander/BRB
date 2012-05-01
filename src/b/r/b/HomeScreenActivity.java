@@ -106,6 +106,8 @@ public class HomeScreenActivity extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"in onCreate");
+        Settings.Init(this);
+        setTheme(Settings.Theme());
         setContentView(R.layout.main_screen);
         
         // Find views	
