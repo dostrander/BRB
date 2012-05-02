@@ -291,6 +291,10 @@ public class Widget extends AppWidgetProvider {
     		}
     		super.onReceive(context, intent);
     	}
+    	
+    	//cleanup and close?
+    	cursor.close();
+    	pDb.Cleanup();
     }
     
     
