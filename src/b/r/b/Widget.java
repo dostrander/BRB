@@ -293,8 +293,8 @@ public class Widget extends AppWidgetProvider {
     	}
     	
     	//cleanup and close?
-    	cursor.close();
-    	pDb.Cleanup();
+    	//cursor.close();
+    	//pDb.Cleanup();
     }
     
     
