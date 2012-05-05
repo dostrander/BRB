@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class parentDB extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "parent.db";
 	private static final int DATABASE_VERSION = 2;
+	//This is the SQL statement to create the table for later
 	private static final String DATABASE_CREATE_TABLE =
 			   " CREATE TABLE " + PARENT_TABLE +
 			   " ("+_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + MESSAGE +" TEXT NOT NULL);";
@@ -30,15 +31,15 @@ public class parentDB extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		// TODO Auto-generated method stub
+		//create the table outlined above
 		db.execSQL(DATABASE_CREATE_TABLE);
-		//db.execSQL(DATABASE_CREATE_TABLE_2);
+		
 	}
 
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
+		//if a parent table exists, replace it
 		db.execSQL("DROP TABLE IF EXISTS " +PARENT_TABLE);
 		
 	     onCreate(db);

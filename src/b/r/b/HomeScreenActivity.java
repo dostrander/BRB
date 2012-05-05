@@ -340,8 +340,8 @@ public class HomeScreenActivity extends TabActivity {
 				messageList.setVisibility(View.GONE);
 				changeCurrent();
 				
-				// MAYBE?
-				//pDb.Cleanup();
+				// Maybe? -- agree with original comment, may need to be closed
+				pDb.Cleanup();
 			}
 		});
 

@@ -1,4 +1,6 @@
-//BRB Derek Ostrander, Stu Lang, Will Stahl, Evan Dodge, Jason Mather
+//BRB Written by: Jason Mather on 4/28/12
+
+//project: Derek Ostrander, Stu Lang, Will Stahl, Evan Dodge, Jason Mather
 //This class allows us to store and retrieve data to and from the database in an
 //easier manner
 package b.r.b;
@@ -12,10 +14,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import static b.r.b.Constants.*;
 
-//TODO delete
-// log by id
-// parent by message
-// child by message and number
 
 
 public class ParentInteraction extends Activity{
@@ -36,7 +34,7 @@ public class ParentInteraction extends Activity{
 	
 	public ParentInteraction(Context ctx){
 		context = ctx;
-		
+		//we only need the parent since we have 3 different interaction classes; one for each dB
 		parent = new parentDB(context);
 		
 		
@@ -46,11 +44,12 @@ public class ParentInteraction extends Activity{
 	
 	
 	//overloading Parent edit message so you can edit by sending the old message, or the id, if you have it
-	//returns true meant it worked, otherwise false, yo
+	//returns true means it worked, otherwise false
 	public boolean ParentEditMessage(String oldMessage, String newMessage){
+		//we need both a readable and a writable database for this function
 		SQLiteDatabase dbr = parent.getReadableDatabase();
 		SQLiteDatabase dbw = parent.getWritableDatabase();
-		
+		//get the rows which have a message which matches the one passed
 		Cursor c = dbr.query(PARENT_TABLE, new String[] {ID,MESSAGE}, MESSAGE+"=?"
 				, new String[]{oldMessage}, null, null, null);
 		String pid = c.getString(PID_COLUMN);
@@ -60,6 +59,7 @@ public class ParentInteraction extends Activity{
 		values.put(MESSAGE,newMessage);
 		//did it work?
 		editSuccess = dbw.update(PARENT_TABLE, values, null, null) > 0;
+		//cleanup
 		dbr.close();
 		dbw.close();
 		return editSuccess;
@@ -72,7 +72,7 @@ public class ParentInteraction extends Activity{
 		
 		stringPid = String.valueOf(pid);
 		
-		// END
+		//Don't need cursor, we have everything we need
 		ContentValues values = new ContentValues();
 		
 		values.put(ID, stringPid);
@@ -85,45 +85,46 @@ public class ParentInteraction extends Activity{
 	}
 	
 	
-	//deleting a parent row
+	//deleting a parent row by passing the message
 	public boolean DeleteParent(String message){
 		SQLiteDatabase db = parent.getWritableDatabase();
 		deleteSuccess = db.delete(PARENT_TABLE, MESSAGE + "=" + message, null) > 0;
 		db.close();
 		return deleteSuccess;
 	}
-	//to insert a message, you pass the string of the message, and an
-	//array of strings that contain all the numbers it is used for	
-	//For inserting into the parent, pass an id, the message, and an array of possible child 
-		//ids
+	//to insert a message, you pass the string of the message
 	public Message InsertMessage(String message){
 		SQLiteDatabase db = parent.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(MESSAGE, message);
 		long id = db.insertOrThrow(PARENT_TABLE, null, values);
 		db.close();
+		//closes dB hen returns the message and the id
 		return new Message(message,(int) id);
 	}
 	
 	
-	//For inserting into the child, pass the id, an array of the numbers, the message, and 
-	//an array of the parent ids
 	
+	//returns all the parent messages
 	public Cursor GetAllParentMessages(){
 		Log.d(TAG,"in GetAllParentMessages");
 		SQLiteDatabase db = parent.getReadableDatabase();
-		
+		//query arguments are null since we want them all
 		return db.query(PARENT_TABLE, new String[]{ID,MESSAGE}, null, 
 				null, null, null, null,null);
 	}
+	
+	//to search by message just pass the message as a string
 	public Cursor SearchParentByMessage(String message){
 		Log.d(TAG,"in SearchParentByMessage");
 		SQLiteDatabase db = parent.getReadableDatabase();
-	
+		//returns the query directly
 		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE}, MESSAGE+"=?"
 			, new String[]{message}, null, null, null);
 	
 	}
+	
+	
 	public Message GetParentByMessage(String message){
 		Log.d(TAG,"in GetParentByMessage");
 		ChildInteraction cDb = new ChildInteraction(context);
@@ -142,7 +143,7 @@ public class ParentInteraction extends Activity{
 		return null;
 	}
 	
-		//To search by ID (not sure why you would) just pass the id as a string
+		//To search by ID (not sure why you would) just pass the id as an int
 	public Cursor SearchParentById(int id){
 		Log.d(TAG,"in SearchParentById");
 		SQLiteDatabase db = parent.getReadableDatabase();
@@ -166,35 +167,11 @@ public class ParentInteraction extends Activity{
 		}
 		return null;
 	}
-			//return new Message(c.getString(c.getColumnIndex(MESSAGE)),Integer.valueOf(id));
-//		} else return null;
-//	}
-		//To search by childID just pass the number
-		//remember, c may be null so make sure you try catch when you call
-		//also I'm not sure if this will return all the messages with the sent child ID
-		//or just the last one
-	/*public Cursor SearchParentByChildId(String number){
-		SQLiteDatabase db = parent.getReadableDatabase();
-		
-		Cursor c = db.rawQuery(PARENT_TABLE, null);
-		String s = c.getString(PCHILD_IDS_COLUMN);
-		String[] a = strc.convertStringToArray(s);
-		String[] ids = new String[a.length];
-		
-		for(int i = 0; i < a.length; i ++){
-			if(a[i].equals(number)){
-				ids[i] = c.getString(PID_COLUMN);
-				c = db.query(PARENT_TABLE, new String[] {ID,MESSAGE,CHILD_IDS},ID+"=?"
-						, new String[]{ids[i]}, null,null,null);
-			}
-		}
-		
-		return c;
-	}*/
+			
 	
 		
 	
-	
+	//cleanup functions
 	public void CleanupParent(){
 		parent.close();
 	}
@@ -212,7 +189,7 @@ public class ParentInteraction extends Activity{
 		parent.close();
 		child.close();
 	}*/
-	
+	//make sure we close any open databases ondestroy
 	@Override
 	protected void onDestroy() {
 	    super.onDestroy();

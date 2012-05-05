@@ -5,13 +5,14 @@
  * 
  */
 package b.r.b;
-
+//imports
 import static android.provider.BaseColumns._ID;
 import android.content.Context;
 import static b.r.b.Constants.*;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 public class childDB extends SQLiteOpenHelper {
+	//SQL statement we run when the Database is created
 	private static final String DATABASE_NAME = "child.db";
 	private static final int DATABASE_VERSION = 1;
 	private static final String DATABASE_CREATE_TABLE =
@@ -30,16 +31,17 @@ public class childDB extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		// TODO Auto-generated method stub
+		//This runs the create table SQL statement onCreate
 		db.execSQL(DATABASE_CREATE_TABLE);
-		//db.execSQL(DATABASE_CREATE_TABLE_2);
+		
 	}
 
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
 		
+		//This runs an SQL statement which drops any existing child table if we are
+		//making a new one, and replaces it with the new one
 		db.execSQL("DROP TABLE IF EXISTS " +CHILD_TABLE);
 	     onCreate(db);
 	}
