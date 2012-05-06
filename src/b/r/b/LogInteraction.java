@@ -27,7 +27,7 @@ public class LogInteraction extends Activity{
 	private logDB log;
 	private parentDB parent;
 	private childDB child;
-	private StringArrayConverter strc = new StringArrayConverter();
+	//private StringArrayConverter strc = new StringArrayConverter();
 	private Context context;
 	private boolean deleteSuccess;
 	public LogInteraction(Context ctx){
@@ -38,7 +38,7 @@ public class LogInteraction extends Activity{
 	
 	//To insert a log pass the parent id, time, date, ampm (1 for pm, 0 for am), type, recieved message, sent message, and number
 	public Message InsertLog(int pid, String time, String date, int ampm, int type, String r_msg, String s_msg, String num){
-		SQLiteDatabase db = log.getWritableDatabase();
+		SQLiteDatabase db = log.getWritableDatabase();//just need a writable dB
 		ContentValues values = new ContentValues();
 		//prepare the row for insertion
 		values.put(PARENT_ID, pid);
@@ -49,8 +49,10 @@ public class LogInteraction extends Activity{
 		values.put(RECEIVED_MESSAGE, r_msg);
 		values.put(SENT_MESSAGE, s_msg);
 		values.put(NUMBER,num);
-		//try to insert the values, return the recieved message if it worked and the id of the log
+		//try to insert the values, return the received message and the id if it worked
 		long id = db.insertOrThrow(LOG_TABLE, null, values);
+		
+		//returns the message and the id 
 		return new Message(r_msg,(int) id);
 		
 		
