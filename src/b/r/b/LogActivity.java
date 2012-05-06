@@ -62,8 +62,8 @@ public class LogActivity extends ListActivity{
 	
 	private void fillData(){
 		Log.d(TAG,"in fillData");
-		for(int i = 0; i < 5; i++)
-			lDb.InsertLog(i, "2:30", "02/04", AM, CALL, null , "idk", "518-813-6375");
+		//for(int i = 0; i < 5; i++)
+			lDb.InsertLog(0, "2:30", "02/04", AM, CALL, "" , "idk", "518-813-6375");
 	
 	}
 	
@@ -172,11 +172,10 @@ public class LogActivity extends ListActivity{
 	    	v.setOnLongClickListener(new OnLongClickListener() {  
 	    		public boolean onLongClick(View v) {
 				Log.d(TAG,"in onLongClick");
-				
-				//lDb.DeleteLog(holder.number.getText());
-				
+				boolean temp = false;
+				temp = lDb.DeleteLog((String)holder.number.getText(), (String)holder.time.getText());
 				notifyDataSetChanged();
-				return true;
+				return temp;
 			} });
 	    	
 	    }

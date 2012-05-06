@@ -71,7 +71,7 @@ public class LogInteraction extends Activity{
 	/*This version of DeleteLog checks by number and time*/
 	public boolean DeleteLog(String num,String time){
 		SQLiteDatabase db = log.getWritableDatabase();//just need a writeable dB
-		deleteSuccess = db.delete(LOG_TABLE, NUMBER + "=" + num + ", AND " +
+		deleteSuccess = db.delete(LOG_TABLE, NUMBER + "=" + num + " AND " +
 		TIME + "=" + time, null) >0;//if true, then the delete worked, if false, it didn't
 		db.close();//we can now close the dB
 		return deleteSuccess;//return the success value
