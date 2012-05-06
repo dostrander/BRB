@@ -29,36 +29,42 @@ public class LogActivity extends ListActivity{
 	private static final String NO_LOGS = "No Log Entries for this Message";
 	private Message mCurrent;
 	private LogInteraction lDb;
+	private LogAdapter adapt;
 	
 	public void onCreate(Bundle bundle){
 		super.onCreate(bundle);
 		Log.d(TAG,"in onCreate");
-    setTheme(Settings.Theme());
-//		setListAdapter(new LogAdapter(this));
+		setTheme(Settings.Theme());
 		lDb = new LogInteraction(this);
 		fillData();
 		Cursor temp = lDb.GetAllLogs();
-		getListView().setAdapter(new LogAdapter(this,lDb.GetAllLogs()));
-		Log.d(TAG,"Count = "+temp.getCount());
+		adapt = new  LogAdapter(this,lDb.GetAllLogs());
+		getListView().setAdapter(adapt);
+		Log.d(TAG,"Count = "+ temp.getCount());
 		mCurrent = null;
 
 	}
+	
+	//onStop() When the activity is no longer Visible
+	
+	public void onStop()
+	{
+		super.onStop();
+		
+		//Close the cursor for next time
+		adapt.getCursor().close();
+	
+	}
+	
+
 	
 	public void setMessage(Message current){ mCurrent = current;}
 	
 	private void fillData(){
 		Log.d(TAG,"in fillData");
-		//for(int i = 0; i < 5; i++)
-			//lDb.InsertLog(i, "2:30", "02/04", 1, CALL, "idk", "518-813-6375");
-		
-//		if(mCurrent == null){
-//			mLogItems.add(new LogEntryItem("","",0,0,NO_LOGS,"-1"));
-//		}else {
-//			
-//			
-//			mLogItems.add(new LogEntryItem("","",0,0,NO_LOGS,"-1"));
-//			//tempCursor.moveToNext();
-//		}
+		for(int i = 0; i < 5; i++)
+			lDb.InsertLog(i, "2:30", "02/04", AM, CALL, null , "idk", "518-813-6375");
+	
 	}
 	
 	
@@ -109,7 +115,7 @@ public class LogActivity extends ListActivity{
 	    public void bindView(View v, Context context, Cursor c) {
 	    	
 	    	final int position = c.getPosition();
-	    	ViewHolder holder = (ViewHolder) v.getTag();
+	    	final ViewHolder holder = (ViewHolder) v.getTag();
 	    	
 	    	
 	    	holder.date.setText(c.getString(c.getColumnIndex(DATE)));
@@ -137,7 +143,7 @@ public class LogActivity extends ListActivity{
 	    	else
 	    		holder.ampm.setText("AM");
 	    
-	    	
+	    	//Expanded or not
 	    	if(expand[position]){
 				Log.d(TAG,"expanded");
 				holder.expansion.setVisibility(View.VISIBLE);
@@ -163,7 +169,15 @@ public class LogActivity extends ListActivity{
     			
     		});
 	    	
-	    	
+	    	v.setOnLongClickListener(new OnLongClickListener() {  
+	    		public boolean onLongClick(View v) {
+				Log.d(TAG,"in onLongClick");
+				
+				//lDb.DeleteLog(holder.number.getText());
+				
+				notifyDataSetChanged();
+				return true;
+			} });
 	    	
 	    }
 	    
