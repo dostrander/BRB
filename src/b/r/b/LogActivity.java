@@ -45,16 +45,22 @@ public class LogActivity extends ListActivity{
 
 	}
 	
+//	public void onResume()
+//	{
+//		super.onResume();
+//		adapt = new  LogAdapter(this,lDb.GetAllLogs());
+//		
+//	}
+	
 	//onStop() When the activity is no longer Visible
 	
 	public void onStop()
 	{
 		super.onStop();
-		
 		//Close the cursor for next time
 		adapt.getCursor().close();
-	
 	}
+	
 	
 
 	
@@ -174,7 +180,7 @@ public class LogActivity extends ListActivity{
 				Log.d(TAG,"in onLongClick");
 				boolean temp = false;
 				temp = lDb.DeleteLog((String)holder.number.getText(), (String)holder.time.getText());
-				notifyDataSetChanged();
+				notifyDataSetChanged();	
 				return temp;
 			} });
 	    	
