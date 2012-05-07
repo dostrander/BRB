@@ -87,7 +87,8 @@ public class LogInteraction extends Activity{
 		int day = Integer.parseInt(a[1]);//assign the day to a local
 		int year = Integer.parseInt(a[2]);//assign the year to a locak
 		Cursor c = GetAllLogs();//grab all the logs
-		if(c.moveToFirst()){//if it's not empty
+		c.moveToFirst();
+		if(c != null && c.getCount()>0){
 			while(!c.isAfterLast()){//so long as it's pointing to a existing element
 				int lid = c.getInt(1);//grab the id (is in column 1)
 				String[] b = c.getString(4).split("/");//split the date (is in column 4)
@@ -111,8 +112,8 @@ public class LogInteraction extends Activity{
 				}
 				c.moveToNext();//point to the next entry
 			}	
-			
 		}
+		
 		c.close();
 		return deleteSuccess;//if true, they all worked, if false, at least one failed
 	}

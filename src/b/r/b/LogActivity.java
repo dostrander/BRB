@@ -1,5 +1,6 @@
 package b.r.b;
 
+
 import static b.r.b.Constants.AMPM;
 import static b.r.b.Constants.DATE;
 import static b.r.b.Constants.NUMBER;
@@ -7,6 +8,14 @@ import static b.r.b.Constants.RECEIVED_MESSAGE;
 import static b.r.b.Constants.SENT_MESSAGE;
 import static b.r.b.Constants.TIME;
 import static b.r.b.Constants.TYPE;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import static b.r.b.Constants.*;
+
 import android.app.ListActivity;
 import android.content.Context;
 import android.database.Cursor;
@@ -38,6 +47,15 @@ public class LogActivity extends ListActivity{
 		Log.d(TAG,"in onCreate");
 		setTheme(Settings.Theme());
 		lDb = new LogInteraction(this);
+		
+		// Flush out logs before the log history # of days
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -Settings.LogHistoryDays());
+		try {
+			lDb.DeleteLog(sdf.format(cal.getTime()));
+		} catch (Exception e) {}
+		
 		fillData();
 		Cursor temp = lDb.GetAllLogs();
 		adapt = new  LogAdapter(this,lDb.GetAllLogs());
