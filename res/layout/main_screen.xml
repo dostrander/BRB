@@ -2,11 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main_screen"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    style="@style/LayoutStyle">
+    
     <TextView 
         android:id="@+id/message_input"
         android:paddingTop="5dp"
-        android:background="#000000"
         android:gravity="top"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -17,66 +18,71 @@
         android:textColor="#FFFFFF"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:lines="2"
-        android:isScrollContainer="true" />         
+        android:isScrollContainer="true"
+        style="@style/LayoutStyle" />         
          
 	  <LinearLayout
             android:id="@+id/top_divider3"
-            android:background="#C5C5C5"
             android:paddingLeft="1dp"
             android:paddingRight="1dp"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/message_input"
             android:layout_alignBottom="@+id/message_input"
             android:layout_width="1dp"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent" 
+            style="@style/DividerStyle" />
         
 
      <ImageButton
             android:id="@+id/enable_away_button"
-            android:background="@drawable/button_selector"
+            android:background="?attr/button_selector"
             android:padding="15dp"
             android:layout_alignTop="@+id/message_input"
             android:layout_alignBottom="@+id/message_input"
             android:layout_toLeftOf="@+id/top_divider3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/enable_icon" />
+            android:src="@drawable/enable_icon"
+            style="@style/LayoutStyle" />
+     
      <LinearLayout
             android:id="@+id/top_divider2"
-            android:background="#C5C5C5"
             android:paddingLeft="1dp"
             android:paddingRight="1dp"
             android:layout_alignTop="@+id/message_input"
             android:layout_alignBottom="@+id/message_input"
             android:layout_toLeftOf="@+id/enable_away_button"
             android:layout_width="1dp"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent"
+            style="@style/DividerStyle" />
      
      <ImageButton
             android:id="@+id/show_list_button"
-            android:background="@drawable/button_selector"
+            android:background="?attr/button_selector"
             android:padding="15dp"
             android:layout_alignTop="@+id/message_input"
             android:layout_alignBottom="@+id/message_input"
             android:layout_toLeftOf="@+id/top_divider2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/arrow" />
+            android:src="@drawable/arrow"
+            style="@style/LayoutStyle" />
+     
      <LinearLayout
             android:id="@+id/top_divider1"
-            android:background="#C5C5C5"
             android:paddingLeft="1dp"
             android:paddingRight="1dp"
             android:layout_alignTop="@+id/message_input"
             android:layout_alignBottom="@+id/message_input"
             android:layout_toLeftOf="@+id/show_list_button"
             android:layout_width="1dp"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent"
+            style="@style/DividerStyle" />
 
     <ListView android:id="@+id/auto_complete_list"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="1dp"
-        android:background="@drawable/rounded_gradient"
+        android:background="?attr/rounded_gradient"
         android:cacheColorHint="#FFFFFF"
         android:layout_alignLeft="@+id/message_input"
         android:layout_alignRight="@+id/message_input"
