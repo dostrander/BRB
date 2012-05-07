@@ -143,11 +143,13 @@ public class HomeScreenActivity extends TabActivity {
         header.setTextColor(Color.WHITE);
         header.setText("Create New Message");
         messageList.addHeaderView(header);
-        adapter = new MessageListCursorAdapter(this,R.layout.input_message_list_item,pDb.GetAllParentMessages(),
+        Cursor temp = pDb.GetAllParentMessages();//creating a temp so we can close it as soon as we're done with it
+        adapter = new MessageListCursorAdapter(this,R.layout.input_message_list_item,temp,
         		new String[]{MESSAGE},new int[]{R.id.input_message_list_item});
+       
         messageList.setAdapter(adapter);
         //
-        
+        temp.close();//can close the getAllParentMessages cursor now that it's stored
 
         
         messageList.setVisibility(View.GONE);
@@ -224,7 +226,9 @@ public class HomeScreenActivity extends TabActivity {
     		editor.putInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
     	else editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
     	editor.commit();
-    		
+    	if(pDb != null){
+    		pDb.Cleanup();
+    	}
     	
     }
     
@@ -532,6 +536,7 @@ public class HomeScreenActivity extends TabActivity {
 		public MessageListCursorAdapter(Context ctx, int lout, Cursor c,
 				String[] from, int[] to){
 			super(ctx, c);
+			
 			layout = lout;
 			textview_id = to[0];
 		}
