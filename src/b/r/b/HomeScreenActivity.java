@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.media.AudioManager;
@@ -133,8 +134,12 @@ public class HomeScreenActivity extends TabActivity {
         //open up a parent interaction so we can interact with the parent database
         pDb = new ParentInteraction(this);
         View theader = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.input_message_list_item, null, false);
-        //default background color
-        theader.setBackgroundColor(Color.DKGRAY);
+        
+        // Set to theme appropriate color
+        TypedArray a = getTheme().obtainStyledAttributes(new int[] {R.attr.dark_color});
+        theader.setBackgroundColor(a.getColor(0, Color.BLACK));
+        a.recycle();
+        
         header = (TextView) theader.findViewById(R.id.input_message_list_item);
         header.setTextColor(Color.WHITE);
         header.setText("Create New Message");
