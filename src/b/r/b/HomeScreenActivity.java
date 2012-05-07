@@ -107,7 +107,7 @@ public class HomeScreenActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"in onCreate");
         Settings.Init(this);
-        setTheme(Settings.Theme());
+        setTheme(Settings.Theme());//set the theme we have chosen in the settings tabs
         setContentView(R.layout.main_screen);
         
         // Find views	
@@ -135,15 +135,17 @@ public class HomeScreenActivity extends TabActivity {
         // Set Current Tab
         mTabHost.setCurrentTab(0);        
 
-
+        //open up a parent interaction so we can interact with the parent database
         pDb = new ParentInteraction(this);
         View theader = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.input_message_list_item, null, false);
+        //default background color
         theader.setBackgroundColor(Color.DKGRAY);
         header = (TextView) theader.findViewById(R.id.input_message_list_item);
         header.setTextColor(Color.WHITE);
         header.setText("Create New Message");
         messageList.addHeaderView(header);
         Cursor temp = pDb.GetAllParentMessages();//creating a temp so we can close it as soon as we're done with it
+        //MessageListCursorAdapter is defined below
         adapter = new MessageListCursorAdapter(this,R.layout.input_message_list_item,temp,
         		new String[]{MESSAGE},new int[]{R.id.input_message_list_item});
        
@@ -151,7 +153,7 @@ public class HomeScreenActivity extends TabActivity {
         //
         temp.close();//can close the getAllParentMessages cursor now that it's stored
 
-        
+        //set up everything 
         messageList.setVisibility(View.GONE);
         registerListeners();
         
@@ -172,7 +174,7 @@ public class HomeScreenActivity extends TabActivity {
     	int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
     	int enabled = isEnabled();
     	Log.d(TAG,"in onStart");
-    	
+    	//check if we are enable or disable and act accordingly
    		if((enabled == MESSAGE_ENABLED) && (db_id >= 0)){
    			Log.d(TAG,"message Enabled");
    			changeCurrent(db_id);
@@ -222,16 +224,19 @@ public class HomeScreenActivity extends TabActivity {
     	Log.d(TAG,"in onDestroy");
     	SharedPreferences prefs = getSharedPreferences(PREFS,MODE_PRIVATE);
 		SharedPreferences.Editor editor = prefs.edit();
+		//if we are not enabled, we dont want any message selected
     	if(isEnabled() != MESSAGE_ENABLED)
     		editor.putInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
+    	//if it is enabled, we need to store what the current message is
     	else editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
     	editor.commit();
+    	//if pDb is not null, make sure we clean it up to avoid database never closed errors!
     	if(pDb != null){
     		pDb.Cleanup();
     	}
     	
     }
-    
+    //check if the app is turned on
     public int isEnabled(){
     	SharedPreferences prefs = getSharedPreferences(PREFS,MODE_PRIVATE);
     	return prefs.getInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
@@ -243,9 +248,9 @@ public class HomeScreenActivity extends TabActivity {
     }
     
     /*	registerClickListeners
-     * 
+     *  pretty straightforward, just setting all the click listeners we need so the user can click on anything they want
      */
-    
+ 
     private void registerListeners(){
     	Log.d(TAG,"in registerListener");
     	// Filter for CustomAutoComplete
