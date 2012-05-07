@@ -21,7 +21,6 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.TabActivity;
-import android.app.AlertDialog.Builder;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -31,9 +30,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;								
@@ -47,24 +44,24 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CursorAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RemoteViews;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 // java stuff
 import java.util.ArrayList;
 import java.util.Calendar;
 
 /*	HomeScreenActivity
- * 		Starts the application bringing up the main screen	
+ * 		First activity that comes up.
+ * 		Holds the TabHost for displaying the Message, Response Log, and Settings tabs.
+ * 		Holds the Current Message.
+ * 		
  */
 
 public class HomeScreenActivity extends TabActivity {
@@ -77,8 +74,6 @@ public class HomeScreenActivity extends TabActivity {
 	
 	public static Message mCurrent;
 
-	// Variables
-	IncomingListener listener;
 	
 	// Views
 	ImageButton enableButton;
@@ -185,16 +180,6 @@ public class HomeScreenActivity extends TabActivity {
    		}
 
     }
-    private String tempFunc(String num){
-		Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num));
-		Cursor cursor = getContentResolver().query(contactUri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, 
-				null, null, null);
-		if(cursor.moveToFirst())
-			if(!cursor.isAfterLast())
-				return cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-		return null;
-
-    }
     
     @Override
     public void onResume(){
@@ -244,8 +229,6 @@ public class HomeScreenActivity extends TabActivity {
     
     private void registerListeners(){
     	Log.d(TAG,"in registerListener");
-    	// Filter for CustomAutoComplete
-    	
     	inputMessage.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
 				if(mCurrent == null)
@@ -273,7 +256,10 @@ public class HomeScreenActivity extends TabActivity {
 					messageList.setVisibility(View.VISIBLE);
 					messageList.bringToFront();
 				}
-				else messageList.setVisibility(View.GONE);
+				else{
+					messageList.setVisibility(View.GONE);
+					pDb.Cleanup();
+				}
 					
 			}
     	});
@@ -396,7 +382,7 @@ public class HomeScreenActivity extends TabActivity {
     		return(-1);
     	
     	int difference = (int)(end.getTimeInMillis() - current.getTimeInMillis());
-    	difference = difference - end.get(end.SECOND)*1000;
+    	difference = difference - end.get(Calendar.SECOND)*1000;
     	
     	return(difference);
     }

@@ -12,17 +12,16 @@
 package b.r.b;
 
 import java.util.Calendar;
+import static b.r.b.Constants.*;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
-import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class IncomingListener extends BroadcastReceiver {
 	private final String 		TAG 			= "IncomingListener";
@@ -58,13 +57,16 @@ public class IncomingListener extends BroadcastReceiver {
 		Log.d(TAG, intent.getAction().toString());
 		
 		lDb = new LogInteraction(context);
-		
+
 		// If its a text then handle a text
-		if(intent.getAction().equals(INCOMING_TEXT))							// If it is an incoming text
-			handleText(intent,context);		
+		
+		if(context.getSharedPreferences(PREFS,Context.MODE_PRIVATE).getInt(MESSAGE_ENABLED_KEY, MESSAGE_DISABLED) == MESSAGE_ENABLED){
+			if(intent.getAction().equals(INCOMING_TEXT))							// If it is an incoming text
+				handleText(intent,context);		
 		// If its a call handle a call
-		else if(intent.getAction().equals(PHONE_STATE))							// If it is a call
-			handleCall(context,intent);											// handle it
+			else if(intent.getAction().equals(PHONE_STATE))							// If it is a call
+				handleCall(context,intent);											// handle it
+		}
 	}
 	
 	
