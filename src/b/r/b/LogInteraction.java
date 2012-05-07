@@ -78,29 +78,25 @@ public class LogInteraction extends Activity{
 	}
 	
 	/* This version of Deletelog deletes any logs less than a certain time
-	 * So we can delete old logs*/
+	 * So we can delete old logs
+	 * make the input string mm/dd*/
 	public boolean DeleteLog(String date){
 		//we dont need to create databases since we wont be querying
 		String[] a = date.split("/");//split the date date taken in
 		deleteSuccess = true;//initialize to true
 		int month = Integer.parseInt(a[0]);//assign the month to a local variable
 		int day = Integer.parseInt(a[1]);//assign the day to a local
-		int year = Integer.parseInt(a[2]);//assign the year to a locak
+		
 		Cursor c = GetAllLogs();//grab all the logs
 		c.moveToFirst();
 		if(c != null && c.getCount()>0){
 			while(!c.isAfterLast()){//so long as it's pointing to a existing element
 				int lid = c.getInt(1);//grab the id (is in column 1)
-				String[] b = c.getString(4).split("/");//split the date (is in column 4)
+				String[] b = c.getString(c.getColumnIndex(DATE)).split("/");//split the date (is in column 4)
 				int Lmonth = Integer.parseInt(b[0]);// put the month somewhere
 				int Lday = Integer.parseInt(b[1]);// put the day somewhere
-				int Lyear = Integer.parseInt(b[2]);//put the year somewhere
-				if(Lyear < year){
-					boolean d = DeleteLog(lid);//if the year is less than the date from when we want all logs that are older than it to be removed, delete it
-					if(d == false)// if it failed, make deleteSuccess false
-						deleteSuccess = false;
-					
-				}else if(Lmonth < month){
+				
+				if(Lmonth < month){
 					boolean d = DeleteLog(lid);//if the month is less than the date from when we want all logs that are older than it to be removed, delete it
 					if(d == false)// if it failed, make deleteSuccess false
 						deleteSuccess = false;
@@ -108,7 +104,6 @@ public class LogInteraction extends Activity{
 					boolean d = DeleteLog(lid);//if the day is less than the date from when we want all logs that are older than it to be removed, delete it
 					if(d == false)// if it failed, make deleteSuccess false
 						deleteSuccess = false;
-					
 				}
 				c.moveToNext();//point to the next entry
 			}	
