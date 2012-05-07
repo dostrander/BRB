@@ -1,6 +1,9 @@
 package b.r.b;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import static b.r.b.Constants.*;
 import android.app.ListActivity;
@@ -36,6 +39,15 @@ public class LogActivity extends ListActivity{
 		Log.d(TAG,"in onCreate");
 		setTheme(Settings.Theme());
 		lDb = new LogInteraction(this);
+		
+		// Flush out logs before the log history # of days
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -Settings.LogHistoryDays());
+		try {
+			lDb.DeleteLog(sdf.format(cal.getTime()));
+		} catch (Exception e) {}
+		
 		fillData();
 		Cursor temp = lDb.GetAllLogs();
 		adapt = new  LogAdapter(this,lDb.GetAllLogs());
