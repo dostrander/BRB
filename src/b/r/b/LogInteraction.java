@@ -24,6 +24,7 @@ public class LogInteraction extends Activity{
 	//private final int PCHILD_ID_COLUMN = 3;
 	//private final int CNUMBERS_COLUMN = 2;
 	//initializing the local objects
+	private static final String TAG = "LogInteraction";
 	private logDB log;
 	private parentDB parent;
 	private childDB child;
@@ -51,7 +52,7 @@ public class LogInteraction extends Activity{
 		values.put(NUMBER,num);
 		//try to insert the values, return the received message and the id if it worked
 		long id = db.insertOrThrow(LOG_TABLE, null, values);
-		
+		Log.d(TAG, "ID = "+ id);
 		//returns the message and the id 
 		return new Message(r_msg,(int) id);
 		
@@ -86,16 +87,20 @@ public class LogInteraction extends Activity{
 		deleteSuccess = true;//initialize to true
 		int month = Integer.parseInt(a[0]);//assign the month to a local variable
 		int day = Integer.parseInt(a[1]);//assign the day to a local
-		
+		Log.d(TAG, "Month = "+ month);
+		Log.d(TAG, "Day = "+ day);
 		Cursor c = GetAllLogs();//grab all the logs
 		c.moveToFirst();
 		if(c != null && c.getCount()>0){
 			while(!c.isAfterLast()){//so long as it's pointing to a existing element
-				int lid = c.getInt(1);//grab the id (is in column 1)
+				int lid = c.getInt(c.getColumnIndex(ID));//grab the id (is in column 1)
+				Log.d(TAG, "ID = "+ lid);
 				String[] b = c.getString(c.getColumnIndex(DATE)).split("/");//split the date (is in column 4)
 				int Lmonth = Integer.parseInt(b[0]);// put the month somewhere
+				Log.d(TAG, "LMonth = "+ Lmonth);
 				int Lday = Integer.parseInt(b[1]);// put the day somewhere
-				
+				Log.d(TAG, "Lday = "+ Lday);
+				c.moveToNext();//point to the next entry
 				if(Lmonth < month){
 					boolean d = DeleteLog(lid);//if the month is less than the date from when we want all logs that are older than it to be removed, delete it
 					if(d == false)// if it failed, make deleteSuccess false
@@ -105,7 +110,7 @@ public class LogInteraction extends Activity{
 					if(d == false)// if it failed, make deleteSuccess false
 						deleteSuccess = false;
 				}
-				c.moveToNext();//point to the next entry
+				
 			}	
 		}
 		
@@ -117,7 +122,7 @@ public class LogInteraction extends Activity{
 	public Cursor GetAllLogs(){
 		SQLiteDatabase db = log.getReadableDatabase();
 		//cutting out the middle man, just return the query for speed
-		return db.query(LOG_TABLE, new String[]{ID,TIME,DATE,AMPM,TYPE
+		return db.query(LOG_TABLE, new String[]{_ID,PARENT_ID,TIME,DATE,AMPM,TYPE
 				,RECEIVED_MESSAGE,SENT_MESSAGE,NUMBER}, null,null,null,null,null);
 		
 	}
@@ -125,7 +130,7 @@ public class LogInteraction extends Activity{
 	public Cursor SearchLogByParentId(int pid){
 		SQLiteDatabase db = log.getReadableDatabase();
 		//returns the rows which have the right parent id
-		return db.query(LOG_TABLE, new String[]{ID,TIME,DATE,AMPM,TYPE
+		return db.query(LOG_TABLE, new String[]{_ID,PARENT_ID,TIME,DATE,AMPM,TYPE
 				,RECEIVED_MESSAGE,SENT_MESSAGE,NUMBER},PARENT_ID+"=?"
 				, new String[]{String.valueOf(pid)}, null, null, null);
 	}

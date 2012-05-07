@@ -53,7 +53,8 @@ public class LogActivity extends ListActivity{
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, -Settings.LogHistoryDays());
 		try {
-			lDb.DeleteLog(sdf.format(cal.getTime()));
+			boolean b = lDb.DeleteLog(sdf.format(cal.getTime()));
+			Log.d(TAG,"b = "+b);
 		} catch (Exception e) {}
 		
 		fillData();
@@ -62,7 +63,7 @@ public class LogActivity extends ListActivity{
 		getListView().setAdapter(adapt);
 		Log.d(TAG,"Count = "+ temp.getCount());
 		mCurrent = null;
-
+		refresh();
 	}
 	
 	public void onResume()
