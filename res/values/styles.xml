@@ -2,29 +2,43 @@
 <resources>
 
     <style name="ParentTheme" parent="android:Theme.NoTitleBar"></style>
-
-    <style name="TestStyle" parent="android:Theme">
-        <item name="android:textColor">?attr/secondaryTextColor</item>
+    
+    <style name="LayoutStyle">
+        <item name="android:background">?attr/darkest_color</item>
+    </style>
+    
+    <style name="LogItemStyle">
+        <item name="android:background">?attr/dark_color</item>
+    </style>
+    
+    <style name="DividerStyle">
+        <item name="android:background">?attr/light_color</item>
     </style>
 
     <style name="Theme.Default" parent="ParentTheme">
-        <item name="primaryTextColor">#FFFFFFFF</item>
-        <item name="secondaryTextColor">#EEEEEE</item>
-        <item name="darkColor">#FF444444</item>
-        <item name="mediumColor">#FF999999</item>
-        <item name="lightColor">#FFCCCCCC</item>
-        <item name="contrastColor">#FF4444FF</item>
-        <item name="styleRefTest">@style/TestStyle</item>
+        <item name="primary_text_color">#FFFFFF</item>
+        <item name="secondary_text_color">#EEEEEE</item>
+        <item name="darkest_color">#000000</item>
+        <item name="dark_color">#444444</item>
+        <item name="medium_color">#999999</item>
+        <item name="light_color">#C5C5C5</item>
+        <item name="contrast_color">#4444FF</item>
+        <item name="button_selector">@drawable/button_selector</item>
+        <item name="rounded_gradient">@drawable/rounded_gradient</item>
+        <item name="date_time_background">@drawable/date_time_background</item>
     </style>
 
     <style name="Theme.Night" parent="ParentTheme">
-        <item name="primaryTextColor">#FFFFFFFF</item>
-        <item name="secondaryTextColor">#666666</item>
-        <item name="darkColor">#FF4444FF</item>
-        <item name="mediumColor">#FF9999FF</item>
-        <item name="lightColor">#FFCCCCFF</item>
-        <item name="contrastColor">#FFFF4444</item>
-        <item name="styleRefTest">@style/TestStyle</item>
+        <item name="primary_text_color">#FFFFFF</item>
+        <item name="secondary_text_color">#666666</item>
+        <item name="darkest_color">#000044</item>
+        <item name="dark_color">#444488</item>
+        <item name="medium_color">#9999BB</item>
+        <item name="light_color">#C5C5FF</item>
+        <item name="contrast_color">#FF4444</item>
+        <item name="button_selector">@drawable/button_selector_night</item>
+        <item name="rounded_gradient">@drawable/rounded_gradient_night</item>
+        <item name="date_time_background">@drawable/date_time_background_night</item>
     </style>
-
+    
 </resources>
