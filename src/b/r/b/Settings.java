@@ -39,6 +39,7 @@ public class Settings {
 	public static void SetLogHistoryDays(int value) {
 		_logHistoryDays = value;
 		_editor.putInt("log_history_days", _logHistoryDays);
+		_editor.commit();
 	}
 	
 	// Whether phone calls should be handled
@@ -49,6 +50,7 @@ public class Settings {
 	public static void SetHandleCalls(Boolean value) {
 		_handleCalls = value;
 		_editor.putBoolean("handle_calls", _handleCalls);
+		_editor.commit();
 	}
 	
 	// Whether texts should be handled
@@ -59,6 +61,7 @@ public class Settings {
 	public static void SetHandleTexts(Boolean value) {
 		_handleTexts = value;
 		_editor.putBoolean("handle_texts", _handleTexts);
+		_editor.commit();
 	}
 	
 	// The name of the currently enabled theme

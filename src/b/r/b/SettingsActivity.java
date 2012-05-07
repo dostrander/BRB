@@ -94,8 +94,19 @@ public class SettingsActivity extends Activity {
 						((CheckBox)findViewById(R.id.calls_enabled_checkbox)).isChecked());
 				Settings.SetHandleTexts(
 						((CheckBox)findViewById(R.id.texts_enabled_checkbox)).isChecked());
-				Settings.SetLogHistoryDays(Integer.parseInt(
-						((EditText)findViewById(R.id.log_history_edit_number)).getText().toString()));
+				
+				// Here we capture try and get a value for log history, and if we catch a proper
+				// int value we clamp it and assign it to the log history setting. Regardless
+				// at the end we assign the log history setting value back to the GUI text field.
+				EditText logField = (EditText)findViewById(R.id.log_history_edit_number);
+				try {
+					int result = Integer.parseInt(logField.getText().toString());
+					if (result < 0) result = 0;
+					if (result > 999) result = 999;
+					Settings.SetLogHistoryDays(result);
+				} catch (NumberFormatException nfe) {}
+				logField.setText(Integer.toString(Settings.LogHistoryDays()));
+				
 				// Set Theme last because it essentially restarts the application
 				Settings.SetTheme(_themes.get(_theme_names.get(
 						_style_selecter.getSelectedItemPosition())));
