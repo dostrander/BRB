@@ -79,9 +79,10 @@ public class LogInteraction extends Activity{
 	
 	/* This version of Deletelog deletes any logs less than a certain time
 	 * So we can delete old logs*/
-	public void DeleteLog(String date){
+	public boolean DeleteLog(String date){
 		//we dont need to create databases since we wont be querying
 		String[] a = date.split("/");//split the date date taken in
+		deleteSuccess = true;//initialize to true
 		int month = Integer.parseInt(a[0]);//assign the month to a local variable
 		int day = Integer.parseInt(a[1]);//assign the day to a local
 		int year = Integer.parseInt(a[2]);//assign the year to a locak
@@ -94,19 +95,26 @@ public class LogInteraction extends Activity{
 				int Lday = Integer.parseInt(b[1]);// put the day somewhere
 				int Lyear = Integer.parseInt(b[2]);//put the year somewhere
 				if(Lyear < year){
-					DeleteLog(lid);//if the year is less than the date from when we want all logs that are older than it
-					//to be removed, delete it
+					boolean d = DeleteLog(lid);//if the year is less than the date from when we want all logs that are older than it to be removed, delete it
+					if(d == false)// if it failed, make deleteSuccess false
+						deleteSuccess = false;
+					
 				}else if(Lmonth < month){
-					DeleteLog(lid);//if the month is less than the date from when we want all logs that are older than it
-					//to be removed, delete it
+					boolean d = DeleteLog(lid);//if the month is less than the date from when we want all logs that are older than it to be removed, delete it
+					if(d == false)// if it failed, make deleteSuccess false
+						deleteSuccess = false;
 				}else if(Lday < day){
-					DeleteLog(lid);//if the day is less than the date from when we want all logs that are older than it
-					//to be removed, delete it
+					boolean d = DeleteLog(lid);//if the day is less than the date from when we want all logs that are older than it to be removed, delete it
+					if(d == false)// if it failed, make deleteSuccess false
+						deleteSuccess = false;
+					
 				}
 				c.moveToNext();//point to the next entry
 			}	
+			
 		}
-		
+		c.close();
+		return deleteSuccess;//if true, they all worked, if false, at least one failed
 	}
 	
 	//return ALL THE LOGS
