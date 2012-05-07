@@ -1,3 +1,16 @@
+/* * * * * * * * * * * * * * * * * * * * * * * 
+ * BRB-Android
+ * SettingsActivity.java
+ * 		- Activity where user configurable settings are changed
+ * 
+ * Created: 2012
+ * Author: Will Stahl
+ * 
+ * Evan Dodge, Derek Ostrander, Max Shwenk
+ * Jason Mather, Stuart Lang, Will Stahl
+ * 
+ * * * * * * * * * * * * * * * * * * * * * * */
+
 package b.r.b;
 
 import static b.r.b.Constants.*;
@@ -66,15 +79,17 @@ public class SettingsActivity extends Activity {
 //			public void onNothingSelected(AdapterView arg0) {}
 //			});
 		
+		// Make sure the initial states are correct
 		((CheckBox)findViewById(R.id.calls_enabled_checkbox)).setChecked(Settings.HandleCalls());
 		((CheckBox)findViewById(R.id.texts_enabled_checkbox)).setChecked(Settings.HandleTexts());
 		((EditText)findViewById(R.id.log_history_edit_number)).setText(
 				Integer.toString(Settings.LogHistoryDays()));
 		
-		Button apply_button = (Button) findViewById(R.id.apply_button);
-		apply_button.setOnClickListener(new OnClickListener(){
+		// Set the apply button's actions
+		((Button)findViewById(R.id.apply_button)).setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
 				
+				// Apply settings changes when apply button is hit
 				Settings.SetHandleCalls(
 						((CheckBox)findViewById(R.id.calls_enabled_checkbox)).isChecked());
 				Settings.SetHandleTexts(
