@@ -18,6 +18,33 @@ public class Settings {
 	private static SharedPreferences _settings;
 	private static SharedPreferences.Editor _editor;
 	
+	private static int _logHistoryDays = 10;
+	public static int LogHistoryDays() {
+		return _logHistoryDays;
+	}
+	public static void SetLogHistoryDays(int value) {
+		_logHistoryDays = value;
+		_editor.putInt("log_history_days", _logHistoryDays);
+	}
+	
+	private static Boolean _handleCalls = true;
+	public static Boolean HandleCalls() {
+		return _handleCalls;
+	}
+	public static void SetHandleCalls(Boolean value) {
+		_handleCalls = value;
+		_editor.putBoolean("handle_calls", _handleCalls);
+	}
+	
+	private static Boolean _handleTexts = true;
+	public static Boolean HandleTexts() {
+		return _handleTexts;
+	}
+	public static void SetHandleTexts(Boolean value) {
+		_handleTexts = value;
+		_editor.putBoolean("handle_texts", _handleTexts);
+	}
+	
 	private static String _themeName;
 	public static String ThemeName() {
 		return _themeName;
@@ -73,6 +100,10 @@ public class Settings {
 
 		_editor.commit();
 		
+		_handleCalls = _settings.getBoolean("handle_calls", true);
+		_handleTexts = _settings.getBoolean("handle_texts", true);
+		_logHistoryDays = _settings.getInt("log_history_days", 10);
+		
 		// Try to get name of saved theme, otherwise use default
 		_themeName = _settings.getString("theme", "Default");
 		_theme = R.style.Theme_Default;
@@ -88,6 +119,9 @@ public class Settings {
 		}
 		
 		// Write settings
+		_editor.putBoolean("handle_calls", _handleCalls);
+		_editor.putBoolean("handle_texts", _handleTexts);
+		_editor.putInt("log_history_days", _logHistoryDays);
 		_editor.putString("theme", _themeName);
 		
 		// Commit settings

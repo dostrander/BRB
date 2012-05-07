@@ -75,6 +75,9 @@ public class IncomingListener extends BroadcastReceiver {
 	 */
 	private void handleText(Intent intent,Context context){
 		Log.d(TAG,"in incomingText");
+		
+		if (!Settings.HandleTexts()) return;
+		
 		Bundle bundle = intent.getExtras();
 		if (bundle != null)	{
 			Object[] pdus 				= (Object[]) bundle.get("pdus");	// Get the incoming text/s			
@@ -117,6 +120,8 @@ public class IncomingListener extends BroadcastReceiver {
 	 */
 	
 	private void handleCall(final Context context,Intent intent){
+		
+		if (!Settings.HandleCalls()) return;
 		
 		// ---Handle Phone Call---
 		telephonyManager	= (TelephonyManager)context.getSystemService(		// Make Telephony manager
