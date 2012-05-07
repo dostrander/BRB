@@ -1,8 +1,12 @@
 package b.r.b;
 
-import java.util.ArrayList;
-
-import static b.r.b.Constants.*;
+import static b.r.b.Constants.AMPM;
+import static b.r.b.Constants.DATE;
+import static b.r.b.Constants.NUMBER;
+import static b.r.b.Constants.RECEIVED_MESSAGE;
+import static b.r.b.Constants.SENT_MESSAGE;
+import static b.r.b.Constants.TIME;
+import static b.r.b.Constants.TYPE;
 import android.app.ListActivity;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,11 +17,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 public class LogActivity extends ListActivity{
@@ -45,12 +47,12 @@ public class LogActivity extends ListActivity{
 
 	}
 	
-//	public void onResume()
-//	{
-//		super.onResume();
-//		adapt = new  LogAdapter(this,lDb.GetAllLogs());
-//		
-//	}
+	public void onResume()
+	{
+		super.onResume();
+		adapt.notifyDataSetChanged();
+		
+	}
 	
 	//onStop() When the activity is no longer Visible
 	
@@ -73,6 +75,11 @@ public class LogActivity extends ListActivity{
 	
 	}
 	
+	public void refresh()
+	{
+		adapt.notifyDataSetChanged();
+		adapt = new  LogAdapter(this,lDb.GetAllLogs());
+	}
 	
 	
 	public class LogAdapter extends CursorAdapter{
@@ -180,7 +187,9 @@ public class LogActivity extends ListActivity{
 				Log.d(TAG,"in onLongClick");
 				boolean temp = false;
 				temp = lDb.DeleteLog((String)holder.number.getText(), (String)holder.time.getText());
-				notifyDataSetChanged();	
+				//notifyDataSetChanged();
+				refresh();
+				
 				return temp;
 			} });
 	    	
