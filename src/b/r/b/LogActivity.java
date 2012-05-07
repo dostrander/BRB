@@ -96,8 +96,9 @@ public class LogActivity extends ListActivity{
 	
 	public void refresh()
 	{
+		lDb.Cleanup();
+		adapt.changeCursor(lDb.GetAllLogs());
 		adapt.notifyDataSetChanged();
-		adapt = new  LogAdapter(this,lDb.GetAllLogs());
 	}
 	
 	
