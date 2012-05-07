@@ -1,3 +1,16 @@
+/* * * * * * * * * * * * * * * * * * * * * * * 
+ * BRB-Android
+ * Settings.java
+ * 		- Servers as a static accessor for user configurable settings
+ * 
+ * Created: 2012
+ * Author: Will Stahl
+ * 
+ * Evan Dodge, Derek Ostrander, Max Shwenk
+ * Jason Mather, Stuart Lang, Will Stahl
+ * 
+ * * * * * * * * * * * * * * * * * * * * * * */
+
 package b.r.b;
 
 
@@ -18,6 +31,7 @@ public class Settings {
 	private static SharedPreferences _settings;
 	private static SharedPreferences.Editor _editor;
 	
+	// The number of days that logs are kept
 	private static int _logHistoryDays = 10;
 	public static int LogHistoryDays() {
 		return _logHistoryDays;
@@ -27,6 +41,7 @@ public class Settings {
 		_editor.putInt("log_history_days", _logHistoryDays);
 	}
 	
+	// Whether phone calls should be handled
 	private static Boolean _handleCalls = true;
 	public static Boolean HandleCalls() {
 		return _handleCalls;
@@ -36,6 +51,7 @@ public class Settings {
 		_editor.putBoolean("handle_calls", _handleCalls);
 	}
 	
+	// Whether texts should be handled
 	private static Boolean _handleTexts = true;
 	public static Boolean HandleTexts() {
 		return _handleTexts;
@@ -45,6 +61,7 @@ public class Settings {
 		_editor.putBoolean("handle_texts", _handleTexts);
 	}
 	
+	// The name of the currently enabled theme
 	private static String _themeName;
 	public static String ThemeName() {
 		return _themeName;
@@ -86,6 +103,7 @@ public class Settings {
 		_editor.putString("theme", name);
 		_editor.commit();
 
+		// The home activity needs to be restarted to set the theme
 		_home.finish();
 		_home.startActivity(new Intent(_home, _home.getClass()));
 	}
