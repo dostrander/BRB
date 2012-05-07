@@ -16,6 +16,8 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 
@@ -51,9 +53,11 @@ public class SettingsActivity extends Activity {
 		_style_selecter = (Spinner) findViewById(R.id.style_selector);
 		
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_dropdown_item, _theme_names);
+				android.R.layout.simple_spinner_item, _theme_names);
 		
 		_style_selecter.setAdapter(dataAdapter);
+		
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
 		_style_selecter.setSelection(_theme_names.indexOf(Settings.ThemeName()));
 		
@@ -62,9 +66,22 @@ public class SettingsActivity extends Activity {
 //			public void onNothingSelected(AdapterView arg0) {}
 //			});
 		
+		((CheckBox)findViewById(R.id.calls_enabled_checkbox)).setChecked(Settings.HandleCalls());
+		((CheckBox)findViewById(R.id.texts_enabled_checkbox)).setChecked(Settings.HandleTexts());
+		((EditText)findViewById(R.id.log_history_edit_number)).setText(
+				Integer.toString(Settings.LogHistoryDays()));
+		
 		Button apply_button = (Button) findViewById(R.id.apply_button);
 		apply_button.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
+				
+				Settings.SetHandleCalls(
+						((CheckBox)findViewById(R.id.calls_enabled_checkbox)).isChecked());
+				Settings.SetHandleTexts(
+						((CheckBox)findViewById(R.id.texts_enabled_checkbox)).isChecked());
+				Settings.SetLogHistoryDays(Integer.parseInt(
+						((EditText)findViewById(R.id.log_history_edit_number)).getText().toString()));
+				// Set Theme last because it essentially restarts the application
 				Settings.SetTheme(_themes.get(_theme_names.get(
 						_style_selecter.getSelectedItemPosition())));
 			}
