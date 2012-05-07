@@ -62,7 +62,9 @@ public class Widget extends AppWidgetProvider {
 	
 	
 	/*  onUpdate
-	 *
+	 *	Called on a millisecond delay defined in /res/xml/widget_provider.xml
+	 *	Sends broadcasts to buttons to update the widget when click listeners for
+	 *	the BRB icon, left, right, and enable buttons. 
 	 */
 	@Override
     public void onUpdate(Context ctx, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -127,12 +129,8 @@ public class Widget extends AppWidgetProvider {
     	editor = prefs.edit();
     	
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * I'll be honest I don't know what this does but it was part of the 
- * tutorial I used and I'm afraid of removing it since everything is
- * working at the moment...
- * 
- * I believe that it makes it so you don't need the onDelete function
- * of Android widgets...												
+ * A workaround that makes it so that we call onDeleted() from here so that 
+ * the widget doesn't prematurely lock the database.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     	final String action = intent.getAction();
     	if (AppWidgetManager.ACTION_APPWIDGET_DELETED.equals(action)) {
@@ -291,42 +289,38 @@ public class Widget extends AppWidgetProvider {
     		}
     		super.onReceive(context, intent);
     	}
-    	
-    	//cleanup and close?
-    	//cursor.close();
-    	//pDb.Cleanup();
     }
     
     
 	/*  onDeleted
+	 * 	When one or more instances of the widget have been deleted 
+	 * 	from the user's homescreen
 	 * 
 	 */
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
     	super.onDeleted(context, appWidgetIds);
         Log.d(TAG, "onDeleted");
-        // Does nothing...
     }
     
     
 	/*  onEnabled
-	 * 
+	 * When the widget is created on the user's homescreen, follow the
+	 * 	default procedure for the app widget provider class we're extending.
 	 */
     @Override
     public void onEnabled(Context context) {
     	super.onEnabled(context);
         Log.d(TAG, "onEnabled");
-        // Does nothing...
     }
     
     
 	/*  onDisabled
-	 * 
+	 *  When all instances of the widget have been deleted from the homescreen.
 	 */
     @Override
     public void onDisabled(Context context) {
     	super.onDisabled(context);
         Log.d(TAG, "onDiasbled");
-        // Does nothing...
     }
 }

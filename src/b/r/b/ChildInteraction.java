@@ -59,7 +59,7 @@ public class ChildInteraction extends Activity{
 		String stringPid = String.valueOf(pid);
 		int number = GetNumberFromChild(cid);
 		String stringNumbers = String.valueOf(number);
-		c.close();
+		c.close();//close the cursor since we have the values we need locally now
 		ContentValues values = new ContentValues();
 		//get the row all ready for insert
 		values.put(ID, cid);
@@ -71,7 +71,7 @@ public class ChildInteraction extends Activity{
 		//clean up
 		dbr.close();
 		dbw.close();
-		return editSuccess;
+		return editSuccess;//return success value of the update
 	}
 	
 	//This version just takes in the old message and replaces it
@@ -84,12 +84,13 @@ public class ChildInteraction extends Activity{
 		//one passed to the function
 		Cursor c = dbr.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID}, MESSAGE+"=?"
 				, new String[]{oldMessage}, null, null, null);
+		//grab all the other values
 		int cid = c.getInt(PID_COLUMN);
 		int pid = c.getInt(c.getColumnIndex(PARENT_ID));
 		String stringPid = String.valueOf(pid);
 		int number = GetNumberFromChild(cid);
 		String stringNumbers = String.valueOf(number);
-		c.close();
+		c.close();//we can now close the cursor since we have all the values 
 		ContentValues values = new ContentValues();
 		//prepare the row for insertion
 		values.put(ID, cid);
@@ -101,12 +102,13 @@ public class ChildInteraction extends Activity{
 		//cleanup
 		dbr.close();
 		dbw.close();
-		return editSuccess;
+		return editSuccess;//return the success of the update
 	}
 	
 	
 	//This version just replaces the message by the id
 	public boolean ChildEditMessage(int cid, String newMessage){
+		//need both a readable and a writable
 		SQLiteDatabase dbr = child.getReadableDatabase();
 		SQLiteDatabase dbw = child.getWritableDatabase();
 		//here c has the row which had the id passed to the function
@@ -115,7 +117,7 @@ public class ChildInteraction extends Activity{
 		
 		int pid = c.getInt(c.getColumnIndex(PARENT_ID));
 		String stringPid = String.valueOf(pid);
-		c.close();
+		c.close();//we can close the cursor since we have all the values we need locally
 		
 		int number = GetNumberFromChild(cid);
 		String stringNumbers = String.valueOf(number);
@@ -130,7 +132,7 @@ public class ChildInteraction extends Activity{
 		//cleanup
 		dbr.close();
 		dbw.close();
-		return editSuccess;
+		return editSuccess;//return the success value of the update
 	}
 	
 	
@@ -153,13 +155,14 @@ public class ChildInteraction extends Activity{
 	//In order to insert a message into the child database, you just pass a number,
 	//the message, and the parent id
 	public long InsertMessage(String number, String message, long pid){
-		String p = String.valueOf(pid);
-		SQLiteDatabase db = child.getWritableDatabase();
+		String p = String.valueOf(pid);//we need to make a string version
+		SQLiteDatabase db = child.getWritableDatabase();//just need to write
 		ContentValues values = new ContentValues();
+		//prepare the row for insertion
 		values.put(NUMBER, number);
 		values.put(MESSAGE, message);
 		values.put(PARENT_ID, p);
-		return db.insertOrThrow(CHILD_TABLE, null, values);
+		return db.insertOrThrow(CHILD_TABLE, null, values);//return the id of the child message
 	}
 	
 	
@@ -203,13 +206,14 @@ public class ChildInteraction extends Activity{
 	
 	//To get a child's number just pass the id
 	public int GetNumberFromChild(int cid){
-		SQLiteDatabase db = child.getWritableDatabase();
+		SQLiteDatabase db = child.getReadableDatabase();//we need a readable database
 		
 		Cursor c = db.query(CHILD_TABLE, new String[]{ID}, ID+"=?", new String[]{String.valueOf(cid)}
-		, null, null, null);
+		, null, null, null);//grab the row with the correct id
 		
-		String a = c.getString(CNUMBERS_COLUMN);
-		c.close();
+		String a = c.getString(CNUMBERS_COLUMN);//grab the number from the number column
+		c.close();//we can close since we no stored the value
+		db.close();//since the cursor is no longer open we can close the dB
 		int number = Integer.parseInt(a);
 		
 		return number;

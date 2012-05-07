@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ParentTheme" parent="android:Theme"></style>
+    <style name="ParentTheme" parent="android:Theme.NoTitleBar"></style>
 
     <style name="TestStyle" parent="android:Theme">
         <item name="android:textColor">?attr/secondaryTextColor</item>
