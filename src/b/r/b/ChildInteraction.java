@@ -57,12 +57,12 @@ public class ChildInteraction extends Activity{
 		int cid = c.getInt(c.getColumnIndex(ID));
 		
 		String stringPid = String.valueOf(pid);
-		String stringNumbers = GetNumberFromChild(cid);
+		String stringNumbers  = c.getString(c.getColumnIndex(NUMBER));
 	
 		c.close();//close the cursor since we have the values we need locally now
 		ContentValues values = new ContentValues();
 		//get the row all ready for insert
-		values.put(ID, cid);
+		//values.put(ID, cid);
 		values.put(NUMBER, stringNumbers);
 		values.put(MESSAGE,newMessage);
 		values.put(PARENT_ID,stringPid);
@@ -88,12 +88,12 @@ public class ChildInteraction extends Activity{
 		int cid = c.getInt(c.getColumnIndex(ID));
 		int pid = c.getInt(c.getColumnIndex(PARENT_ID));
 		String stringPid = String.valueOf(pid);
-		String stringNumbers = GetNumberFromChild(cid);
+		String stringNumbers  = c.getString(c.getColumnIndex(NUMBER));
 		 
 		c.close();//we can now close the cursor since we have all the values 
 		ContentValues values = new ContentValues();
 		//prepare the row for insertion
-		values.put(ID, cid);
+		//values.put(ID, cid);
 		values.put(NUMBER, stringNumbers);
 		values.put(MESSAGE,newMessage);
 		values.put(PARENT_ID,stringPid);
@@ -121,11 +121,11 @@ public class ChildInteraction extends Activity{
 		String stringPid = String.valueOf(pid);
 		c.close();//we can close the cursor since we have all the values we need locally
 		
-		String stringNumbers  = GetNumberFromChild(cid);
+		String stringNumbers  = c.getString(c.getColumnIndex(NUMBER));
 	
 		ContentValues values = new ContentValues();
 		//preparing the row for insertion
-		values.put(ID, cid);
+		//values.put(ID, cid);
 		values.put(MESSAGE,newMessage);
 		values.put(NUMBER, stringNumbers);
 		values.put(PARENT_ID,stringPid);
