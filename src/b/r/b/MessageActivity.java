@@ -471,28 +471,7 @@ public class MessageActivity extends Activity {
         	//		build a dialog to edit the text
         	holder.text.setOnClickListener(new OnClickListener(){
     				public void onClick(View v) {
-    					AlertDialog.Builder builder = new AlertDialog.Builder(					// Get a builder for making the dialog
-    							MessageActivity.this);
-    					builder.setTitle("Edit Message Text");									// set the title
-    					final EditText input = new EditText(MessageActivity.this);				// Edit Text for editing the text
-    					input.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);				// set the inputType
-    					builder.setView(input);													// set the dialog view
-    					builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {	// when the user is finished
-    						public void onClick(DialogInterface dialog, int whichButton) {
-    							if(holder.text.getText().toString() 							// if the holder text
-    									!= input.getText().toString()){							// does not equal the input text (if it has been changed)
-    								holder.text.setText(input.getText().toString());			// set the holder text
-    								getItem(position).text = input.getText().toString();		// set the contact specific messages text in the message
-    							}
-    						}
-    					});
-    					
-    					builder.setNegativeButton("Cancel",										// when the user wants to cancel 
-    							new DialogInterface.OnClickListener() {
-    						public void onClick(DialogInterface dialog, int whichButton) {}
-    					});
-    					AlertDialog alert = builder.create();									// create the dialog
-    					alert.show();															// and show it
+    					editCMessageTextDialog(tempObject);
     				}
             	});
         	
@@ -618,8 +597,7 @@ public class MessageActivity extends Activity {
 				if(numbers.get(n).checked){														// if it is checked
 					nums.add(n);																// add it to the list of numbers
 					count++;																	// up the count
-				}	
-			popToast("You have added " + String.valueOf(count) + " contacts.");					// tell the user how many are now in there
+				}
 			return (String[]) nums.toArray(new String[]{});										// return the numbers
 		}
 

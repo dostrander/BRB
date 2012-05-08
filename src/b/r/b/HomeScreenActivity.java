@@ -75,13 +75,13 @@ public class HomeScreenActivity extends TabActivity {
 	private final String NO_MESSAGE = "Click to Edit Message";
 	private LogActivity lA = new LogActivity();
 	public static Message mCurrent;
-
+	public static boolean logStarted = false;
 	// Views
 	ImageButton enableButton;
 	ImageButton listButton;
 	Button selectButton;
 	TextView header;
-	TabHost mTabHost;
+	static TabHost mTabHost;
 	TabWidget mTabWidget;
 	static TextView inputMessage;
 	private static ListView messageList;
@@ -127,6 +127,7 @@ public class HomeScreenActivity extends TabActivity {
         		setIndicator("Settings",getResources().getDrawable(R.drawable.settings_tab_selector)).	// Set SettingsIcon selector
         		setContent(new Intent(this,SettingsActivity.class)));									// Set Intent for SettingsActivity
         
+        Log.d(TAG,"tabhost" + String.valueOf(mTabHost.getCurrentTab()));
         // Set Current Tab
         mTabHost.setCurrentTab(0);        
 
