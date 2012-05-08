@@ -86,7 +86,7 @@ public class LogActivity extends ListActivity{
 	public void onStart()
 	{
 		super.onStart();
-		
+		lDb = new LogInteraction(this);
 		mCurrent = HomeScreenActivity.mCurrent;
 		if(mCurrent == null){
 			Cursor temp = lDb.GetAllLogs();
