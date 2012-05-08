@@ -141,6 +141,8 @@ public class LogActivity extends ListActivity{
 	
 	
 	public class LogAdapter extends CursorAdapter{
+		private final static String MORE = "more";
+		private final static String LESS = "less";
 		
 	    private Context context;
 	    private ParentInteraction pDb;
@@ -176,6 +178,7 @@ public class LogActivity extends ListActivity{
 			holder.expansion = (RelativeLayout) v.findViewById(R.id.log_entry_expansion);
 			holder.received = (TextView) v.findViewById(R.id.log_entry_received);
 			holder.received_label = (TextView) v.findViewById(R.id.log_entry_received_label);
+			holder.more = (TextView) v.findViewById(R.id.log_entry_more);
 	        
 			v.setTag(holder);
 
@@ -218,24 +221,22 @@ public class LogActivity extends ListActivity{
 	    	//Expanded or not
 	    	if(expand[position]){
 				Log.d(TAG,"expanded");
+				holder.more.setText(LESS);
 				holder.expansion.setVisibility(View.VISIBLE);
 			}
 			else{
 				Log.d(TAG,"not expanded");
+				holder.more.setText(MORE);
 				holder.expansion.setVisibility(View.GONE);
 			}
 
 	        
 	       
 	    	
-	    	v.findViewById(R.id.log_entry_more).setOnClickListener(new OnClickListener(){
+	    	holder.more.setOnClickListener(new OnClickListener(){
 				public void onClick(View v) {
 					Log.d(TAG,"in onClick more");
 					expand[position] = !expand[position];
-					if(expand[position])
-						((TextView) v).setText("less");
-					else 
-						((TextView) v).setText("more");
 					notifyDataSetChanged();
 				}
     			
@@ -274,6 +275,7 @@ public class LogActivity extends ListActivity{
 			TextView response_label;
 			TextView received;
 			TextView received_label;
+			TextView more;
 			
 		}
 
