@@ -1,21 +1,9 @@
 package b.r.b;
 
 
-import static b.r.b.Constants.AMPM;
-import static b.r.b.Constants.DATE;
-import static b.r.b.Constants.NUMBER;
-import static b.r.b.Constants.RECEIVED_MESSAGE;
-import static b.r.b.Constants.SENT_MESSAGE;
-import static b.r.b.Constants.TIME;
-import static b.r.b.Constants.TYPE;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-
 import static b.r.b.Constants.*;
-
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import android.app.ListActivity;
 import android.content.Context;
 import android.database.Cursor;
@@ -57,7 +45,6 @@ public class LogActivity extends ListActivity{
 			Log.d(TAG,"b = "+b);
 		} catch (Exception e) {}
 		
-		fillData();
 		Cursor temp = lDb.GetAllLogs();
 		adapt = new  LogAdapter(this,lDb.GetAllLogs());
 		getListView().setAdapter(adapt);
@@ -87,12 +74,12 @@ public class LogActivity extends ListActivity{
 	
 	public void setMessage(Message current){ mCurrent = current;}
 	
-	private void fillData(){
-		Log.d(TAG,"in fillData");
-		//for(int i = 0; i < 5; i++)
-			lDb.InsertLog(0, "2:30", "02/04", AM, CALL, "" , "idk", "518-813-6375");
-	
-	}
+//	private void fillData(){
+//		Log.d(TAG,"in fillData");
+//		//for(int i = 0; i < 5; i++)
+//			lDb.InsertLog(0, "2:30", "02/04", AM, CALL, "" , "idk", "518-813-6375");
+//	
+//	}
 	
 	public void refresh()
 	{

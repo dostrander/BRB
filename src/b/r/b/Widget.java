@@ -283,10 +283,12 @@ public class Widget extends AppWidgetProvider {
     			    String packageName = "b.r.b";
     			    Intent launchIntent = pm.getLaunchIntentForPackage(packageName);
     			    context.startActivity(launchIntent);
+
     			}
     			catch (Exception e1) {
     			}
     		}
+		    pDb.Cleanup();
     		super.onReceive(context, intent);
     	}
     }
@@ -312,6 +314,7 @@ public class Widget extends AppWidgetProvider {
     public void onEnabled(Context context) {
     	super.onEnabled(context);
         Log.d(TAG, "onEnabled");
+        
     }
     
     

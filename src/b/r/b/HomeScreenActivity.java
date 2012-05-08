@@ -1,15 +1,15 @@
 /*//////////////////////////////////////////
-//		BRB-Android 	     	  //
-//		Created by:		  //
-//	      Derek Ostrander		  //
-//		 Max Shwenk		  //
-//		Stuart Lang		  //
-//		 Evan Dodge		  //
-//	        Jason Mather		  //
-//		 Will Stahl		  //
-//					  //
-//	         Created on:		  //
-//	      January 23rd, 2012	  //
+//			BRB-Android 	   			  //
+//			Created by:	  				  //
+//	      Derek Ostrander				  //
+//		 Max Shwenk		 				  //
+//		Stuart Lang						  //
+//		 Evan Dodge		  				  //
+//	        Jason Mather				  //
+//		 Will Stahl		  				  //
+//					  					  //
+//	         Created on:				  //
+//	      January 23rd, 2012			  //
 //////////////////////////////////////////*/
 
 package b.r.b;
@@ -91,7 +91,6 @@ public class HomeScreenActivity extends TabActivity {
 
 	private static MessageListCursorAdapter adapter;
 	static ParentInteraction pDb;
-	//static DatabaseInteraction db;
 
 	
 	/*	onCreate
@@ -489,12 +488,7 @@ public class HomeScreenActivity extends TabActivity {
     	
     	editor.commit();
     }
-    
-    private void noCurrent(){
-    	mCurrent = null;
-    	MessageActivity.noMessage();
-    }
-    
+
     private void editCurrentMessage(String t){
     	mCurrent.setText(t);
     	inputMessage.setText(mCurrent.text);
