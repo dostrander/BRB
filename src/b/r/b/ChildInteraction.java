@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 
 
@@ -107,6 +108,7 @@ public class ChildInteraction extends Activity{
 	
 	//This version just replaces the message by the id
 	public boolean ChildEditMessage(int cid, String newMessage){
+		Log.d("child interaction","cid: " + String.valueOf(cid) );
 		//need both a readable and a writable
 		SQLiteDatabase dbr = child.getReadableDatabase();
 		SQLiteDatabase dbw = child.getWritableDatabase();
@@ -114,6 +116,7 @@ public class ChildInteraction extends Activity{
 		Cursor c = dbr.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID}, ID+"=?"
 				, new String[]{String.valueOf(cid)}, null, null, null);
 		
+		c.moveToFirst();
 		int pid = c.getInt(c.getColumnIndex(PARENT_ID));
 		String stringPid = String.valueOf(pid);
 		c.close();//we can close the cursor since we have all the values we need locally
@@ -210,6 +213,7 @@ public class ChildInteraction extends Activity{
 		Cursor c = db.query(CHILD_TABLE, new String[]{ID}, ID+"=?", new String[]{String.valueOf(cid)}
 		, null, null, null);//grab the row with the correct id
 		
+		c.moveToFirst();
 		String a = c.getString(CNUMBERS_COLUMN);//grab the number from the number column
 		c.close();//we can close since we no stored the value
 		db.close();//since the cursor is no longer open we can close the dB
