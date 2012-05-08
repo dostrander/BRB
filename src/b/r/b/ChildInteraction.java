@@ -119,9 +119,10 @@ public class ChildInteraction extends Activity{
 		c.moveToFirst();
 		int pid = c.getInt(c.getColumnIndex(PARENT_ID));
 		String stringPid = String.valueOf(pid);
+		String stringNumbers  = c.getString(c.getColumnIndex(NUMBER));
 		c.close();//we can close the cursor since we have all the values we need locally
 		
-		String stringNumbers  = c.getString(c.getColumnIndex(NUMBER));
+		
 	
 		ContentValues values = new ContentValues();
 		//preparing the row for insertion
