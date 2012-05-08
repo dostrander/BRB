@@ -413,7 +413,9 @@ public class HomeScreenActivity extends TabActivity {
     	}
     	
     	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+    	
     	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();
+    	SharedPreferences prefs = getSharedPreferences(PREFS, Activity.MODE_PRIVATE);
     	inputMessage.setTextColor(Color.WHITE);
     	enableButton.setImageResource(R.drawable.enabled_message_selector);
     	// enable listener
@@ -421,8 +423,50 @@ public class HomeScreenActivity extends TabActivity {
     	editor.putInt(DB_ID_KEY, mCurrent.getID());
     	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
     	//save previous ringer volume
-    	editor.putInt(SOUND_PREF_KEY, audiomanage.getRingerMode());
-    	audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    	int ringerPref = prefs.getInt(RINGER_MODE, audiomanage.RINGER_MODE_NORMAL);
+    	int volumePref = prefs.getInt(ENABLED_VOL, 3);
+    	editor.putInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
+    	editor.putInt(PREVIOUS_VOL, audiomanage.getStreamVolume(AudioManager.STREAM_RING));
+    	if(ringerPref==AudioManager.RINGER_MODE_NORMAL)
+    	{
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+    		
+        	if(volumePref==HIGH_VOLUME)
+        	{	
+        		//maximum ringer volume
+            	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
+        	}
+        	else if(volumePref==MEDIUM_VOLUME)
+        	{
+        		//half of maximum ringer volume
+            	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/2, 0);
+        	}
+        	else if(volumePref==LOW_VOLUME)
+        	{
+        		//quarter of maximum ringer volume
+            	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/4, 0);
+        	}
+        	else
+        	{
+        		//return to previous volume
+        		audiomanage.setStreamVolume(AudioManager.STREAM_RING,audiomanage.getStreamVolume(AudioManager.STREAM_RING),0);
+        	}
+    	}
+    	else if(ringerPref==AudioManager.RINGER_MODE_SILENT)
+    	{
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    	}
+    	else if(ringerPref==AudioManager.RINGER_MODE_VIBRATE)
+    	{
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+    	}
+    	else
+    	{
+    		audiomanage.setRingerMode(audiomanage.getRingerMode());
+    		audiomanage.setStreamVolume(AudioManager.STREAM_RING,audiomanage.getStreamVolume(AudioManager.STREAM_RING), 0);
+    	}
+    	//check user preference for volume on disable
+    	
     	
     	// Updates the widget's Icon
     	Context context = this;
@@ -455,7 +499,50 @@ public class HomeScreenActivity extends TabActivity {
     	inputMessage.setTextColor(Color.WHITE);
     	enableButton.setImageResource(R.drawable.disabled_button_selector);
     	// disable listener
-    	audiomanage.setRingerMode(prefs.getInt(SOUND_PREF_KEY,AudioManager.RINGER_MODE_NORMAL));
+    	
+    	int ringerPref = prefs.getInt(RINGER_MODE, 0);
+    	int previousRingerMode = prefs.getInt(PREVIOUS_RINGER_MODE,AudioManager.RINGER_MODE_NORMAL);
+    	int volumePref = prefs.getInt(DISABLED_VOL, 0);
+    	int previousVolume = prefs.getInt(PREVIOUS_VOL, 0);
+    	if(ringerPref==AudioManager.RINGER_MODE_NORMAL)
+    	{
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+    		
+        	if(volumePref==HIGH_VOLUME)
+        	{	
+        		//maximum ringer volume
+            	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
+        	}
+        	else if(volumePref==MEDIUM_VOLUME)
+        	{
+        		//half of maximum ringer volume
+            	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/2, 0);
+        	}
+        	else if(volumePref==LOW_VOLUME)
+        	{
+        		//quarter of maximum ringer volume
+            	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/4, 0);
+        	}
+        	else
+        	{
+        		//return to previous volume
+        		audiomanage.setStreamVolume(AudioManager.STREAM_RING,previousVolume, 0);
+        	}
+    	}
+    	else if(ringerPref==AudioManager.RINGER_MODE_SILENT)
+    	{
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    	}
+    	else if(ringerPref==AudioManager.RINGER_MODE_VIBRATE)
+    	{
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+    	}
+    	else
+    	{
+    		audiomanage.setRingerMode(previousRingerMode);
+    		audiomanage.setStreamVolume(AudioManager.STREAM_RING,previousVolume, 0);
+    	}
+    	
     	enableButton.setClickable(true);
     	
     	// Updates the widget's Icon
