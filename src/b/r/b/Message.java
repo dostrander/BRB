@@ -8,14 +8,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
 // Android Imports
-import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -36,15 +32,14 @@ public class Message{
 	// Convenience 
 	private final String TAG = "Message";
 	private static final String CLICK_TO_EDIT = "Click to Edit Text";
-	Context context;
+	private Context context;
 	
 	// Variables
 	private int DB_ID;
 	
-	private ChildMessage header;
-	ArrayList<ChildMessage> cMessages;
+	ChildMessage header;
+	public ArrayList<ChildMessage> cMessages;
 	public String 				text;													// Text of the message to be sent
-	private boolean 			no_end;													// Tells whether there is an end or not
 	// start time
 	private Calendar 			startTime;
 	private Calendar			endTime;
@@ -63,7 +58,7 @@ public class Message{
 	 * 			contains the number
 	 */
 	public class ChildMessage{ 
-		private final String TAG = "ChildMessage";				// for logs
+		//private final String TAG = "ChildMessage";				// for logs
 		String text;											// text to send
 		HashMap<String,Integer> numbers;						// numbers and db_ids
 		String namesText;										// String to set in view
@@ -111,6 +106,8 @@ public class Message{
 			namesText = "";
 			for(String n : numbers.keySet()){
 				String name = numberToString(n,ctx);
+				if(name == null)
+					name = n;
 				if(!first)
 					namesText = namesText + "," + name;
 				else{
@@ -181,9 +178,6 @@ public class Message{
 	}
 	
 	// setters
-	private void getChildrens(int[] cids){
-		
-	}
 	public boolean childContainsMessage(String t){
 		if(cMessages.size() > 0)
 			for(ChildMessage n : cMessages)
@@ -314,7 +308,7 @@ public class Message{
 		header.numbers.put(n, -1);
 		header.numbersToString(ctx);
 	}
-
+//
 	
 	// Boolean Operations
 		// Header
@@ -340,25 +334,31 @@ public class Message{
 	
 	public String getContactText(String num){
 		for(ChildMessage c : cMessages)
-			if(c.containsNumber(num))
+			if(c.containsNumber(num)){
+				Log.d(TAG,"text: "+ c.text);
 				return c.text;
+			}
+				
+		for(ChildMessage c : cMessages)
+			for(String k : c.numbers.keySet())
+				if(trimNumber(num).equals(trimNumber(k))){
+					Log.d(TAG,"number : "+ num);
+					Log.d(TAG,"text: " + c.text);
+					return c.text;
+				}
 		return null;
 	}
 	
-	private void addChildMessages(Cursor c){
-		String text;
-		int id;
-		String num;
+	
+	public String trimNumber(String num){
+		String incomingNumber = num;
+		incomingNumber = incomingNumber.replace('-', ' ');
+		incomingNumber = incomingNumber.replace('+', ' ');
+		if(incomingNumber.startsWith("1"))
+			incomingNumber = incomingNumber.replaceFirst("1", " ");
+		incomingNumber = incomingNumber.trim();
+		return incomingNumber;
 	}
-	
-
-	
-	
-	
-	
-	
-	
-	
 	
 	/*	sendSMS
 	 * 		check whether or not there is a contact
@@ -368,8 +368,13 @@ public class Message{
 	public void sendSMS(String incomingNumber, Context context){
 		Log.d(TAG,"in sendText");
 		//if(specificNumbers.containsKey(incomingNumber));								// If there is a key that matches
-		if(getContactText(incomingNumber) != null)
-			send(incomingNumber,context,getContactText(incomingNumber));
+		
+		
+		String t = getContactText(incomingNumber);
+		if(t != null){
+			Log.d(TAG,"Contact Specific");
+			send(incomingNumber,context,t);
+		}
 ////			specificMessages.get(incomingNumber).sendSMS(incomingNumber,context);		// Tell that message to send it
 //		
 		else{																			// If not
@@ -378,13 +383,15 @@ public class Message{
 			// if we want to track whether or not it was sent we need to change this 
 			//smsManager.sendTextMessage(incomingNumber, 									// And send the text message
 										//null, incomingNumber, null, null);
+			Log.d(TAG,"in sendSMS non Contact Specific");
 			send(incomingNumber,context);
 			
 			
 		}
 	}
 	private void send(String incomingNumber,Context context, String stext){
-        Log.d(incomingNumber,text);
+		Log.d(TAG,"in contact specific");
+        Log.d(incomingNumber,stext);
         String 			SENT 				= "SMS_SENT";
         String 			DELIVERED 			= "SMS_DELIVERED";
         PendingIntent 	sentIntent			= PendingIntent.getBroadcast(context, 0,	// Set up sent Pending Intent

@@ -43,10 +43,10 @@ public class LogActivity extends ListActivity{
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, -Settings.LogHistoryDays());
-		try {
-			boolean b = lDb.DeleteLog(sdf.format(cal.getTime()));
-			Log.d(TAG,"b = "+b);
-		} catch (Exception e) {}
+//		try {
+//			boolean b = lDb.DeleteLog(sdf.format(cal.getTime()));
+//			Log.d(TAG,"b = "+b);
+//		} catch (Exception e) {}
 		
 		Cursor temp = lDb.GetAllLogs();
 		adapt = new  LogAdapter(this,lDb.GetAllLogs());
@@ -79,7 +79,7 @@ public class LogActivity extends ListActivity{
 	public void onResume()
 	{
 		super.onResume();
-		adapt.notifyDataSetChanged();
+		refresh();
 		
 	}
 	
@@ -107,8 +107,10 @@ public class LogActivity extends ListActivity{
 	public void refresh()
 	{
 		lDb.Cleanup();
-		adapt.changeCursor(lDb.GetAllLogs());
+		Cursor c = lDb.GetAllLogs();
+		adapt.changeCursor(c);
 		adapt.notifyDataSetChanged();
+		adapt.expand = new boolean[c.getCount()];
 	}
 	
 	
@@ -139,7 +141,7 @@ public class LogActivity extends ListActivity{
 	
 	
 	public class LogAdapter extends CursorAdapter{
-
+		
 	    private Context context;
 	    private ParentInteraction pDb;
 	    private boolean[] expand;
@@ -256,15 +258,8 @@ public class LogActivity extends ListActivity{
 				
 				return true;
 			} });
-	    	
-	    	
-	    	
-	    	
-	    	
-	    	
-	    	
-	    	
 	    }
+	    
 	    
 	    class ViewHolder{
 			ImageView type;

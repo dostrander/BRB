@@ -5,14 +5,13 @@
 //easier manner
 package b.r.b;
 
+import static b.r.b.Constants.*;
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import static b.r.b.Constants.*;
+
 
 
 

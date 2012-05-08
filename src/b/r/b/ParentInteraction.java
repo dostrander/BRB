@@ -76,7 +76,9 @@ public class ParentInteraction extends Activity{
 		//Don't need cursor, we have everything we need
 		ContentValues values = new ContentValues();
 		
+		Log.d(TAG,"pid: " + stringPid);
 		values.put(ID, stringPid);//put the pid in
+		Log.d(TAG,"message " + newMessage);
 		values.put(MESSAGE,newMessage);//put the new message we got
 		//did it work?
 		editSuccess = db.update(PARENT_TABLE, values, null, null) > 0;//store the success of the update call

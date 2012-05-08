@@ -24,8 +24,6 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.CursorAdapter;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
@@ -42,11 +40,10 @@ import android.widget.Toast;
 
 public class MessageActivity extends Activity {
 	// Convinience 
-	private static final String TAG = "MessageActivity";										// For Logs
-	
+	private static final String TAG = "MessageActivity";										// For Logs	
 	// Variables
 	private static ContactMessageListAdapter 	mAdapter;										// Adapter for controller listView for Contact Specific Messages
-	private static Message 						mMessage;										// Current Message enabled, null if disabled
+	private static Message						mMessage;										// Current Message enabled, null if disabled
 	// Views
 	private static TextView 					vEndTime;										// Text of End Time of Current Message
 	private ListView 							vContactMessageList;							// ListView of Contact Specific Messages
@@ -280,7 +277,7 @@ public class MessageActivity extends Activity {
 
 	
 	
-	// Dialog/Toast Making Functions
+	// --- Dialog/Toast Making Functions ---
 	/*	popToast
 	 * 		Convenience for just throwing up a toast to the screen
 	 */
