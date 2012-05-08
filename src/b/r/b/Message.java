@@ -360,18 +360,19 @@ public class Message{
 					Log.d(TAG,"number : "+ num);
 					Log.d(TAG,"text: " + c.text);
 					return c.text;
-				}
+				} else{ Log.d(TAG,"number: "+ num); Log.d(TAG,"k " + k);}
 		return null;
 	}
 	
 	
 	private String trimNumber(String num){
 		String incomingNumber = num;
-		incomingNumber = incomingNumber.replace('-', ' ');
-		incomingNumber = incomingNumber.replace('+', ' ');
+		incomingNumber = incomingNumber.replaceAll("-", "" );
+//		incomingNumber = incomingNumber.replaceAll("+", "");
 		if(incomingNumber.startsWith("1"))
-			incomingNumber = incomingNumber.replaceFirst("1", " ");
-		incomingNumber = incomingNumber.trim();
+			incomingNumber = incomingNumber.replaceFirst("1", "");
+		Log.d(TAG,"trimnum: " + num );
+		Log.d(TAG,"trimNumber: " + incomingNumber);
 		return incomingNumber;
 	}
 	
