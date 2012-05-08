@@ -181,9 +181,9 @@ public class Message{
 				tt 	= c.getString(c.getColumnIndex(MESSAGE));
 				num = c.getString(c.getColumnIndex(NUMBER));
 				id 	= (int) c.getLong(c.getColumnIndex(ID));
-				cmm = getChild(t);
+				cmm = getChild(tt);
 				if(cmm != null){
-					getChild(t).numbers.put(num,id);
+					getChild(tt).numbers.put(num,id);
 					Log.d(TAG,"containts message");
 				}else cMessages.add(new ChildMessage(tt,id,num,ctx));
 				c.moveToNext();
@@ -286,9 +286,13 @@ public class Message{
 	
 		// For nonHeaders 
 	public ChildMessage getChild(String t){
-		for(ChildMessage c : cMessages)
+		Log.d(TAG,"t:" +t);
+		
+		for(ChildMessage c : cMessages){
+			Log.d(TAG,"c.text: " + c.text);
 			if(c.text.equals(t))
 				return c;
+		}
 		return null;
 	}
 	
@@ -316,6 +320,7 @@ public class Message{
 	}
 	public void setHeaderText(String t){header.text = t;}
 	public void addHeaderContacts(Context ctx,String[] nums){
+		header.numbers.clear();
 		for(String n : nums)
 			addContactHeader(n,ctx);
 		header.numbersToString(ctx);

@@ -29,7 +29,6 @@ public class LogActivity extends ListActivity{
 	private static final String TAG = "LogActivity";
 	private static final String NO_LOGS = "No Log Entries for this Message";
 	private TextView noLogs;
-	private static Message mCurrent;
 	private LogInteraction lDb;
 	private LogAdapter adapt;
 	private AlertDialog.Builder alert;
@@ -38,6 +37,7 @@ public class LogActivity extends ListActivity{
 		super.onCreate(bundle);
 		setContentView(R.layout.response_log);
 		Log.d(TAG,"in onCreate");
+		HomeScreenActivity.logStarted = true;
 		setTheme(Settings.Theme());
 		noLogs = (TextView) findViewById(R.id.no_logs_label);
 		lDb = new LogInteraction(this);
@@ -62,7 +62,6 @@ public class LogActivity extends ListActivity{
 	{
 		super.onStop();
 		lDb.Cleanup();
-		mCurrent = null;
 		//Close the cursor for next time
 		adapt.getCursor().close();
 	}
@@ -71,9 +70,7 @@ public class LogActivity extends ListActivity{
 	public void onStart()
 	{
 		super.onStart();
-		lDb = new LogInteraction(this);
-		mCurrent = HomeScreenActivity.mCurrent;
-		if(mCurrent == null){
+		if(HomeScreenActivity.mCurrent == null){
 			Cursor temp = lDb.GetAllLogs();
 			adapt = new  LogAdapter(this,temp);
 			getListView().setAdapter(adapt);
@@ -81,7 +78,7 @@ public class LogActivity extends ListActivity{
 			checkForLogs(temp);
 			temp.close();
 		}else{
-			Cursor temp = lDb.GetLogBySentMessage(mCurrent.text);
+			Cursor temp = lDb.GetLogBySentMessage(HomeScreenActivity.mCurrent.text);
 			adapt = new LogAdapter(this,temp);
 			getListView().setAdapter(adapt);
 			Log.d(TAG,"Count = "+temp.getCount());
@@ -96,9 +93,8 @@ public class LogActivity extends ListActivity{
 	
 	public void setMessage(Message current){
 		
-		mCurrent = current;
-		if(lDb != null){
-			if(mCurrent.text == null){
+		if(HomeScreenActivity.logStarted){
+			if(HomeScreenActivity.mCurrent == null){
 				Cursor temp = lDb.GetAllLogs();
 				adapt = new  LogAdapter(this,temp);
 				getListView().setAdapter(adapt);
@@ -106,7 +102,7 @@ public class LogActivity extends ListActivity{
 				checkForLogs(temp);
 				temp.close();
 			}else{
-				Cursor temp = lDb.GetLogBySentMessage(mCurrent.text);
+				Cursor temp = lDb.GetLogBySentMessage(HomeScreenActivity.mCurrent.text);
 				adapt = new LogAdapter(this,temp);
 				getListView().setAdapter(adapt);
 				Log.d(TAG,"Count = "+temp.getCount());
@@ -114,8 +110,7 @@ public class LogActivity extends ListActivity{
 				temp.close();
 			}
 			refresh();
-		}else Log.d(TAG,"ldb = null");
-		
+		}
 		
 	}
 	
