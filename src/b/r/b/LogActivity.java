@@ -84,8 +84,25 @@ public class LogActivity extends ListActivity{
 	
 
 	
-	public static void setMessage(Message current){
+	public void setMessage(Message current){
 		mCurrent = current;
+		if(mCurrent == null){
+			Cursor temp = lDb.GetAllLogs();
+			adapt = new  LogAdapter(this,temp);
+			getListView().setAdapter(adapt);
+			Log.d(TAG,"Count = "+ temp.getCount());
+			checkForLogs(temp);
+			temp.close();
+		}else{
+			Cursor temp = lDb.GetLogBySentMessage(mCurrent.text);
+			adapt = new LogAdapter(this,temp);
+			getListView().setAdapter(adapt);
+			Log.d(TAG,"Count = "+temp.getCount());
+			checkForLogs(temp);
+			temp.close();
+		}
+		refresh();
+		
 	}
 	
 //	private void fillData(){

@@ -73,7 +73,7 @@ public class HomeScreenActivity extends TabActivity {
 	private final String LOG = "log";
 	private final String SETTINGS = "settings";
 	private final String NO_MESSAGE = "Click to Edit Message";
-	
+	private LogActivity lA = new LogActivity();
 	public static Message mCurrent;
 
 	// Views
@@ -598,7 +598,7 @@ public class HomeScreenActivity extends TabActivity {
     
     private void changeCurrent(){
     	MessageActivity.changeMessage(mCurrent);
-    	LogActivity.setMessage(mCurrent);
+    	lA.setMessage(mCurrent);
     	if(mCurrent == null){
     		Log.d("mCurrent","null");
     		noMessage();
