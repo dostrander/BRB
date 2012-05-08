@@ -146,8 +146,8 @@ public class ChildInteraction extends Activity{
 		//the boolean contains truth value of the success of the delete statement,
 		//which is looking for a row with the correct number AND message and then
 		//deleting the entry if it exists
-		deleteSuccess = db.delete(CHILD_TABLE, NUMBER + "=" + num + 
-				" AND " + MESSAGE + "=" + message,  null) > 0;
+		deleteSuccess = db.delete(CHILD_TABLE, NUMBER + "= ?" + 
+				" AND " + MESSAGE + "= ?",  new String[]{num,message}) > 0;
 		db.close();
 		return deleteSuccess;
 	}
