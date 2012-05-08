@@ -73,7 +73,7 @@ public class HomeScreenActivity extends TabActivity {
 	private final String LOG = "log";
 	private final String SETTINGS = "settings";
 	private final String NO_MESSAGE = "Click to Edit Message";
-	
+	public static boolean logStarted;
 	public static Message mCurrent;
 
 	// Views
@@ -104,7 +104,7 @@ public class HomeScreenActivity extends TabActivity {
         Settings.Init(this);
         setTheme(Settings.Theme());//set the theme we have chosen in the settings tabs
         setContentView(R.layout.main_screen);
-        
+        logStarted = false;
         // Find views	
         enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);						// To enable the message
         listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);							// Show messages
