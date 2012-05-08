@@ -116,6 +116,12 @@ public class Message{
 				}
 			}
 		}
+		public void delete(Context ctx){
+			ChildInteraction cDb = new ChildInteraction(ctx);
+			for(String key : numbers.keySet())
+				cDb.DeleteChild(key, text);
+				cMessages.remove(this);
+		}
 		private String numberToString(String num, Context ctx){
 			Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num));
 			Cursor cursor = ctx.getContentResolver().query(contactUri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, 
@@ -334,12 +340,6 @@ public class Message{
 	
 	public String getContactText(String num){
 		for(ChildMessage c : cMessages)
-			if(c.containsNumber(num)){
-				Log.d(TAG,"text: "+ c.text);
-				return c.text;
-			}
-				
-		for(ChildMessage c : cMessages)
 			for(String k : c.numbers.keySet())
 				if(trimNumber(num).equals(trimNumber(k))){
 					Log.d(TAG,"number : "+ num);
@@ -350,7 +350,7 @@ public class Message{
 	}
 	
 	
-	public String trimNumber(String num){
+	private String trimNumber(String num){
 		String incomingNumber = num;
 		incomingNumber = incomingNumber.replace('-', ' ');
 		incomingNumber = incomingNumber.replace('+', ' ');

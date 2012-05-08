@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -283,17 +284,41 @@ public class MessageActivity extends Activity {
 	 */
     private void popToast(String t){Toast.makeText(this, t, Toast.LENGTH_LONG).show();}
     
+    /*	deleteDialog
+     * 		asks if they are sure they want to delete it then deletes the correct
+     * 		child message
+     */
+    
     /*	longClickDialog
      * 		throw up the dialog for delete the message, editing the contacts or 
      * 		editing the message
      */
-	private void longClickDialog(){
+	private void longClickDialog(final ChildMessage cm){
 		final String[] items = new String[]{"Edit Contacts", "Edit Message", "Delete Message"};	// The three categories
 		AlertDialog.Builder builder = new AlertDialog.Builder(MessageActivity.this);			// get the builder
 		builder.setTitle("Edit Contact Specific Message")										// set the title
 		.setItems(items,																		// set the items
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {					// When the item is clicked
+						switch(which){
+						case 0: Log.d(TAG,"edit contacts"); break;
+						case 1: Log.d(TAG,"edit mess"); break;
+						case 2:
+							AlertDialog.Builder b = new AlertDialog.Builder(MessageActivity.this);
+							b.setTitle("Delete Contact Specific Message?")
+							.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+								public void onClick(DialogInterface dialog, int which) {
+									cm.delete(MessageActivity.this);
+								}
+							})
+							.setNegativeButton("No", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									
+								}
+							});
+							b.create().show();
+							
+						}
 						
 					}
 				});
@@ -405,7 +430,7 @@ public class MessageActivity extends Activity {
         	// Long of the whole ListItem 
         	convertView.setOnLongClickListener(new OnLongClickListener(){						// On Long Click of an Item
 				public boolean onLongClick(View v) {	
-					longClickDialog();															// show the longClickDialog
+					longClickDialog(tempObject);												// show the longClickDialog
 					return true;																// tell it that it actually longClicked
 
 				}
