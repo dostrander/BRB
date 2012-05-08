@@ -54,7 +54,7 @@ public class ChildInteraction extends Activity{
 				, new String[]{oldMessage,String.valueOf(pid)}, null, null, null);
 		//although confusing, this just means get from column 1
 		//need to grab the other columns locally so we can put them in again for safety
-		int cid = c.getInt(PID_COLUMN);
+		int cid = c.getInt(c.getColumnIndex(ID));
 		
 		String stringPid = String.valueOf(pid);
 		String stringNumbers = GetNumberFromChild(cid);
@@ -85,7 +85,7 @@ public class ChildInteraction extends Activity{
 		Cursor c = dbr.query(CHILD_TABLE, new String[] {ID,NUMBER,MESSAGE,PARENT_ID}, MESSAGE+"=?"
 				, new String[]{oldMessage}, null, null, null);
 		//grab all the other values
-		int cid = c.getInt(PID_COLUMN);
+		int cid = c.getInt(c.getColumnIndex(ID));
 		int pid = c.getInt(c.getColumnIndex(PARENT_ID));
 		String stringPid = String.valueOf(pid);
 		String stringNumbers = GetNumberFromChild(cid);
@@ -214,7 +214,7 @@ public class ChildInteraction extends Activity{
 		, null, null, null);//grab the row with the correct id
 		
 		c.moveToFirst();
-		String a = c.getString(CNUMBERS_COLUMN);//grab the number from the number column
+		String a = c.getString(c.getColumnIndex(NUMBER));//grab the number from the number column
 		c.close();//we can close since we no stored the value
 		db.close();//since the cursor is no longer open we can close the dB
 		

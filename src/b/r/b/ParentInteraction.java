@@ -20,9 +20,9 @@ public class ParentInteraction extends Activity{
 	private static final String TAG = "ParentInteraction";
 	//Constants used to access a column using the cursor getString() method later
 	private final int PID_COLUMN = 1;
-	private final int PARENT_ID_COLUMN = 4;
-	private final int PCHILD_ID_COLUMN = 3;
-	private final int CNUMBERS_COLUMN = 2;
+	//private final int PARENT_ID_COLUMN = 4;
+	//private final int PCHILD_ID_COLUMN = 3;
+	//private final int CNUMBERS_COLUMN = 2;
 	//initializing the local objects
 	private logDB log;
 	private parentDB parent;
@@ -52,7 +52,7 @@ public class ParentInteraction extends Activity{
 		//get the rows which have a message which matches the one passed
 		Cursor c = dbr.query(PARENT_TABLE, new String[] {ID,MESSAGE}, MESSAGE+"= ?"
 				, new String[]{oldMessage}, null, null, null);
-		String pid = c.getString(PID_COLUMN); //grabbing the parent id locally
+		String pid = c.getString(c.getColumnIndex(ID)); //grabbing the parent id locally
 		c.close();//closing the cursor since we don't need it for anything else
 		ContentValues values = new ContentValues(); //this is what we use to load the values
 		values.put(ID, pid);//put the parent id we just grabbed
