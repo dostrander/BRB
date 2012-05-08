@@ -48,14 +48,20 @@ public interface Constants extends BaseColumns {
 	
 	//volume levels to be set when BRB wakes up from alarm
 	
-	public static final String SOUND_PREF_KEY = "sound_pref";
-	public static final int LOW_VOLUME=0;
-	public static final int MEDIUM_VOLUME=0;
-	public static final int HIGH_VOLUME=0;
-	public static final int VIBRATE=0;
-	public static final int SILENT=0;
-	public static final int PREVIOUS_VOLUME=0;
+	public static final String PREVIOUS_RINGER_MODE = "previous ringer mode";
+	public static final String PREVIOUS_VOL = "previous volume";
 	
+	public static final String RINGER_MODE = "ringer mode pref";
+	public static final String ENABLED_VOL = "enabled volume pref";
+	public static final String DISABLED_VOL = "disabled volume pref";
+	
+	public static final int LOW_VOLUME=0;
+	public static final int MEDIUM_VOLUME=1;
+	public static final int HIGH_VOLUME=2;
+	
+	public static final int VIBRATE=2;
+	public static final int SILENT=1;
+	public static final int NORMAL=0;
 	// end prefs keywords
 	
 	public static final String CLICK_TO_EDIT = "Click to Edit Text";
