@@ -61,6 +61,7 @@ public class LogActivity extends ListActivity{
 	public void onStop()
 	{
 		super.onStop();
+		lDb.Cleanup();
 		mCurrent = null;
 		//Close the cursor for next time
 		adapt.getCursor().close();
@@ -129,7 +130,7 @@ public class LogActivity extends ListActivity{
 	{
 		Log.d(TAG,"in refresh");
 		
-		lDb.Cleanup();
+		
 		Cursor c = lDb.GetAllLogs();
 		adapt.changeCursor(c);
 		checkForLogs(c);
