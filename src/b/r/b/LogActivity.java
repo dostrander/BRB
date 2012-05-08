@@ -46,12 +46,20 @@ public class LogActivity extends ListActivity{
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, -Settings.LogHistoryDays());
-		
-		Cursor temp = lDb.GetAllLogs();
-		adapt = new  LogAdapter(this,lDb.GetAllLogs());
-		getListView().setAdapter(adapt);
-		Log.d(TAG,"Count = "+ temp.getCount());
-		mCurrent = null;
+		mCurrent = HomeScreenActivity.mCurrent;
+		if(mCurrent == null){
+			Cursor temp = lDb.GetAllLogs();
+			adapt = new  LogAdapter(this,temp);
+			getListView().setAdapter(adapt);
+			Log.d(TAG,"Count = "+ temp.getCount());
+			temp.close();
+		}else{
+			Cursor temp = lDb.GetLogBySentMessage(mCurrent.text);
+			adapt = new LogAdapter(this,temp);
+			getListView().setAdapter(adapt);
+			Log.d(TAG,"Count = "+temp.getCount());
+			temp.close();
+		}
 		refresh();
 
 		
