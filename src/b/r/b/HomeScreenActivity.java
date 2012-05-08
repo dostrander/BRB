@@ -297,6 +297,7 @@ public class HomeScreenActivity extends TabActivity {
 			do temp.add(c.getString(c.getColumnIndex(MESSAGE))); 
 			while(c.moveToNext());
 		}
+		c.close();
 		pDb.Cleanup();
 		String[] messages = temp.toArray(new String[]{});
 		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeScreenActivity.this,
