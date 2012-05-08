@@ -99,6 +99,7 @@ public class ChildInteraction extends Activity{
 		values.put(PARENT_ID,stringPid);
 		//did it work?
 		editSuccess = dbw.update(CHILD_TABLE, values,ID+"=?", new String[]{String.valueOf(cid)}) > 0;
+		
 		//cleanup
 		dbr.close();
 		dbw.close();
