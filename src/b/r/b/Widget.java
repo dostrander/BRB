@@ -115,7 +115,8 @@ public class Widget extends AppWidgetProvider {
     		remoteViews.setImageViewResource(R.id.widget_button, R.drawable.disabled_button_selector);
     	else if (prefs.getInt(DB_ID_KEY, -1) == MESSAGE_DISABLED && db_id != -1)
     		remoteViews.setImageViewResource(R.id.widget_button, R.drawable.enabled_message_selector);
-    		
+    	cursor.close();
+    	pDb.Cleanup();
     	// Update using appWidgetManager
     	appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
     }
@@ -124,6 +125,8 @@ public class Widget extends AppWidgetProvider {
 	/*  onReceive
 	 * 
 	 */
+	
+	
     @Override
     public void onReceive(Context ctx, Intent intent) {
     	Log.d(TAG, "onRecieve");
@@ -298,9 +301,11 @@ public class Widget extends AppWidgetProvider {
     			catch (Exception e1) {
     			}
     		}
-		    pDb.Cleanup();
+		   
     		super.onReceive(context, intent);
     	}
+    	 pDb.Cleanup();
+    	 cursor.close();
     }
     
     
@@ -312,6 +317,7 @@ public class Widget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
     	cursor.close();
+    	pDb.Cleanup();
     	super.onDeleted(context, appWidgetIds);
         Log.d(TAG, "onDeleted");
     }
@@ -334,6 +340,8 @@ public class Widget extends AppWidgetProvider {
 	 */
     @Override
     public void onDisabled(Context context) {
+    	cursor.close();
+    	pDb.Cleanup();
     	super.onDisabled(context);
         Log.d(TAG, "onDiasbled");
     }
