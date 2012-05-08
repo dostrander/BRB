@@ -125,8 +125,9 @@ public class LogActivity extends ListActivity{
 				checkForLogs(temp);
 				temp.close();
 			}
+			refresh();
 		}
-		refresh();
+		
 		
 	}
 	
