@@ -499,12 +499,14 @@ public class HomeScreenActivity extends TabActivity {
     	Log.d(TAG,"in changeCurrent");
     	Message temp = pDb.GetParentById((int) db_id);
     	mCurrent = temp;
+    	Log.d("MCNULL",String.valueOf(mCurrent == null));
     	changeCurrent();
    	}
     
     private void changeCurrent(){
     	MessageActivity.changeMessage(mCurrent);
     	if(mCurrent == null){
+    		Log.d("mCurrent","null");
     		noMessage();
     	}
     	else{
@@ -517,6 +519,7 @@ public class HomeScreenActivity extends TabActivity {
     	AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
     	RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
     	ComponentName thisWidget = new ComponentName(context, Widget.class);
+
     	remoteViews.setTextViewText(R.id.widget_textview, mCurrent.text);
     	appWidgetManager.updateAppWidget(thisWidget, remoteViews);
     }

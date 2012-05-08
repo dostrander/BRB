@@ -4,8 +4,10 @@ package b.r.b;
 import static b.r.b.Constants.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +31,7 @@ public class LogActivity extends ListActivity{
 	private Message mCurrent;
 	private LogInteraction lDb;
 	private LogAdapter adapt;
+	private AlertDialog.Builder alert;
 	
 	public void onCreate(Bundle bundle){
 		super.onCreate(bundle);
@@ -51,6 +54,26 @@ public class LogActivity extends ListActivity{
 		Log.d(TAG,"Count = "+ temp.getCount());
 		mCurrent = null;
 		refresh();
+		
+		
+		
+//		alert = new AlertDialog.Builder(this)
+//		    .setTitle("Delete entry")
+//		    .setMessage("Are you sure you want to delete this entry?")
+//		    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//		        public void onClick(DialogInterface dialog, int which) { 
+//		            // continue with delete
+//		        }
+//		     })
+//		    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//		        public void onClick(DialogInterface dialog, int which) { 
+//		            // do nothing
+//		        }
+//		     });
+		        //.show();
+		     
+		
+		
 	}
 	
 	public void onResume()
@@ -86,6 +109,32 @@ public class LogActivity extends ListActivity{
 		lDb.Cleanup();
 		adapt.changeCursor(lDb.GetAllLogs());
 		adapt.notifyDataSetChanged();
+	}
+	
+	
+	public void popUP(String num, String time)
+	{
+		final String nUm = num;
+		final String tIme = time;
+		
+		alert = new AlertDialog.Builder(this)
+	    .setTitle("Delete entry")
+	    .setMessage("Are you sure you want to delete this entry?")
+	    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) { 
+	        	lDb.DeleteLog(nUm, tIme);
+	        	refresh();
+	        }
+	     })
+	    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) { 
+	            // do nothing
+	        }
+	     });
+		
+		alert.show();
+		
+		
 	}
 	
 	
@@ -136,6 +185,7 @@ public class LogActivity extends ListActivity{
 	    	
 	    	final int position = c.getPosition();
 	    	final ViewHolder holder = (ViewHolder) v.getTag();
+	    	final AlertDialog.Builder alert;
 	    	
 	    	
 	    	holder.date.setText(c.getString(c.getColumnIndex(DATE)));
@@ -192,13 +242,27 @@ public class LogActivity extends ListActivity{
 	    	v.setOnLongClickListener(new OnLongClickListener() {  
 	    		public boolean onLongClick(View v) {
 				Log.d(TAG,"in onLongClick");
-				boolean temp = false;
-				temp = lDb.DeleteLog((String)holder.number.getText(), (String)holder.time.getText());
+				//boolean temp = false;
+				
+				
+				//temp = lDb.DeleteLog((String)holder.number.getText(), (String)holder.time.getText());
+				
+				popUP((String)holder.number.getText(), (String)holder.time.getText());
+				
 				//notifyDataSetChanged();
+				
+				
 				refresh();
 				
-				return temp;
+				return true;
 			} });
+	    	
+	    	
+	    	
+	    	
+	    	
+	    	
+	    	
 	    	
 	    }
 	    

@@ -106,6 +106,16 @@ public class Widget extends AppWidgetProvider {
     	actionPendingIntent = PendingIntent.getBroadcast(context, 0, active, 0);
     	remoteViews.setOnClickPendingIntent(R.id.widget_icon, actionPendingIntent);
     	
+    	// Update everything to match the app when the widget is created
+    	if(db_id != -1 && prefs.getInt(DB_ID_KEY, -1) == MESSAGE_DISABLED) {
+    		cursor.moveToPosition(db_id-1);
+    		remoteViews.setTextViewText(R.id.widget_textview,cursor.getString(cursor.getColumnIndex(MESSAGE)));
+    	}
+    	if(prefs.getInt(DB_ID_KEY, -1) == MESSAGE_ENABLED)
+    		remoteViews.setImageViewResource(R.id.widget_button, R.drawable.disabled_button_selector);
+    	else if (prefs.getInt(DB_ID_KEY, -1) == MESSAGE_DISABLED && db_id != -1)
+    		remoteViews.setImageViewResource(R.id.widget_button, R.drawable.enabled_message_selector);
+    		
     	// Update using appWidgetManager
     	appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
     }
@@ -301,6 +311,7 @@ public class Widget extends AppWidgetProvider {
 	 */
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
+    	cursor.close();
     	super.onDeleted(context, appWidgetIds);
         Log.d(TAG, "onDeleted");
     }
