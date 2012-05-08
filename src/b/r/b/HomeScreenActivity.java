@@ -420,7 +420,8 @@ public class HomeScreenActivity extends TabActivity {
     	enableButton.setClickable(true);
     	editor.putInt(DB_ID_KEY, mCurrent.getID());
     	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
-    	editor.putInt("ringer_mode", audiomanage.getRingerMode());
+    	//save previous ringer volume
+    	editor.putInt(SOUND_PREF_KEY, audiomanage.getRingerMode());
     	audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
     	
     	// Updates the widget's Icon
@@ -454,7 +455,7 @@ public class HomeScreenActivity extends TabActivity {
     	inputMessage.setTextColor(Color.WHITE);
     	enableButton.setImageResource(R.drawable.disabled_button_selector);
     	// disable listener
-    	audiomanage.setRingerMode(prefs.getInt("ringer_mode",AudioManager.RINGER_MODE_NORMAL));
+    	audiomanage.setRingerMode(prefs.getInt(SOUND_PREF_KEY,AudioManager.RINGER_MODE_NORMAL));
     	enableButton.setClickable(true);
     	
     	// Updates the widget's Icon

@@ -45,6 +45,17 @@ public interface Constants extends BaseColumns {
 	public static final int MESSAGE_ENABLED = 0;					// message enabled int
 	public static final int MESSAGE_DISABLED = 1;					// message disbled int
 	public static final int NO_MESSAGE_SELECTED = 2;				// no message selected int
+	
+	//volume levels to be set when BRB wakes up from alarm
+	
+	public static final String SOUND_PREF_KEY = "sound_pref";
+	public static final int LOW_VOLUME=0;
+	public static final int MEDIUM_VOLUME=0;
+	public static final int HIGH_VOLUME=0;
+	public static final int VIBRATE=0;
+	public static final int SILENT=0;
+	public static final int PREVIOUS_VOLUME=0;
+	
 	// end prefs keywords
 	
 	public static final String CLICK_TO_EDIT = "Click to Edit Text";
