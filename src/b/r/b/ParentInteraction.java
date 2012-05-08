@@ -58,7 +58,7 @@ public class ParentInteraction extends Activity{
 		values.put(ID, pid);//put the parent id we just grabbed
 		values.put(MESSAGE,newMessage);//put the message that was passed 
 		//did it work?
-		editSuccess = dbw.update(PARENT_TABLE, values, null, null) > 0;//store the success of the update
+		editSuccess = dbw.update(PARENT_TABLE, values, ID+"=?", new String[]{String.valueOf(pid)}) > 0;//store the success of the update
 		//cleanup
 		dbr.close();
 		dbw.close();
@@ -81,7 +81,7 @@ public class ParentInteraction extends Activity{
 		Log.d(TAG,"message " + newMessage);
 		values.put(MESSAGE,newMessage);//put the new message we got
 		//did it work?
-		editSuccess = db.update(PARENT_TABLE, values, null, null) > 0;//store the success of the update call
+		editSuccess = db.update(PARENT_TABLE, values, ID+"=?", new String[]{String.valueOf(pid)}) > 0;//store the success of the update
 		db.close();//close the dB
 		
 		return editSuccess;//return the success value of the update operation

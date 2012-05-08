@@ -67,7 +67,7 @@ public class ChildInteraction extends Activity{
 		values.put(MESSAGE,newMessage);
 		values.put(PARENT_ID,stringPid);
 		//did it work?
-		editSuccess = dbw.update(CHILD_TABLE, values, null, null) > 0;
+		editSuccess = dbw.update(CHILD_TABLE, values,ID+"=?", new String[]{String.valueOf(cid)}) > 0;
 		//clean up
 		dbr.close();
 		dbw.close();
@@ -98,7 +98,7 @@ public class ChildInteraction extends Activity{
 		values.put(MESSAGE,newMessage);
 		values.put(PARENT_ID,stringPid);
 		//did it work?
-		editSuccess = dbw.update(CHILD_TABLE, values, null, null) > 0;
+		editSuccess = dbw.update(CHILD_TABLE, values,ID+"=?", new String[]{String.valueOf(cid)}) > 0;
 		//cleanup
 		dbr.close();
 		dbw.close();
@@ -131,7 +131,7 @@ public class ChildInteraction extends Activity{
 		values.put(NUMBER, stringNumbers);
 		values.put(PARENT_ID,stringPid);
 		//did it work?
-		editSuccess = dbw.update(CHILD_TABLE, values, null, null) > 0;
+		editSuccess = dbw.update(CHILD_TABLE, values,ID+"=?", new String[]{String.valueOf(cid)}) > 0;
 		//cleanup
 		dbr.close();
 		dbw.close();
