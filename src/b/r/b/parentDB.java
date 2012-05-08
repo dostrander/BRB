@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 public class parentDB extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "parent.db";
-	private static final int DATABASE_VERSION = 2;
+	private static int DATABASE_VERSION = 2;
 	//This is the SQL statement to create the table for later
 	private static final String DATABASE_CREATE_TABLE =
 			   " CREATE TABLE " + PARENT_TABLE +
@@ -39,10 +39,13 @@ public class parentDB extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		//if a parent table exists, replace it
-		db.execSQL("DROP TABLE IF EXISTS " +PARENT_TABLE);
-		
-	     onCreate(db);
+		int currentVersion = oldVersion;
+		while(currentVersion < newVersion){
+			currentVersion++;
+			DATABASE_VERSION++;
+			db.execSQL("DROP TABLE IF EXISTS " +CHILD_TABLE);
+		    onCreate(db);
+		}
 	}
 
 	

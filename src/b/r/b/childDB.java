@@ -14,7 +14,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class childDB extends SQLiteOpenHelper {
 	//SQL statement we run when the Database is created
 	private static final String DATABASE_NAME = "child.db";
-	private static final int DATABASE_VERSION = 1;
+	private static int DATABASE_VERSION = 1;
 	private static final String DATABASE_CREATE_TABLE =
 			   " CREATE TABLE " + CHILD_TABLE +
 			   " ("+_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + NUMBER +" TEXT NOT NULL, " 
@@ -39,11 +39,16 @@ public class childDB extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		
+		int currentVersion = oldVersion;
+		while(currentVersion < newVersion){
+			currentVersion++;
+			DATABASE_VERSION++;
+			db.execSQL("DROP TABLE IF EXISTS " +CHILD_TABLE);
+		    onCreate(db);
+		}
 		//This runs an SQL statement which drops any existing child table if we are
 		//making a new one, and replaces it with the new one
-		db.execSQL("DROP TABLE IF EXISTS " +CHILD_TABLE);
-	     onCreate(db);
+		
 	}
 
 	

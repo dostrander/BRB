@@ -266,7 +266,9 @@ public class HomeScreenActivity extends TabActivity {
 			public void onClick(View v) {
 				if(messageList.getVisibility() == View.GONE){
 					pDb.Cleanup();
-					adapter.changeCursor(pDb.GetAllParentMessages());
+					Cursor temp = pDb.GetAllParentMessages();
+					startManagingCursor(temp);
+					adapter.changeCursor(temp);
 					messageList.setVisibility(View.VISIBLE);
 					messageList.bringToFront();
 				}
