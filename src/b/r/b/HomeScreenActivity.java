@@ -16,6 +16,7 @@ package b.r.b;
 // our stuff
 import static b.r.b.Constants.*;
 // for android
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -75,7 +76,6 @@ public class HomeScreenActivity extends TabActivity {
 	
 	public static Message mCurrent;
 
-	
 	// Views
 	ImageButton enableButton;
 	ImageButton listButton;

@@ -56,8 +56,8 @@ public class ChildInteraction extends Activity{
 		int cid = c.getInt(PID_COLUMN);
 		
 		String stringPid = String.valueOf(pid);
-		int number = GetNumberFromChild(cid);
-		String stringNumbers = String.valueOf(number);
+		String stringNumbers = GetNumberFromChild(cid);
+	
 		c.close();//close the cursor since we have the values we need locally now
 		ContentValues values = new ContentValues();
 		//get the row all ready for insert
@@ -87,8 +87,8 @@ public class ChildInteraction extends Activity{
 		int cid = c.getInt(PID_COLUMN);
 		int pid = c.getInt(c.getColumnIndex(PARENT_ID));
 		String stringPid = String.valueOf(pid);
-		int number = GetNumberFromChild(cid);
-		String stringNumbers = String.valueOf(number);
+		String stringNumbers = GetNumberFromChild(cid);
+		 
 		c.close();//we can now close the cursor since we have all the values 
 		ContentValues values = new ContentValues();
 		//prepare the row for insertion
@@ -118,8 +118,8 @@ public class ChildInteraction extends Activity{
 		String stringPid = String.valueOf(pid);
 		c.close();//we can close the cursor since we have all the values we need locally
 		
-		int number = GetNumberFromChild(cid);
-		String stringNumbers = String.valueOf(number);
+		String stringNumbers  = GetNumberFromChild(cid);
+	
 		ContentValues values = new ContentValues();
 		//preparing the row for insertion
 		values.put(ID, cid);
@@ -204,7 +204,7 @@ public class ChildInteraction extends Activity{
 	
 	
 	//To get a child's number just pass the id
-	public int GetNumberFromChild(int cid){
+	public String GetNumberFromChild(int cid){
 		SQLiteDatabase db = child.getReadableDatabase();//we need a readable database
 		
 		Cursor c = db.query(CHILD_TABLE, new String[]{ID}, ID+"=?", new String[]{String.valueOf(cid)}
@@ -213,9 +213,9 @@ public class ChildInteraction extends Activity{
 		String a = c.getString(CNUMBERS_COLUMN);//grab the number from the number column
 		c.close();//we can close since we no stored the value
 		db.close();//since the cursor is no longer open we can close the dB
-		int number = Integer.parseInt(a);
 		
-		return number;
+		
+		return a;
 		
 	}
 	
