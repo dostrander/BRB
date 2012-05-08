@@ -85,8 +85,9 @@ public class LogActivity extends ListActivity{
 
 	
 	public void setMessage(Message current){
+		lDb = new LogInteraction(this);
 		mCurrent = current;
-		if(mCurrent == null){
+		if(mCurrent.text == null){
 			Cursor temp = lDb.GetAllLogs();
 			adapt = new  LogAdapter(this,temp);
 			getListView().setAdapter(adapt);
