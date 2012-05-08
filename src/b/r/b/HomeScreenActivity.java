@@ -424,7 +424,7 @@ public class HomeScreenActivity extends TabActivity {
     	editor.putInt(DB_ID_KEY, mCurrent.getID());
     	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
     	//save previous ringer volume
-    	int ringerPref = prefs.getInt(RINGER_MODE, audiomanage.RINGER_MODE_NORMAL);
+    	int ringerPref = prefs.getInt(RINGER_MODE, AudioManager.RINGER_MODE_NORMAL);
     	int volumePref = prefs.getInt(ENABLED_VOL, 3);
     	editor.putInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
     	editor.putInt(PREVIOUS_VOL, audiomanage.getStreamVolume(AudioManager.STREAM_RING));
