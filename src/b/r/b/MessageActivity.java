@@ -288,6 +288,50 @@ public class MessageActivity extends Activity {
      * 		asks if they are sure they want to delete it then deletes the correct
      * 		child message
      */
+    private void deleteDialog(final ChildMessage cm){
+		AlertDialog.Builder b = new AlertDialog.Builder(MessageActivity.this);
+		b.setTitle("Delete Contact Specific Message?")
+		.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+			public void onClick(DialogInterface dialog, int which) {
+				cm.delete(MessageActivity.this);
+				mAdapter.notifyDataSetChanged();
+			}
+		})
+		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				
+			}
+		});
+		b.create().show();
+    }
+    
+    private void editCMessageTextDialog(final ChildMessage cm){
+		AlertDialog.Builder b = new AlertDialog.Builder(MessageActivity.this);
+		final EditText input = new EditText(MessageActivity.this);
+		input.setText(cm.text);
+		input.setLines(2);
+		input.setMaxLines(5);
+		input.setGravity(Gravity.TOP);
+		b.setView(input)
+		.setTitle("Edit Message Text")
+		.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+			public void onClick(DialogInterface dialog, int which) {
+				if(!cm.text.equals(input.getText().toString())){
+					Log.d(TAG,"editing text");
+					cm.editText(input.getText().toString(),MessageActivity.this);
+					
+				}else Log.d(TAG,"not editing text");
+				mAdapter.notifyDataSetChanged();
+			}
+		})
+		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				
+			}
+		});
+		b.create().show();
+    	
+    }
     
     /*	longClickDialog
      * 		throw up the dialog for delete the message, editing the contacts or 
@@ -300,25 +344,13 @@ public class MessageActivity extends Activity {
 		.setItems(items,																		// set the items
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {					// When the item is clicked
+						
 						switch(which){
 						case 0: Log.d(TAG,"edit contacts"); break;
-						case 1: Log.d(TAG,"edit mess"); break;
-						case 2:
-							AlertDialog.Builder b = new AlertDialog.Builder(MessageActivity.this);
-							b.setTitle("Delete Contact Specific Message?")
-							.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
-								public void onClick(DialogInterface dialog, int which) {
-									cm.delete(MessageActivity.this);
-								}
-							})
-							.setNegativeButton("No", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									
-								}
-							});
-							b.create().show();
-							
+						case 1: editCMessageTextDialog(cm); break;
+						case 2: deleteDialog(cm); break;
 						}
+						
 						
 					}
 				});
