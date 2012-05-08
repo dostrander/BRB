@@ -224,6 +224,7 @@ public class HomeScreenActivity extends TabActivity {
     		pDb.Cleanup();
     	}
     	
+    	
     }
     //check if the app is turned on
     public int isEnabled(){
