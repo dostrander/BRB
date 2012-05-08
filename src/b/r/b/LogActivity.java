@@ -29,7 +29,7 @@ public class LogActivity extends ListActivity{
 	private static final String TAG = "LogActivity";
 	private static final String NO_LOGS = "No Log Entries for this Message";
 	private TextView noLogs;
-	private Message mCurrent;
+	private static Message mCurrent;
 	private LogInteraction lDb;
 	private LogAdapter adapt;
 	private AlertDialog.Builder alert;
@@ -84,7 +84,9 @@ public class LogActivity extends ListActivity{
 	
 
 	
-	public void setMessage(Message current){ mCurrent = current;}
+	public static void setMessage(Message current){
+		mCurrent = current;
+	}
 	
 //	private void fillData(){
 //		Log.d(TAG,"in fillData");

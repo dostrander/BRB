@@ -180,6 +180,7 @@ public class HomeScreenActivity extends TabActivity {
    			enableMessage();
    		}else if((enabled == MESSAGE_DISABLED) && (db_id >= 0)){
    			Log.d(TAG,"message disabled");
+   			
    			changeCurrent(db_id);
    			disableMessage();
    		} else{
@@ -597,6 +598,7 @@ public class HomeScreenActivity extends TabActivity {
     
     private void changeCurrent(){
     	MessageActivity.changeMessage(mCurrent);
+    	LogActivity.setMessage(mCurrent);
     	if(mCurrent == null){
     		Log.d("mCurrent","null");
     		noMessage();
