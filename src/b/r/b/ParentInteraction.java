@@ -77,7 +77,7 @@ public class ParentInteraction extends Activity{
 		ContentValues values = new ContentValues();
 		
 		Log.d(TAG,"pid: " + stringPid);
-		values.put(ID, stringPid);//put the pid in
+		//values.put(ID, stringPid);//put the pid in
 		Log.d(TAG,"message " + newMessage);
 		values.put(MESSAGE,newMessage);//put the new message we got
 		//did it work?
