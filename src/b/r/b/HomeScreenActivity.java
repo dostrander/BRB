@@ -425,38 +425,38 @@ public class HomeScreenActivity extends TabActivity {
     	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
     	//save previous ringer volume
     	int volumePref = prefs.getInt(ENABLED_VOL, SILENT);
-//    	editor.putInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
-//    	editor.putInt(PREVIOUS_VOL, audiomanage.getStreamVolume(AudioManager.STREAM_RING));
-//    	switch(volumePref){
-//    	case SILENT:
-//    		//
-//    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-//    		break;
-//    	case VIBRATE:
-//    		//
-//    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-//    		break;
-//    	case LOW_VOLUME:
-//    		//
-//    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-//        	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/4, 0);
-//    		break;
-//    	case MEDIUM_VOLUME:
-//    		//
-//    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-//        	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/2, 0);
-//    		break;
-//    	case HIGH_VOLUME:
-//    		//
-//    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-//        	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
-//    		break;
-//    	case MAINTAIN:
-//    		//do nothing
-//    		break;
-//    	}
-//    	
-    	//check user preference for volume on disable
+    	editor.putInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
+    	editor.putInt(PREVIOUS_VOL, audiomanage.getStreamVolume(AudioManager.STREAM_RING));
+    	switch(volumePref){
+    	case SILENT:
+    		//
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    		break;
+    	case VIBRATE:
+    		//
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+    		break;
+    	case LOW_VOLUME:
+    		//
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/4, 0);
+    		break;
+    	case MEDIUM_VOLUME:
+    		//
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/2, 0);
+    		break;
+    	case HIGH_VOLUME:
+    		//
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
+    		break;
+    	case MAINTAIN:
+    		//do nothing
+    		break;
+    	}
+    	
+//    	check user preference for volume on disable
     	
     	
     	// Updates the widget's Icon
@@ -490,39 +490,39 @@ public class HomeScreenActivity extends TabActivity {
     	inputMessage.setTextColor(Color.WHITE);
     	enableButton.setImageResource(R.drawable.disabled_button_selector);
     	// disable listener
-//    	int volumePref = prefs.getInt(DISABLED_VOL, MAINTAIN);
-//    	switch(volumePref){
-//    	case SILENT:
-//    		//
-//    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-//    		break;
-//    	case VIBRATE:
-//    		//
-//    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-//    		break;
-//    	case LOW_VOLUME:
-//    		//
-//    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-//        	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/4, 0);
-//    		break;
-//    	case MEDIUM_VOLUME:
-//    		//
-//    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-//        	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/2, 0);
-//    		break;
-//    	case HIGH_VOLUME:
-//    		//
-//    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-//        	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
-//    		break;
-//    	case MAINTAIN:
-//    		int previousVolume = prefs.getInt(PREVIOUS_VOL, 0);
-//    		int previousRingMode = prefs.getInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
-//    		audiomanage.setStreamVolume(AudioManager.STREAM_RING,previousVolume, 0);
-//    		audiomanage.setRingerMode(previousRingMode);
-//    		//do nothing
-//    		break;
-//    	}
+    	int volumePref = prefs.getInt(DISABLED_VOL, MAINTAIN);
+    	switch(volumePref){
+    	case SILENT:
+    		//
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    		break;
+    	case VIBRATE:
+    		//
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+    		break;
+    	case LOW_VOLUME:
+    		//
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/4, 0);
+    		break;
+    	case MEDIUM_VOLUME:
+    		//
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/2, 0);
+    		break;
+    	case HIGH_VOLUME:
+    		//
+    		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
+    		break;
+    	case MAINTAIN:
+    		int previousVolume = prefs.getInt(PREVIOUS_VOL, 0);
+    		int previousRingMode = prefs.getInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
+    		audiomanage.setStreamVolume(AudioManager.STREAM_RING,previousVolume, 0);
+    		audiomanage.setRingerMode(previousRingMode);
+    		//do nothing
+    		break;
+    	}
     	
     	enableButton.setClickable(true);
     	

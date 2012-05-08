@@ -59,6 +59,7 @@ public class SettingsActivity extends Activity {
 	private static SharedPreferences _settings;
 	private static String enabled_volume_choice="";
 	private static String disabled_volume_choice="";
+	int style_selected=0;
 	RadioGroup volumeGroup;
 	RadioGroup styleGroup;
 	
@@ -85,13 +86,9 @@ public class SettingsActivity extends Activity {
 		
 		
 		
-		/*
-		 * 
-		 *	note to will, this needs to be adapted to the new way we're styling the buttons.
-		 *	look at my on click listener and setupStyleDialog() 
-		 *
-		  _theme_names = new ArrayList<String>(_themes.keySet());
 		
+		  _theme_names = new ArrayList<String>(_themes.keySet());
+		/*
 		_style_selecter = (Spinner) findViewById(R.id.style_selector);
 		
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
@@ -107,8 +104,8 @@ public class SettingsActivity extends Activity {
 					public void onItemSelected(AdapterView adapter, View v, int i, long lng) {}
 					public void onNothingSelected(AdapterView arg0) {}
 					});
-		*/
 		
+		*/
 		
 		// Make sure the initial states are correct
 		((CheckBox)findViewById(R.id.calls_enabled_checkbox)).setChecked(Settings.HandleCalls());
@@ -139,8 +136,7 @@ public class SettingsActivity extends Activity {
 				logField.setText(Integer.toString(Settings.LogHistoryDays()));
 				
 				// Set Theme last because it essentially restarts the application
-				Settings.SetTheme(_themes.get(_theme_names.get(
-						_style_selecter.getSelectedItemPosition())));
+				Settings.SetTheme(_themes.get(_theme_names.get(style_selected)));
 			}
 		});
 		//set listenner for style selector
@@ -161,7 +157,7 @@ public class SettingsActivity extends Activity {
 				        		((TextView)findViewById(R.id.style_selector)).setText("Night");
 				    		else
 				        		((TextView)findViewById(R.id.style_selector)).setText("Default");
-
+				    		
 						}
 				})	.setNegativeButton("Cancel", new AlertDialog.OnClickListener(){				// Set an Empty Negative button to be able to 
 					public void onClick(DialogInterface dialog, int which) {}});					// get out of the dialog without making changes
