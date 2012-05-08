@@ -50,7 +50,7 @@ public class ParentInteraction extends Activity{
 		SQLiteDatabase dbr = parent.getReadableDatabase();
 		SQLiteDatabase dbw = parent.getWritableDatabase();
 		//get the rows which have a message which matches the one passed
-		Cursor c = dbr.query(PARENT_TABLE, new String[] {ID,MESSAGE}, MESSAGE+"=?"
+		Cursor c = dbr.query(PARENT_TABLE, new String[] {ID,MESSAGE}, MESSAGE+"= ?"
 				, new String[]{oldMessage}, null, null, null);
 		String pid = c.getString(PID_COLUMN); //grabbing the parent id locally
 		c.close();//closing the cursor since we don't need it for anything else
@@ -91,7 +91,7 @@ public class ParentInteraction extends Activity{
 	//deleting a parent row by passing the message
 	public boolean DeleteParent(String message){
 		SQLiteDatabase db = parent.getWritableDatabase();//we only need to write
-		deleteSuccess = db.delete(PARENT_TABLE, MESSAGE + "=" + message, null) > 0;//deletes any rows who's MESSAGE coloumn match the passed message
+		deleteSuccess = db.delete(PARENT_TABLE, MESSAGE + "= ?", new String[] {message}) > 0;//deletes any rows who's MESSAGE column match the passed message
 		db.close();//close the dB
 		return deleteSuccess;//return the success value of the Delete operation
 	}
@@ -122,7 +122,7 @@ public class ParentInteraction extends Activity{
 		Log.d(TAG,"in SearchParentByMessage");
 		SQLiteDatabase db = parent.getReadableDatabase();//only need a readable for just returning message
 		//returns the query directly
-		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE}, MESSAGE+"=?"
+		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE}, MESSAGE+"= ?"
 			, new String[]{message}, null, null, null);//return the cursor which has the row with the MESSAGE column which matches the one passes
 	
 	}
@@ -143,6 +143,7 @@ public class ParentInteraction extends Activity{
 					return m;//if we have a message, return it
 				}
 			}
+			c.close();
 			return null;//if it didn't exist, return null
 		}
 	
@@ -151,7 +152,7 @@ public class ParentInteraction extends Activity{
 		Log.d(TAG,"in SearchParentById");
 		SQLiteDatabase db = parent.getReadableDatabase();//just need to read
 		
-		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE},ID+"=?"
+		return db.query(PARENT_TABLE, new String[] {ID,MESSAGE},ID+"= ?"
 				, new String[]{String.valueOf(id)}, null, null, null);//return the cursor with any matching rows which had an ID which matched the one passed
 	}
 	//does the same as GetParentByMessage except with an id

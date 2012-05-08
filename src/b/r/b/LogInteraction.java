@@ -64,7 +64,7 @@ public class LogInteraction extends Activity{
 	public boolean DeleteLog(int id){
 		SQLiteDatabase db = log.getWritableDatabase();
 		//store the success of the delete
-		deleteSuccess = db.delete(LOG_TABLE, ID + "=" + id, null) > 0;
+		deleteSuccess = db.delete(LOG_TABLE, ID + "= ?", new String[] {String.valueOf(id)}) > 0;
 		//cleanup
 		db.close();
 		return deleteSuccess;
