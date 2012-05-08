@@ -121,14 +121,16 @@ public class Message{
 			ChildInteraction cDb = new ChildInteraction(ctx);
 			text = t;
 			for(String key : numbers.keySet())
-				Log.d(TAG,"it did work = " + String.valueOf(cDb.ChildEditMessage(numbers.get(key), text)));
-			
+				cDb.ChildEditMessage(numbers.get(key), text);
+				//Log.d(TAG,"it did work = " + String.valueOf(cDb.ChildEditMessage(numbers.get(key), text)));
+			cDb.Cleanup();
 		}
 		public void delete(Context ctx){
 			ChildInteraction cDb = new ChildInteraction(ctx);
 			for(String key : numbers.keySet())
 				cDb.DeleteChild(key, text);
 			cMessages.remove(this);
+			cDb.Cleanup();
 		}
 		private String numberToString(String num, Context ctx){
 			Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num));

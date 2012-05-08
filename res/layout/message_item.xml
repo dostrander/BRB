@@ -19,13 +19,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true" 
         android:background="@drawable/add_name_selector"/>
-    <ImageView
-        android:id="@+id/add_message_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/add_names_button"
-        android:background="@drawable/add_contact_specific_message_selector" />
     <TextView
         android:id="@+id/contact_specific_message_text"
         android:layout_width="fill_parent"

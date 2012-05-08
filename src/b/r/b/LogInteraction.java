@@ -126,6 +126,19 @@ public class LogInteraction extends Activity{
 				,RECEIVED_MESSAGE,SENT_MESSAGE,NUMBER}, null,null,null,null,null);
 		
 	}
+	
+	/*
+	 * This method allows you to only get logs tied to a certain parent message
+	 * You pass the string of the sent message
+	 * you get the cursor containing the messages
+	 */
+	public Cursor GetLogBySentMessage(String sMessage){
+		SQLiteDatabase db = log.getReadableDatabase();
+		
+		return db.query(LOG_TABLE, new String[]{_ID,PARENT_ID,TIME,DATE,AMPM,TYPE
+				,RECEIVED_MESSAGE,SENT_MESSAGE,NUMBER}, SENT_MESSAGE + "=?"
+				,new String[] {sMessage},null,null,null);
+	}
 	//return log based on parent id
 	public Cursor SearchLogByParentId(int pid){
 		SQLiteDatabase db = log.getReadableDatabase();

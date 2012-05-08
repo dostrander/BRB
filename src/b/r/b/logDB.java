@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 public class logDB extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "log.db";
-	private static final int DATABASE_VERSION = 3;
+	private static int DATABASE_VERSION = 3;
 	//SQL statement we will run onCreate
 	private static final String DATABASE_CREATE_TABLE =
 			   " CREATE TABLE " + LOG_TABLE +
@@ -39,9 +39,13 @@ public class logDB extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		//onUpgrade, get rid of an old version of the database if it exists and then create the new one
-		
-		db.execSQL("DROP TABLE IF EXISTS " +LOG_TABLE);
-	     onCreate(db);
+		int currentVersion = oldVersion;
+		while(currentVersion < newVersion){
+			currentVersion++;
+			DATABASE_VERSION++;
+			db.execSQL("DROP TABLE IF EXISTS " +CHILD_TABLE);
+		    onCreate(db);
+		}
 	}
 
 	

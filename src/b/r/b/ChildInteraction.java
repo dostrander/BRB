@@ -57,17 +57,17 @@ public class ChildInteraction extends Activity{
 		int cid = c.getInt(c.getColumnIndex(ID));
 		
 		String stringPid = String.valueOf(pid);
-		String stringNumbers = GetNumberFromChild(cid);
+		String stringNumbers  = c.getString(c.getColumnIndex(NUMBER));
 	
 		c.close();//close the cursor since we have the values we need locally now
 		ContentValues values = new ContentValues();
 		//get the row all ready for insert
-		values.put(ID, cid);
+		//values.put(ID, cid);
 		values.put(NUMBER, stringNumbers);
 		values.put(MESSAGE,newMessage);
 		values.put(PARENT_ID,stringPid);
 		//did it work?
-		editSuccess = dbw.update(CHILD_TABLE, values, null, null) > 0;
+		editSuccess = dbw.update(CHILD_TABLE, values,ID+"=?", new String[]{String.valueOf(cid)}) > 0;
 		//clean up
 		dbr.close();
 		dbw.close();
@@ -88,17 +88,18 @@ public class ChildInteraction extends Activity{
 		int cid = c.getInt(c.getColumnIndex(ID));
 		int pid = c.getInt(c.getColumnIndex(PARENT_ID));
 		String stringPid = String.valueOf(pid);
-		String stringNumbers = GetNumberFromChild(cid);
+		String stringNumbers  = c.getString(c.getColumnIndex(NUMBER));
 		 
 		c.close();//we can now close the cursor since we have all the values 
 		ContentValues values = new ContentValues();
 		//prepare the row for insertion
-		values.put(ID, cid);
+		//values.put(ID, cid);
 		values.put(NUMBER, stringNumbers);
 		values.put(MESSAGE,newMessage);
 		values.put(PARENT_ID,stringPid);
 		//did it work?
-		editSuccess = dbw.update(CHILD_TABLE, values, null, null) > 0;
+		editSuccess = dbw.update(CHILD_TABLE, values,ID+"=?", new String[]{String.valueOf(cid)}) > 0;
+		
 		//cleanup
 		dbr.close();
 		dbw.close();
@@ -119,18 +120,19 @@ public class ChildInteraction extends Activity{
 		c.moveToFirst();
 		int pid = c.getInt(c.getColumnIndex(PARENT_ID));
 		String stringPid = String.valueOf(pid);
+		String stringNumbers  = c.getString(c.getColumnIndex(NUMBER));
 		c.close();//we can close the cursor since we have all the values we need locally
 		
-		String stringNumbers  = GetNumberFromChild(cid);
+		
 	
 		ContentValues values = new ContentValues();
 		//preparing the row for insertion
-		values.put(ID, cid);
+		//values.put(ID, cid);
 		values.put(MESSAGE,newMessage);
 		values.put(NUMBER, stringNumbers);
 		values.put(PARENT_ID,stringPid);
 		//did it work?
-		editSuccess = dbw.update(CHILD_TABLE, values, null, null) > 0;
+		editSuccess = dbw.update(CHILD_TABLE, values,ID+"=?", new String[]{String.valueOf(cid)}) > 0;
 		//cleanup
 		dbr.close();
 		dbw.close();

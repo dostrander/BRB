@@ -73,7 +73,7 @@ public class HomeScreenActivity extends TabActivity {
 	private final String LOG = "log";
 	private final String SETTINGS = "settings";
 	private final String NO_MESSAGE = "Click to Edit Message";
-	
+	private LogActivity lA = new LogActivity();
 	public static Message mCurrent;
 
 	// Views
@@ -180,6 +180,7 @@ public class HomeScreenActivity extends TabActivity {
    			enableMessage();
    		}else if((enabled == MESSAGE_DISABLED) && (db_id >= 0)){
    			Log.d(TAG,"message disabled");
+   			
    			changeCurrent(db_id);
    			disableMessage();
    		} else{
@@ -266,7 +267,9 @@ public class HomeScreenActivity extends TabActivity {
 			public void onClick(View v) {
 				if(messageList.getVisibility() == View.GONE){
 					pDb.Cleanup();
-					adapter.changeCursor(pDb.GetAllParentMessages());
+					Cursor temp = pDb.GetAllParentMessages();
+					startManagingCursor(temp);
+					adapter.changeCursor(temp);
 					messageList.setVisibility(View.VISIBLE);
 					messageList.bringToFront();
 				}
@@ -297,6 +300,7 @@ public class HomeScreenActivity extends TabActivity {
 			do temp.add(c.getString(c.getColumnIndex(MESSAGE))); 
 			while(c.moveToNext());
 		}
+		c.close();
 		pDb.Cleanup();
 		String[] messages = temp.toArray(new String[]{});
 		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeScreenActivity.this,
@@ -424,7 +428,12 @@ public class HomeScreenActivity extends TabActivity {
     	editor.putInt(DB_ID_KEY, mCurrent.getID());
     	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
     	//save previous ringer volume
+<<<<<<< HEAD
     	int volumePref = prefs.getInt(ENABLED_VOL, SILENT);
+=======
+    	int ringerPref = prefs.getInt(RINGER_MODE, AudioManager.RINGER_MODE_NORMAL);
+    	int volumePref = prefs.getInt(ENABLED_VOL, 3);
+>>>>>>> e71bf551c0e7ba7ffc8cbbcb56460592696cf21d
     	editor.putInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
     	editor.putInt(PREVIOUS_VOL, audiomanage.getStreamVolume(AudioManager.STREAM_RING));
     	switch(volumePref){
@@ -574,6 +583,7 @@ public class HomeScreenActivity extends TabActivity {
     
     private void changeCurrent(){
     	MessageActivity.changeMessage(mCurrent);
+    	lA.setMessage(mCurrent);
     	if(mCurrent == null){
     		Log.d("mCurrent","null");
     		noMessage();
