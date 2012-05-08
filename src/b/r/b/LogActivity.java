@@ -113,7 +113,7 @@ public class LogActivity extends ListActivity{
 				temp.close();
 			}
 			refresh();
-		}
+		}else Log.d(TAG,"ldb = null");
 		
 		
 	}
@@ -127,6 +127,7 @@ public class LogActivity extends ListActivity{
 	
 	public void refresh()
 	{
+		Log.d(TAG,"in refresh");
 		
 		lDb.Cleanup();
 		Cursor c = lDb.GetAllLogs();
