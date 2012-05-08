@@ -70,18 +70,21 @@ public class LogActivity extends ListActivity{
 	public void onStart()
 	{
 		super.onStart();
+		
 		mCurrent = HomeScreenActivity.mCurrent;
 		if(mCurrent == null){
 			Cursor temp = lDb.GetAllLogs();
 			adapt = new  LogAdapter(this,temp);
 			getListView().setAdapter(adapt);
 			Log.d(TAG,"Count = "+ temp.getCount());
+			checkForLogs(temp);
 			temp.close();
 		}else{
 			Cursor temp = lDb.GetLogBySentMessage(mCurrent.text);
 			adapt = new LogAdapter(this,temp);
 			getListView().setAdapter(adapt);
 			Log.d(TAG,"Count = "+temp.getCount());
+			checkForLogs(temp);
 			temp.close();
 		}
 		refresh();
