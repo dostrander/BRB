@@ -83,31 +83,20 @@ public class SettingsActivity extends Activity {
 			} catch (Exception e) { }
 			
 		}
-		
+		//
+		_settings = SettingsActivity.this.getSharedPreferences(PREFS, MODE_PRIVATE);
+		String enabled_vol_str,disabled_vol_str;
+		enabled_vol_str = _settings.getString(ENABLED_VOL_TXT, "Default");
+		disabled_vol_str = _settings.getString(DISABLED_VOL_TXT, "Default");
+
 		
 		
 		
 		  _theme_names = new ArrayList<String>(_themes.keySet());
-		/*
-		_style_selecter = (Spinner) findViewById(R.id.style_selector);
-		
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, _theme_names);
-		
-		_style_selecter.setAdapter(dataAdapter);
-		
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
-		_style_selecter.setSelection(_theme_names.indexOf(Settings.ThemeName()));
-		
-				_style_selecter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-					public void onItemSelected(AdapterView adapter, View v, int i, long lng) {}
-					public void onNothingSelected(AdapterView arg0) {}
-					});
-		
-		*/
 		
 		// Make sure the initial states are correct
+		((TextView)findViewById(R.id.on_enable_volume_edit)).setText(enabled_vol_str);
+		((TextView)findViewById(R.id.on_enable_volume_edit)).setText(disabled_vol_str);
 		((CheckBox)findViewById(R.id.calls_enabled_checkbox)).setChecked(Settings.HandleCalls());
 		((CheckBox)findViewById(R.id.texts_enabled_checkbox)).setChecked(Settings.HandleTexts());
 		((EditText)findViewById(R.id.log_history_edit_number)).setText(
@@ -189,7 +178,6 @@ public class SettingsActivity extends Activity {
 				    		_editor.putInt(ENABLED_VOL,choice);
 				    		
 				    		_editor.commit();
-				    		popToast(Integer.toString(VIBRATE)+"and choice is"+Integer.toString(choice));
 				        	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 				    		int volumePref = _settings.getInt(ENABLED_VOL, SILENT);
 				        	_editor.putInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
@@ -198,34 +186,41 @@ public class SettingsActivity extends Activity {
 				        	case SILENT:
 				        		//
 				        		((TextView)findViewById(R.id.on_enable_volume_edit)).setText("Silent");
+				        		_editor.putString(ENABLED_VOL_TXT, "Silent");
 				        		audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 				        		break;
 				        	case VIBRATE:
 				        		//
 				        		((TextView)findViewById(R.id.on_enable_volume_edit)).setText("Vibrate");
+				        		_editor.putString(ENABLED_VOL_TXT, "Vibrate");
 				        		audiomanage.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
 				        		break;
 				        	case LOW_VOLUME:
 				        		//
 				        		((TextView)findViewById(R.id.on_enable_volume_edit)).setText("Low Vol.");
+				        		_editor.putString(ENABLED_VOL_TXT, "Low Vol.");
 				        		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 				            	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/4, 0);
 				        		break;
 				        	case MEDIUM_VOLUME:
 				        		//
 				        		((TextView)findViewById(R.id.on_enable_volume_edit)).setText("Med. Vol.");
+				        		_editor.putString(ENABLED_VOL_TXT, "Med. Vol.");
 				        		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 				            	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/2, 0);
 				        		break;
 				        	case HIGH_VOLUME:
 				        		//
 				        		((TextView)findViewById(R.id.on_enable_volume_edit)).setText("High Vol.");
+				        		_editor.putString(ENABLED_VOL_TXT, "High Vol.");
 				        		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 				            	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
 				        		break;
 				        	case MAINTAIN:
 				        		//do nothing
 				        		((TextView)findViewById(R.id.on_enable_volume_edit)).setText("Maintain");
+				        		_editor.putString(ENABLED_VOL_TXT, "Maintain");
+
 				        		break;
 				        	}
 				    		
@@ -259,33 +254,39 @@ public class SettingsActivity extends Activity {
 				        	case SILENT:
 				        		//
 				        		((TextView)findViewById(R.id.on_disabled_volume_edit)).setText("Silent");
+					    		_editor.putString(DISABLED_VOL_TXT, "Silent");
 				        		audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 				        		break;
 				        	case VIBRATE:
 				        		//
 				        		((TextView)findViewById(R.id.on_disabled_volume_edit)).setText("Vibrate");
+				        		_editor.putString(DISABLED_VOL_TXT, "Vibrate");
 				        		audiomanage.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
 				        		break;
 				        	case LOW_VOLUME:
 				        		//
 				        		((TextView)findViewById(R.id.on_disabled_volume_edit)).setText("Low Vol.");
+				        		_editor.putString(DISABLED_VOL_TXT, "Low Vol.");
 				        		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 				            	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/4, 0);
 				        		break;
 				        	case MEDIUM_VOLUME:
 				        		//
 				        		((TextView)findViewById(R.id.on_disabled_volume_edit)).setText("Med. Vol.");
+				        		_editor.putString(DISABLED_VOL_TXT, "Med. Vol.");
 				        		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 				            	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING)/2, 0);
 				        		break;
 				        	case HIGH_VOLUME:
 				        		//
 				        		((TextView)findViewById(R.id.on_disabled_volume_edit)).setText("High Vol.");
+				        		_editor.putString(DISABLED_VOL_TXT, "High Vol.");
 				        		audiomanage.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 				            	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
 				        		break;
 				        	case MAINTAIN:
 				        		((TextView)findViewById(R.id.on_disabled_volume_edit)).setText("Maintain");
+				        		_editor.putString(DISABLED_VOL_TXT, "Maintain");
 				        		int previousVolume = _settings.getInt(PREVIOUS_VOL, 0);
 				        		int previousRingMode = _settings.getInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
 				        		audiomanage.setStreamVolume(AudioManager.STREAM_RING,previousVolume, 0);
@@ -362,5 +363,4 @@ public class SettingsActivity extends Activity {
 		dialoglayout.setOrientation(LinearLayout.VERTICAL);										// set linear layout to vertical orientation
 		return dialoglayout;																	// return the linear layout
 	}
-	private void popToast(String t){Toast.makeText(this, t, Toast.LENGTH_LONG).show();}
 }
