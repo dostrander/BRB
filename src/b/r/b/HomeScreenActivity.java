@@ -427,10 +427,17 @@ public class HomeScreenActivity extends TabActivity {
     	enableButton.setClickable(true);																// make it so it is clickable just incase
     	editor.putInt(DB_ID_KEY, mCurrent.getID());														// put the current ID in the prefs
     	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);											// tell the preferenes that a message is enabled
-    	//save previous ringer volume
+    	
+    	//read volume preference from settings manager
     	int volumePref = prefs.getInt(ENABLED_VOL, SILENT);			
+    	
+    	//save the current volume/ringer mode in case
+    	//the user wants to maintain them on enable
     	editor.putInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
     	editor.putInt(PREVIOUS_VOL, audiomanage.getStreamVolume(AudioManager.STREAM_RING));
+    	
+    	//based on preference, pick the appropiate choice. For each choice set
+    	//the volume and/or ringer mode for the phone 
     	switch(volumePref){
     	case SILENT:
     		//
@@ -456,7 +463,7 @@ public class HomeScreenActivity extends TabActivity {
         	audiomanage.setStreamVolume(AudioManager.STREAM_RING, audiomanage.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
     		break;
     	case MAINTAIN:
-    		//do nothing
+    		//do nothing because we want to keep the same volume
     		break;
     	}
     	
@@ -499,7 +506,12 @@ public class HomeScreenActivity extends TabActivity {
     	inputMessage.setTextColor(Color.WHITE);																		// highlight the text
     	enableButton.setImageResource(R.drawable.disabled_button_selector);											// change the color of the icon
     	// disable listener
+    	
+    	//read volume on enable preference from preferences object
     	int volumePref = prefs.getInt(DISABLED_VOL, MAINTAIN);
+    	
+    	//based on preference, pick the appropiate choice. For each choice set
+    	//the volume and/or ringer mode for the phone
     	switch(volumePref){
     	case SILENT:
     		//
@@ -529,7 +541,6 @@ public class HomeScreenActivity extends TabActivity {
     		int previousRingMode = prefs.getInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
     		audiomanage.setStreamVolume(AudioManager.STREAM_RING,previousVolume, 0);
     		audiomanage.setRingerMode(previousRingMode);
-    		//do nothing
     		break;
     	}
     	
