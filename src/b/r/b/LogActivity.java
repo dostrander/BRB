@@ -124,13 +124,6 @@ public class LogActivity extends ListActivity{
 		
 	}
 	
-	//Fill log with test data
-//	private void fillData(){
-//		Log.d(TAG,"in fillData");
-//		//for(int i = 0; i < 5; i++)
-//			lDb.InsertLog(0, "2:30", "02/04", AM, CALL, "" , "idk", "518-813-6375");
-//	
-//	}
 	
 	//used to make sure the displayed list is current to the database
 	public void refresh()

@@ -30,22 +30,19 @@ import android.widget.Toast;
  */
 public class Message{
 	// Convenience 
-	private final String TAG = "Message";
-	private static final String CLICK_TO_EDIT = "Click to Edit Text";
-	private Context context;
+	private final String TAG = "Message";												// For logs
+	private static final String CLICK_TO_EDIT = "Click to Edit Text";					// Header default text
+	private Context context;															// context of homescreen
 	
 	// Variables
-	private int DB_ID;
-	
-	ChildMessage header;
-	public ArrayList<ChildMessage> cMessages;
+	private int DB_ID;																	// id in database
+	ChildMessage header;																// controls the header in MessageActivity
+	public ArrayList<ChildMessage> cMessages;											// list of contact specific messages
 	public String 				text;													// Text of the message to be sent
 	// start time
-	private Calendar 			startTime;
-	private Calendar			endTime;
-	// finish time
-	
-	
+	private Calendar 			startTime;												// NOT IMPLEMENTED BUT WOULD CAUSE ERRORS IF TAKEN OUT
+	private Calendar			endTime;												// end time of the message
+
 	
 	/* 	ChildMessage
 	 * 		Basically the contact specific messages, but that was too long of
@@ -90,55 +87,62 @@ public class Message{
 		// Getters
 
 		// Setters
+		//	addNumbers
+		//		 adds numbers to the child message
 		public void addNumbers(int ids[], String nums[], Context c){
-			for(int n =0; n < ids.length; n++)
-				numbers.put(nums[n],ids[n]);
-			numbersToString(c);
+			for(int n =0; n < ids.length; n++)					// for all of the numbers
+				numbers.put(nums[n],ids[n]);					// put the numbers in
+			numbersToString(c);									// change the namesText
 		}
-//		public void addNumber(int i, String num){
-//			numbers.put(num, i);
-//		}
-			// For Headers
-
 		// Convenience 
+		//	numbersToString
+		//		changes the numbers to get the name from contacts api
 		public void numbersToString(Context ctx){
-			boolean first = true;
-			namesText = "";
-			for(String n : numbers.keySet()){
-				String name = numberToString(n,ctx);
-				if(name == null)
-					name = n;
-				if(!first)
-					namesText = namesText + "," + name;
-				else{
-					namesText = name;
-					first = false;
+			boolean first = true;								// if the first dont put a comma
+			namesText = "";										// start of namestext
+			for(String n : numbers.keySet()){					// for all the numbers
+				String name = numberToString(n,ctx);			// get the contact
+				if(name == null)								// if its null
+					name = n;									// name is number
+				if(!first)										// if it isnt the first
+					namesText = namesText + "," + name;			// put a comma in between
+				else{											// if it is the fist
+					namesText = name;							// put it with no comma
+					first = false;								// and say that its not the first
 				}
 			}
 		}
+		// editText
+		//		edits childMessage text in both the DB and the datastructure
 		public void editText(String t, Context ctx){
-			Log.d(TAG,"editText");
-			ChildInteraction cDb = new ChildInteraction(ctx);
-			text = t;
-			for(String key : numbers.keySet())
-				cDb.ChildEditMessage(numbers.get(key), text);
-				//Log.d(TAG,"it did work = " + String.valueOf(cDb.ChildEditMessage(numbers.get(key), text)));
-			cDb.Cleanup();
+			ChildInteraction cDb = new ChildInteraction(ctx);	// For Writing to the database
+			text = t;											// set the text
+			for(String key : numbers.keySet())					// for all the numbers
+				cDb.ChildEditMessage(numbers.get(key), text);	// edit the text in the db
+			cDb.Cleanup();										// clean up the cursor
 		}
+		//	delete
+		//		goes through the numbers and deletes every entry in numbers
 		public void delete(Context ctx){
-			ChildInteraction cDb = new ChildInteraction(ctx);
-			for(String key : numbers.keySet())
-				cDb.DeleteChild(key, text);
-			cMessages.remove(this);
-			cDb.Cleanup();
+			ChildInteraction cDb = new ChildInteraction(ctx);	// for writing to the db
+			for(String key : numbers.keySet())					// for all the numbers
+				cDb.DeleteChild(key, text);						// delete the entry in the db
+			cMessages.remove(this);								// remove this from cMessages
+			cDb.Cleanup();										// cleanup
 		}
+		/*	numberToString
+		 * 		takes the number in of a contact and returns the name of the contact
+		 */
 		private String numberToString(String num, Context ctx){
-			Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num));
-			Cursor cursor = ctx.getContentResolver().query(contactUri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, 
+			Uri contactUri = Uri.withAppendedPath(				// URI for the ContactsContract
+					ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num));			
+			Cursor cursor = ctx.getContentResolver().query(		// cursor for traversing
+					contactUri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, 
 					null, null, null);
+			// if there is a cursor with soethign in it
 			if(cursor.moveToFirst())
 				if(!cursor.isAfterLast())
-					return cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+					return cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));	// retunr the name
 			return null;
 		}
 	}// End of Child Class
@@ -272,37 +276,28 @@ public class Message{
 	
 	// Getters
 		// For Header
-	public ChildMessage getHeader(){
-		return header;
-	}
-	public String getHeaderNames(){
-		return header.namesText;
-	}
-	public String getHeaderText(){
-		return header.text;
-	}	
-	public int headerNumbersSize(){return header.numbers.size();}
-	
+	public ChildMessage getHeader(){return header;}						// get the header variable
+	public String getHeaderNames(){return header.namesText;}			// get header nameText
+	public String getHeaderText(){return header.text;}					// get header text
+	public int headerNumbersSize(){return header.numbers.size();}		// get size of contact in header
 	
 		// For nonHeaders 
-	public ChildMessage getChild(String t){
-		Log.d(TAG,"t:" +t);
-		
-		for(ChildMessage c : cMessages){
-			Log.d(TAG,"c.text: " + c.text);
-			if(c.text.equals(t))
-				return c;
+	public ChildMessage getChild(String t){								// get the specific header
+		for(ChildMessage c : cMessages){								// for all cMessages
+			if(c.text.equals(t))										// if the texts equals t
+				return c;												// return it
 		}
-		return null;
+		return null;													// else return null
 	}
-	
-	
-	
+
 	// Setters
-		// For Header
+		// For Headers
+	/*	addheaderToChild
+	 * 		adds the header ChildMessage to the database then adds
+	 * 		it to the list of ChildMessages
+	 */
 	public void addHeaderToChild(Context ctx){
-		Log.d(TAG,"in addHeaderToChild");
-		ChildInteraction cDb = new ChildInteraction(ctx);// ((MessageActivity)ctx).getDatabase();
+		ChildInteraction cDb = new ChildInteraction(ctx);
 		for(String key : header.numbers.keySet())
 			if(header.numbers.get(key) < 0)
 				header.numbers.put(key, (int)cDb.InsertMessage(key, header.text, DB_ID));
@@ -311,25 +306,24 @@ public class Message{
 		cMessages.add(header);
 		clearHeader();
 	}
+	// put the header back to no data in it
 	private void clearHeader(){
 		header = new ChildMessage();
-//		header.ids.clear();
-//		header.numbers.clear();
-//		header.text = CLICK_TO_EDIT;
-//		header.namesText = CLICK_TO_ADD_NAMES;
 	}
 	public void setHeaderText(String t){header.text = t;}
+	// add a contact to the header then change the namesText
 	public void addHeaderContacts(Context ctx,String[] nums){
 		header.numbers.clear();
 		for(String n : nums)
 			addContactHeader(n,ctx);
 		header.numbersToString(ctx);
 	}
+	// helper function for adding contacts to the header
 	private void addContactHeader(String n,Context ctx){
 		header.numbers.put(n, -1);
 		header.numbersToString(ctx);
 	}
-//
+
 	
 	// Boolean Operations
 		// Header
@@ -340,19 +334,18 @@ public class Message{
 		return false;
 	}	
 		// nonHeader
+	// if there is a duplicate number
 	public boolean isDuplicateNumber(String t){
 		for(ChildMessage c : cMessages)
 			if(c.containsNumber(t))
 				return true;
 		return false;
 	}
+	// if a header contains a certain fil
 	public boolean headerContainsNumber(String num){
 		return header.containsNumber(num);}
-
 	
-	
-	
-	
+	// get the text for a certain contact (for sending)
 	public String getContactText(String num){
 		for(ChildMessage c : cMessages)
 			for(String k : c.numbers.keySet())
@@ -365,10 +358,10 @@ public class Message{
 	}
 	
 	
+	// trims number of hyphens and beginning 1's 
 	private String trimNumber(String num){
 		String incomingNumber = num;
 		incomingNumber = incomingNumber.replaceAll("-", "" );
-//		incomingNumber = incomingNumber.replaceAll("+", "");
 		if(incomingNumber.startsWith("1"))
 			incomingNumber = incomingNumber.replaceFirst("1", "");
 		Log.d(TAG,"trimnum: " + num );
@@ -382,27 +375,14 @@ public class Message{
 	 * 		if there is tell that message to send the text
 	 */
 	public void sendSMS(String incomingNumber, Context context){
-		Log.d(TAG,"in sendText");
-		//if(specificNumbers.containsKey(incomingNumber));								// If there is a key that matches
-		
-		
 		String t = getContactText(incomingNumber);
 		if(t != null){
 			Log.d(TAG,"Contact Specific");
 			send(incomingNumber,context,t);
 		}
-////			specificMessages.get(incomingNumber).sendSMS(incomingNumber,context);		// Tell that message to send it
-//		
 		else{																			// If not
-			//SmsManager smsManager = SmsManager.getDefault();							// Get the SmsManager
-			
-			// if we want to track whether or not it was sent we need to change this 
-			//smsManager.sendTextMessage(incomingNumber, 									// And send the text message
-										//null, incomingNumber, null, null);
 			Log.d(TAG,"in sendSMS non Contact Specific");
 			send(incomingNumber,context);
-			
-			
 		}
 	}
 	private void send(String incomingNumber,Context context, String stext){
@@ -436,17 +416,17 @@ public class Message{
         PendingIntent 	deliveryIntent	= PendingIntent.getBroadcast(context, 0,		// Set up delivery Pending Intent
         										new Intent(DELIVERED), 0);
         SmsManager		smsManager			= SmsManager.getDefault();					// Get SmsManager
-		  try {
-	        smsManager.sendTextMessage(														// Send the text
+        try {
+        	smsManager.sendTextMessage(														// Send the text
         			incomingNumber, null, text, sentIntent, deliveryIntent);
-			Toast.makeText(context, "SMS Sent!",
-						Toast.LENGTH_LONG).show();
-		  } catch (Exception e) {
-			Toast.makeText(context,
+        	Toast.makeText(context, "SMS Sent!",
+        			Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+        	Toast.makeText(context,
 				"SMS faild, please try again later!",
 				Toast.LENGTH_LONG).show();
-			e.printStackTrace();
-		  }
+        	e.printStackTrace();
+        }
 		  
 		  
 		  ////

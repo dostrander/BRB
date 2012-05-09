@@ -9,42 +9,60 @@ package b.r.b;
 
 public final class R {
     public static final class attr {
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int button_selector=0x7f010007;
         /** <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
 <p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
          */
-        public static final int contrastColor=0x7f010005;
+        public static final int contrast_color=0x7f010006;
         /** <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
 <p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
          */
-        public static final int darkColor=0x7f010002;
+        public static final int dark_color=0x7f010003;
         /** <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
 <p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
          */
-        public static final int lightColor=0x7f010004;
+        public static final int darkest_color=0x7f010002;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int date_time_background=0x7f010009;
         /** <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
 <p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
          */
-        public static final int mediumColor=0x7f010003;
+        public static final int light_color=0x7f010005;
         /** <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
 <p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
          */
-        public static final int primaryTextColor=0x7f010000;
+        public static final int medium_color=0x7f010004;
         /** <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
 <p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
          */
-        public static final int secondaryTextColor=0x7f010001;
+        public static final int primary_text_color=0x7f010000;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int rounded_gradient=0x7f010008;
+        /** <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+         */
+        public static final int secondary_text_color=0x7f010001;
     }
     public static final class color {
         public static final int blue=0x7f050005;
@@ -70,57 +88,62 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int arrow_left=0x7f020007;
         public static final int arrow_right=0x7f020008;
         public static final int button_selector=0x7f020009;
-        public static final int date_time_background=0x7f02000a;
-        public static final int disabled_button=0x7f02000b;
-        public static final int disabled_button_selector=0x7f02000c;
-        public static final int edit_text_selector=0x7f02000d;
-        public static final int enable_button_pressed=0x7f02000e;
-        public static final int enable_icon=0x7f02000f;
-        public static final int enabled_button=0x7f020010;
-        public static final int enabled_message_selector=0x7f020011;
-        public static final int ic_launcher=0x7f020012;
-        public static final int log_tab_selector=0x7f020013;
-        public static final int message_symbol=0x7f020014;
-        public static final int message_tab_selector=0x7f020015;
-        public static final int nothing_button=0x7f020016;
-        public static final int nothing_button_selector=0x7f020017;
-        public static final int phone_symbol=0x7f020018;
-        public static final int selector_edit_text=0x7f020019;
-        public static final int settings_tab_selector=0x7f02001a;
-        public static final int tab_message_grey=0x7f02001b;
-        public static final int tab_message_white=0x7f02001c;
-        public static final int tab_response_grey=0x7f02001d;
-        public static final int tab_response_white=0x7f02001e;
-        public static final int tab_settings_grey=0x7f02001f;
-        public static final int tab_settings_white=0x7f020020;
+        public static final int button_selector_night=0x7f02000a;
+        public static final int date_time_background=0x7f02000b;
+        public static final int date_time_background_night=0x7f02000c;
+        public static final int disabled_button=0x7f02000d;
+        public static final int disabled_button_selector=0x7f02000e;
+        public static final int edit_text_selector=0x7f02000f;
+        public static final int enable_button_pressed=0x7f020010;
+        public static final int enable_icon=0x7f020011;
+        public static final int enabled_button=0x7f020012;
+        public static final int enabled_message_selector=0x7f020013;
+        public static final int ic_launcher=0x7f020014;
+        public static final int log_tab_selector=0x7f020015;
+        public static final int message_symbol=0x7f020016;
+        public static final int message_tab_selector=0x7f020017;
+        public static final int nothing_button=0x7f020018;
+        public static final int nothing_button_selector=0x7f020019;
+        public static final int phone_symbol=0x7f02001a;
+        public static final int rounded_gradient=0x7f02001b;
+        public static final int rounded_gradient_night=0x7f02001c;
+        public static final int selector_edit_text=0x7f02001d;
+        public static final int settings_tab_selector=0x7f02001e;
+        public static final int tab_message_grey=0x7f02001f;
+        public static final int tab_message_white=0x7f020020;
+        public static final int tab_response_grey=0x7f020021;
+        public static final int tab_response_white=0x7f020022;
+        public static final int tab_settings_grey=0x7f020023;
+        public static final int tab_settings_white=0x7f020024;
     }
     public static final class id {
-        public static final int add_message_button=0x7f08001c;
+        public static final int add_message_button=0x7f08001d;
         public static final int add_names_button=0x7f08001b;
+        public static final int apply_button=0x7f08003b;
         public static final int auto_complete_list=0x7f080016;
-        public static final int contact_checked=0x7f08002f;
-        public static final int contact_name=0x7f08002d;
-        public static final int contact_number=0x7f08002e;
-        public static final int contact_specific_label=0x7f080029;
+        public static final int calls_enabled_checkbox=0x7f080032;
+        public static final int calls_enabled_text=0x7f080031;
+        public static final int contact_checked=0x7f080028;
+        public static final int contact_name=0x7f080026;
+        public static final int contact_number=0x7f080027;
+        public static final int contact_specific_label=0x7f080022;
         public static final int contact_specific_message_item=0x7f080019;
-        public static final int contact_specific_message_list=0x7f08002c;
-        public static final int contact_specific_message_text=0x7f08001d;
-        public static final int dialog_input_message=0x7f080030;
-        public static final int dialog_message_list=0x7f080031;
+        public static final int contact_specific_message_list=0x7f080025;
+        public static final int contact_specific_message_text=0x7f08001c;
+        public static final int dialog_input_message=0x7f080029;
+        public static final int dialog_message_list=0x7f08002a;
         public static final int enable_away_button=0x7f080013;
-        public static final int end_row=0x7f080026;
-        public static final int endtime_label=0x7f080027;
-        public static final int endtime_text=0x7f080028;
-        public static final int header=0x7f08002a;
-        public static final int header_divider=0x7f08002b;
-        public static final int high_priority_button=0x7f080021;
+        public static final int end_row=0x7f08001f;
+        public static final int endtime_label=0x7f080020;
+        public static final int endtime_text=0x7f080021;
+        public static final int header=0x7f080023;
+        public static final int header_divider=0x7f080024;
         public static final int input_message_list_item=0x7f080002;
-        public static final int last_enabled_date=0x7f080033;
-        public static final int last_enabled_label=0x7f080032;
+        public static final int last_enabled_date=0x7f08002c;
+        public static final int last_enabled_label=0x7f08002b;
         public static final int log_entry_contact=0x7f080005;
         public static final int log_entry_date=0x7f080003;
         public static final int log_entry_expansion=0x7f080007;
-        public static final int log_entry_list=0x7f080034;
         public static final int log_entry_more=0x7f080006;
         public static final int log_entry_picture=0x7f080004;
         public static final int log_entry_received=0x7f08000c;
@@ -130,29 +153,35 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int log_entry_time=0x7f080009;
         public static final int log_entry_time_ampm=0x7f08000a;
         public static final int log_entry_time_label=0x7f080008;
-        public static final int low_priority_button=0x7f080022;
+        public static final int log_history_edit_number=0x7f080036;
+        public static final int log_history_text=0x7f080035;
         public static final int main_screen=0x7f08000f;
         public static final int message_input=0x7f080010;
         public static final int message_view=0x7f08001e;
         public static final int names=0x7f08001a;
+        public static final int no_logs_label=0x7f08002d;
         public static final int note=0x7f080001;
-        public static final int priority_label=0x7f080020;
-        public static final int priority_row=0x7f08001f;
+        public static final int on_disabled_volume_edit=0x7f08003a;
+        public static final int on_disabled_volume_mode=0x7f080039;
+        public static final int on_enable_volume_edit=0x7f080038;
+        public static final int on_enable_volume_mode=0x7f080037;
+        public static final int settings_view=0x7f08002e;
         public static final int show_list_button=0x7f080011;
-        public static final int start_row=0x7f080023;
-        public static final int starttime_label=0x7f080024;
-        public static final int starttime_text=0x7f080025;
+        public static final int style_selector=0x7f080030;
         public static final int tab1=0x7f080018;
         public static final int tab2=0x7f080017;
         public static final int textView1=0x7f080000;
+        public static final int texts_enabled_checkbox=0x7f080034;
+        public static final int texts_enabled_text=0x7f080033;
+        public static final int theme_text=0x7f08002f;
         public static final int top_divider1=0x7f080015;
         public static final int top_divider2=0x7f080014;
         public static final int top_divider3=0x7f080012;
-        public static final int widget_button=0x7f080038;
-        public static final int widget_icon=0x7f080039;
-        public static final int widget_left_button=0x7f080036;
-        public static final int widget_right_button=0x7f080037;
-        public static final int widget_textview=0x7f080035;
+        public static final int widget_button=0x7f08003f;
+        public static final int widget_icon=0x7f080040;
+        public static final int widget_left_button=0x7f08003d;
+        public static final int widget_right_button=0x7f08003e;
+        public static final int widget_textview=0x7f08003c;
     }
     public static final class layout {
         public static final int dialog_message_item=0x7f030000;
@@ -182,9 +211,12 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int widget_button_content_desc=0x7f060003;
     }
     public static final class style {
-        public static final int ParentStyle=0x7f070000;
-        public static final int blueTheme=0x7f070002;
-        public static final int greyTheme=0x7f070001;
+        public static final int DividerStyle=0x7f070003;
+        public static final int LayoutStyle=0x7f070001;
+        public static final int LogItemStyle=0x7f070002;
+        public static final int ParentTheme=0x7f070000;
+        public static final int Theme_Default=0x7f070004;
+        public static final int Theme_Night=0x7f070005;
     }
     public static final class xml {
         public static final int widget_provider=0x7f040000;
