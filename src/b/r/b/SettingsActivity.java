@@ -3,8 +3,6 @@
  * SettingsActivity.java
  * 		- Activity where user configurable settings are changed
  * 
- * Created: 2012
- * Author: Will Stahl
  * 
  * Evan Dodge, Derek Ostrander, Max Shwenk
  * Jason Mather, Stuart Lang, Will Stahl
