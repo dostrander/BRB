@@ -59,7 +59,7 @@ public class SettingsActivity extends Activity {
 	private static SharedPreferences _settings;
 	private static String enabled_volume_choice="";
 	private static String disabled_volume_choice="";
-	int style_selected=0;
+	private static int style_selected=0;
 	RadioGroup volumeGroup;
 	RadioGroup styleGroup;
 	
@@ -68,7 +68,7 @@ public class SettingsActivity extends Activity {
 		Log.d(TAG,"in onCreate");
 		
 		setTheme(Settings.Theme());
-		
+		style_selected = Settings.Theme();
 		setContentView(R.layout.settings_view);
 		
 		_themes = new HashMap<String,Integer>();
@@ -136,11 +136,14 @@ public class SettingsActivity extends Activity {
 				logField.setText(Integer.toString(Settings.LogHistoryDays()));
 				
 				// Set Theme last because it essentially restarts the application
-				Settings.SetTheme(_themes.get(_theme_names.get(style_selected)));
+				Settings.SetTheme(style_selected);
 			}
 		});
+		
+		TextView styleSelector = (TextView)findViewById(R.id.style_selector);
+		styleSelector.setText(Settings.ThemeName());
 		//set listenner for style selector
-		((TextView)findViewById(R.id.style_selector)).setOnClickListener(new OnClickListener(){										// Click Listener for EndTime
+		styleSelector.setOnClickListener(new OnClickListener(){										// Click Listener for EndTime
 			public void onClick(View v) {
 				//create a linear layout setup by setUpStyleDialog
 				final LinearLayout dialoglayout = setUpStyleDialog();								// Linear Layout for container of the new dialog
@@ -153,10 +156,13 @@ public class SettingsActivity extends Activity {
 				    	public void onClick(DialogInterface dialog, int which){
 				    		// Set the textView
 				    		int choice = styleGroup.getCheckedRadioButtonId();
-				    		if(choice==0)
+				    		if(choice==0) {
 				        		((TextView)findViewById(R.id.style_selector)).setText("Night");
-				    		else
+				        		style_selected = R.style.Theme_Night;
+				    		} else {
 				        		((TextView)findViewById(R.id.style_selector)).setText("Default");
+				        		style_selected = R.style.Theme_Default;
+				    		}
 				    		
 						}
 				})	.setNegativeButton("Cancel", new AlertDialog.OnClickListener(){				// Set an Empty Negative button to be able to 
