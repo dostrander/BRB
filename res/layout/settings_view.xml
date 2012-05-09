@@ -33,7 +33,7 @@
 	        android:textStyle="bold"
 	        android:layout_weight="0"
 	        android:layout_marginRight="5dp"
-	        android:background="@drawable/date_time_background"
+	        android:background="?attr/date_time_background"
 	        android:text="Default"
 	        android:textAppearance="?android:attr/textAppearanceMedium" />
         
@@ -124,7 +124,7 @@
 	        android:textStyle="bold"
 	        android:layout_weight="0"
 	        android:layout_marginRight="5dp"
-	        android:background="@drawable/date_time_background"
+	        android:background="?attr/date_time_background"
 	        android:text="Default"
 	        android:textAppearance="?android:attr/textAppearanceMedium" />
         
@@ -151,7 +151,7 @@
 	        android:textStyle="bold"
 	        android:layout_weight="0"
 	        android:layout_marginRight="5dp"
-	        android:background="@drawable/date_time_background"
+	        android:background="?attr/date_time_background"
 	        android:text="Default"
 	        android:textAppearance="?android:attr/textAppearanceMedium" />
         
