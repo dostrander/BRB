@@ -292,107 +292,120 @@ public class HomeScreenActivity extends TabActivity {
     // -- Dialog/Toast Functions --
     
     
-    
+    /*	popToast
+     * 		Shows a short text dialog to the user
+     */
     public void popToast(String t){
-    	Toast.makeText(this, t, Toast.LENGTH_LONG).show();
+    	Toast.makeText(this, t, Toast.LENGTH_LONG).show();		
     }
     
+    /*	createNewMessageDialog
+     * 		shows a dialog for creating a new message, is used in the header of the listview
+     * 		and if no message is selected it will by default go here
+     */
     private void createNewMessageDialog(){
-		int myDialogColor = Color.rgb(33, 66, 99);
-		LinearLayout ll = new LinearLayout(HomeScreenActivity.this);
-		ll.setOrientation(LinearLayout.VERTICAL);
-		final EditText input = new EditText(HomeScreenActivity.this);
-		final ListView lv = new ListView(HomeScreenActivity.this);
-		Cursor c = pDb.GetAllParentMessages();
-		ArrayList<String> temp = new ArrayList<String>();
-		if(c.moveToFirst()){
-			do temp.add(c.getString(c.getColumnIndex(MESSAGE))); 
-			while(c.moveToNext());
+		int myDialogColor = Color.rgb(33, 66, 99);														// get color for scrolling
+		LinearLayout ll = new LinearLayout(HomeScreenActivity.this);									// layout holdig the dialog
+		ll.setOrientation(LinearLayout.VERTICAL);														// make the orientation verticle
+		final EditText input = new EditText(HomeScreenActivity.this);									// for creating a new message
+		final ListView lv = new ListView(HomeScreenActivity.this);										// for selecting an exisitng message
+		Cursor c = pDb.GetAllParentMessages();															// get a cursor for all of the messages
+		ArrayList<String> temp = new ArrayList<String>();												// to hold the messages
+		// puts all the messages in the cursor into temp
+		if(c.moveToFirst()){																			// move the cursor to the first row
+			do temp.add(c.getString(c.getColumnIndex(MESSAGE))); 										// add the message
+			while(c.moveToNext());																		// while it is not after the last
 		}
-		pDb.Cleanup();
-		String[] messages = temp.toArray(new String[]{});
-		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeScreenActivity.this,
+		pDb.Cleanup();																					// close the parent cursor
+		String[] messages = temp.toArray(new String[]{});												// make the arraylist to a string
+		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(HomeScreenActivity.this,			// make the adapter for the listview
 				R.layout.dialog_message_item,R.id.textView1, messages);
-		input.setLines(2);
-		input.setGravity(Gravity.TOP);
-		input.setHint("Start typing message...");
-		input.addTextChangedListener(new TextWatcher(){
+		input.setLines(2);																				// only 2 lines
+		input.setGravity(Gravity.TOP);																	// make the textview cursor at the top
+		input.setHint("Start typing message...");														// before the user starts writing it says this
+		input.addTextChangedListener(new TextWatcher(){													// for filtering
 			public void afterTextChanged(Editable e) {}
 			public void beforeTextChanged(CharSequence s, int arg1,
 					int arg2, int arg3) {}
-			public void onTextChanged(CharSequence s, int start,
-					int before, int count) {adapter.getFilter().filter(s);}	});
-		ll.setBackgroundColor(myDialogColor);
-		lv.setBackgroundColor(myDialogColor);
-		lv.setCacheColorHint(myDialogColor);
-		lv.setAdapter(adapter);
-		lv.setOnItemClickListener(new OnItemClickListener(){
+			public void onTextChanged(CharSequence s, int start,										// when the text is changing
+					int before, int count) {adapter.getFilter().filter(s);}	});							// tell the adapter to filter the listview
+		ll.setBackgroundColor(myDialogColor);															// set the color to look like a dialog												
+		lv.setBackgroundColor(myDialogColor);															// set the color to look like a dialog
+		lv.setCacheColorHint(myDialogColor);															// set the color to look like a dialog
+		lv.setAdapter(adapter);																			// set the adapter to the listview
+		lv.setOnItemClickListener(new OnItemClickListener(){											// when one of the items is clicked
 			public void onItemClick(AdapterView<?> adap, View v,
 					int position, long id) {
-				input.setText(adapter.getItem(position));
-				input.setSelection(input.getText().length());
+				input.setText(adapter.getItem(position));												// set the edit text to that message
+				input.setSelection(input.getText().length());											// set the cursor to the end
 			}
 		});
-		ll.addView(input);
-		ll.addView(lv);
-		AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
-		builder.setTitle("Create New Message")
-		.setView(ll)
-		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		ll.addView(input);																				// add the edittext to the layout
+		ll.addView(lv);																					// add the listview to the dialog
+		AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);					// for building the dialog
+		builder.setTitle("Create New Message")															// title
+		.setView(ll)																					// set the view to the linear layout
+		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {								// when the user clicks ok
 			public void onClick(DialogInterface dialog, int whichButton) {
-				String text = input.getText().toString().trim().toString();
-				mCurrent = pDb.GetParentByMessage(text);
+				String text = input.getText().toString().trim().toString();								// get the input
+				mCurrent = pDb.GetParentByMessage(text);												// change current if there is one
 				
-				if(mCurrent == null){
-					Log.d(TAG,"new message");
-					mCurrent = pDb.InsertMessage(text);
-					HomeScreenActivity.adapter.changeCursor(pDb.GetAllParentMessages());
+				if(mCurrent == null){																	// if there isnt one already
+					mCurrent = pDb.InsertMessage(text);													// insert it 
+					HomeScreenActivity.adapter.changeCursor(pDb.GetAllParentMessages());				// requery the listview
 				}
-				messageList.setVisibility(View.GONE);
-				changeCurrent();
-				pDb.Cleanup();
+				messageList.setVisibility(View.GONE);													// set the listview to gone
+				changeCurrent();																		// change the current applicationw ide
+				pDb.Cleanup();																			// clean up the parent database
 			}
 		});
 
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {						// to just cancel the dialog
 			public void onClick(DialogInterface dialog, int whichButton) {
 		    // Canceled.
-				messageList.setVisibility(View.GONE);
+				messageList.setVisibility(View.GONE);													// just set the listview to gone
 			}
-		}).create().show();
+		}).create().show();																				// show the dialog
     }
     
+    /*	editTextDialog
+     * 		shows the dialog for editing the current message
+     */
     private void editTextDialog(){
-		LinearLayout ll = new LinearLayout(HomeScreenActivity.this);
-		final EditText input = new EditText(HomeScreenActivity.this);
-		input.setText(mCurrent.text);
-		ll.setOrientation(LinearLayout.VERTICAL);
-		input.setLines(2);
-		input.setGravity(Gravity.TOP);
-		input.setHint("Start typing message...");
-		ll.addView(input);
-		AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
-		builder.setTitle("Edit Message")
-		.setView(ll)
-		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		LinearLayout ll = new LinearLayout(HomeScreenActivity.this);									// layout for the dialog
+		final EditText input = new EditText(HomeScreenActivity.this);									// edit text for editing the message
+		input.setText(mCurrent.text);																	// set the text if there is one
+		ll.setOrientation(LinearLayout.VERTICAL);														// make the layout verticle
+		input.setLines(2);																				// set it multiline
+		input.setGravity(Gravity.TOP);																	// set the edit text cursor
+		input.setHint("Start typing message...");														// and what is says before the user types
+		ll.addView(input);																				// add it to the layout
+		AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);					// for building the dialog
+		builder.setTitle("Edit Message")																// title for the dialog
+		.setView(ll)																					// set the linear layout as the view
+		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {								// when the user okays it
 			public void onClick(DialogInterface dialog, int whichButton) {				
 				// update message
-				String text = input.getText().toString().trim().toString();
-				Log.d(TAG,String.valueOf(mCurrent.getID()));
-				if(text.length() > 0){
-					if(pDb.ParentEditMessage(mCurrent.getID(), text))
-						editCurrentMessage(text);
+				String text = input.getText().toString().trim().toString();								// get a trimmed down version of the input
+				if(text.length() > 0){																	// if there is a message
+					if(pDb.ParentEditMessage(mCurrent.getID(), text))									// and it isn't already edited
+						editCurrentMessage(text);														// edit the current message
 				}
 			}
 		});
 
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {						// just to cancel the dialog
 			public void onClick(DialogInterface dialog, int whichButton) {}
-		}).create().show();
+		}).create().show();																				// show the dialog
     	
     }
 
     
+    /*	enableMessage
+     * 		enables the message telling the whole application through the preferences
+     * 		as well as through static functions in the other classes. does the logic
+     * 		for turning the right ringer volume up and changing the color of the button
+     */
     private void enableMessage(){
     	// Make an alarm for the end time
     	int time = getEndTime();
@@ -405,18 +418,17 @@ public class HomeScreenActivity extends TabActivity {
     		alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+time, pendingIntent);
     	}
     	
-    	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-    	
-    	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();
-    	SharedPreferences prefs = getSharedPreferences(PREFS, Activity.MODE_PRIVATE);
-    	inputMessage.setTextColor(Color.WHITE);
-    	enableButton.setImageResource(R.drawable.enabled_message_selector);
+    	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);				// get an audio manager for changing ringer volume
+    	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();	// get the editer to edit the prefs
+    	SharedPreferences prefs = getSharedPreferences(PREFS, Activity.MODE_PRIVATE);					// prefs that are already made
+    	inputMessage.setTextColor(Color.WHITE);															// change the text color to make it more highlited
+    	enableButton.setImageResource(R.drawable.enabled_message_selector);								// change the color of the selector
     	// enable listener
-    	enableButton.setClickable(true);
-    	editor.putInt(DB_ID_KEY, mCurrent.getID());
-    	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
+    	enableButton.setClickable(true);																// make it so it is clickable just incase
+    	editor.putInt(DB_ID_KEY, mCurrent.getID());														// put the current ID in the prefs
+    	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);											// tell the preferenes that a message is enabled
     	//save previous ringer volume
-    	int volumePref = prefs.getInt(ENABLED_VOL, SILENT);
+    	int volumePref = prefs.getInt(ENABLED_VOL, SILENT);			
     	editor.putInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
     	editor.putInt(PREVIOUS_VOL, audiomanage.getStreamVolume(AudioManager.STREAM_RING));
     	switch(volumePref){
@@ -462,6 +474,11 @@ public class HomeScreenActivity extends TabActivity {
     	editor.commit();
     }
     
+    /*	disableMessage
+     * 		disables the message telling the whole application through the preferences
+     * 		as well as through static functions in the other classes. does the logic
+     * 		for turning the right ringer volume up and changing the color of the button
+     */
     private void disableMessage(){
     	
     	// Cancel the alarm
@@ -475,12 +492,12 @@ public class HomeScreenActivity extends TabActivity {
     		alarmManager.cancel(pendingIntent);
     	}
     	
-    	SharedPreferences prefs = getSharedPreferences(PREFS, Activity.MODE_PRIVATE);
-    	SharedPreferences.Editor editor = prefs.edit();
-    	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-    	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_DISABLED);
-    	inputMessage.setTextColor(Color.WHITE);
-    	enableButton.setImageResource(R.drawable.disabled_button_selector);
+    	SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);										// get the prefs
+    	SharedPreferences.Editor editor = prefs.edit();																// and the editor
+    	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);							// get the audiomanager for changing the rigner
+    	editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_DISABLED);														// tell the prefs that the message is disabled
+    	inputMessage.setTextColor(Color.WHITE);																		// highlight the text
+    	enableButton.setImageResource(R.drawable.disabled_button_selector);											// change the color of the icon
     	// disable listener
     	int volumePref = prefs.getInt(DISABLED_VOL, MAINTAIN);
     	switch(volumePref){
@@ -530,13 +547,13 @@ public class HomeScreenActivity extends TabActivity {
     }
     
     private void noMessage(){
-    	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();
-    	editor.putInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
-    	inputMessage.setText(NO_MESSAGE);
-    	inputMessage.setTextColor(Color.GRAY);
-    	enableButton.setImageResource(R.drawable.nothing_button_selector);
-    	mCurrent = null;
-    	enableButton.setClickable(false);
+    	SharedPreferences.Editor editor = getSharedPreferences(PREFS, Activity.MODE_PRIVATE).edit();								// get the editor
+    	editor.putInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);																	// tell the prefs there is no message selected
+    	inputMessage.setText(NO_MESSAGE);																							// change the input text
+    	inputMessage.setTextColor(Color.GRAY);																						// make the text dull
+    	enableButton.setImageResource(R.drawable.nothing_button_selector);															// change the icon
+    	mCurrent = null;																											// set the current to null
+    	enableButton.setClickable(false);																							// make the enable button not clickable
     	
     	// Updates the widget's Icon
     	Context context = this;
@@ -550,29 +567,34 @@ public class HomeScreenActivity extends TabActivity {
     	editor.commit();
     }
 
+    /*	editCurrentMessage
+     * 		just when changing the current message it tells the rest of
+     * 		the app that the message ahas changed
+     */
     private void editCurrentMessage(String t){
-    	mCurrent.setText(t);
-    	inputMessage.setText(mCurrent.text);
-    	
-    	MessageActivity.changeMessage(mCurrent);
+    	mCurrent.setText(t);																										// change the current message text
+    	inputMessage.setText(mCurrent.text);																						// change the input text
+    	MessageActivity.changeMessage(mCurrent);																					// tell the application
     }
-    private void changeCurrent(long db_id){
-    	Log.d(TAG,"in changeCurrent");
-    	Message temp = pDb.GetParentById((int) db_id);
-    	mCurrent = temp;
-    	Log.d("MCNULL",String.valueOf(mCurrent == null));
-    	changeCurrent();
-   	}
     
+    /*	changeCurrent
+     * 		changes the current message to a different already made message
+     * 		if it is null it will just go to no message selected
+     * 		it is overloaded because soemtimes you know it is going to be null
+     */
+    private void changeCurrent(long db_id){
+    	Message temp = pDb.GetParentById((int) db_id);																				// get the new message
+    	mCurrent = temp;																											// set mCurrent to temp
+    	changeCurrent();																											// check for null
+   	}
     private void changeCurrent(){
-    	MessageActivity.changeMessage(mCurrent);
-    	if(mCurrent == null){
-    		Log.d("mCurrent","null");
-    		noMessage();
+    	MessageActivity.changeMessage(mCurrent);																					// change message in activity
+    	if(mCurrent == null){																										// if current is null
+    		noMessage();																											// change it to no message selected
     	}
-    	else{
-    		inputMessage.setText(mCurrent.text);
-    		disableMessage();
+    	else{																														// if it is not null
+    		inputMessage.setText(mCurrent.text);																					// set the input text
+    		disableMessage();																										// make it the disable message
     	}
     	
     	// Updates the Widget's Textview
@@ -586,7 +608,9 @@ public class HomeScreenActivity extends TabActivity {
     }
     
     
-    
+    /*	class MessageListCursorAdapter
+     * 		controls the list that drops down underneath the textview at the top
+     */
     private class MessageListCursorAdapter extends CursorAdapter {
     	private final int layout;
     	private final int textview_id;
@@ -597,30 +621,31 @@ public class HomeScreenActivity extends TabActivity {
 			layout = lout;
 			textview_id = to[0];
 		}
-		
+		// inflates view and sets tag
 		@Override
-		public View newView(Context ctx, Cursor cursor, ViewGroup parent){
-			ViewHolder holder = new ViewHolder();
-			View v = LayoutInflater.from(ctx).inflate(layout, null);
+		public View newView(Context ctx, Cursor cursor, ViewGroup parent){			
+			ViewHolder holder = new ViewHolder();							
+			View v = LayoutInflater.from(ctx).inflate(layout, null);															
 			v.setTag(holder);
-			
 			return v;
 			
 		}
 		
+		/*	bindView
+		 * 		sets the data and click listenerns of the list items
+		 */ 		 
 		@Override
 		public void bindView(View v, Context context, Cursor cursor){
-			final ViewHolder holder = (ViewHolder) v.getTag();
-			TextView tv = (TextView) v.findViewById(textview_id);
-			tv.setText(cursor.getString(cursor.getColumnIndex(MESSAGE)));			
-			holder.text = tv;
-			holder.id = cursor.getLong(cursor.getColumnIndex(ID));
+			final ViewHolder holder = (ViewHolder) v.getTag();																		// get the views associated witht his position
+			TextView tv = (TextView) v.findViewById(textview_id);																	// get the textview in the layout
+			tv.setText(cursor.getString(cursor.getColumnIndex(MESSAGE)));															// set the text view
+			holder.text = tv;																										// set the holders textview
+			holder.id = cursor.getLong(cursor.getColumnIndex(ID));																	// set the id to the db_id
 			v.setOnClickListener(new OnClickListener(){
-				public void onClick(View v) {
-					Log.d(TAG,String.valueOf(holder.id));
-					if(layout == R.layout.input_message_list_item){
-						changeCurrent(holder.id);
-						messageList.setVisibility(View.GONE);
+				public void onClick(View v) {																						// when selecting a message
+					if(layout == R.layout.input_message_list_item){																	// if its the right layout
+						changeCurrent(holder.id);																					// change the current message
+						messageList.setVisibility(View.GONE);																		// make it so the message list is gone
 					}
 				}
 			});
