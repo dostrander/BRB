@@ -46,7 +46,7 @@ public class LogActivity extends ListActivity{
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, -Settings.LogHistoryDays());
-		
+		lDb.DeleteLog(sdf.format(cal.getTime()));
 	}
 	
 	public void onResume()
