@@ -63,53 +63,55 @@ import java.util.Calendar;
  * 		First activity that comes up.
  * 		Holds the TabHost for displaying the Message, Response Log, and Settings tabs.
  * 		Holds the Current Message.
+ * 		Controls the current message and when it is enabled/disabled and changed
  * 		
  */
 
 public class HomeScreenActivity extends TabActivity {
     // Convenience Variables
-	private final String TAG = "HomeScreenActivity";
-	private final String MESSAGE = "message";
-	private final String LOG = "log";
-	private final String SETTINGS = "settings";
-	private final String NO_MESSAGE = "Click to Edit Message";
-	public static boolean logStarted;
-	public static Message mCurrent;
-
+	private final String TAG = "HomeScreenActivity";													// For Logs
+	private final String MESSAGE = "message";															// message tab identifier
+	private final String LOG = "log";																	// log tab identifier
+	private final String SETTINGS = "settings";															// settings tab identifier
+	private final String NO_MESSAGE = "Click to Edit Message";											// Default textview text
 	// Views
-	ImageButton enableButton;
-	ImageButton listButton;
-	Button selectButton;
-	TextView header;
-	TabHost mTabHost;
-	TabWidget mTabWidget;
-	static TextView inputMessage;
-	private static ListView messageList;
-	ListView messageListView;
-	
-	AlarmManager alarmManager;
+	private ImageButton enableButton;																	// For enabling/disabling
+	private ImageButton listButton;																		// To show the drop down list
+	private TextView header;																			// header for the drop down listview
+	private TextView inputMessage;																		// Top textview for inputting message 
+	private ListView messageList;																		// list for drop down of messages
+	private TabHost mTabHost;																			// For holding and controlling the different tabs
+	// Utilities
+	private AlarmManager alarmManager;																	// For waking up the phone to disable the message
+	private static MessageListCursorAdapter adapter;														// Adapter for controlling the drop down message list
+	private static ParentInteraction pDb;																// To access the Parent Message database
+	public static boolean logStarted;																	// flag for when logActivity has been created
+	public static Message mCurrent;																		// the current message enabled
 
-	private static MessageListCursorAdapter adapter;
-	static ParentInteraction pDb;
 
 	
 	/*	onCreate
-	 * 		
+	 * 		get Views and tabhosts, set up intents to put in the tabhosts for switching.
+	 * 		Set up the list and adapters and put the header on top ofthe list
 	 */
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"in onCreate");
         Settings.Init(this);
-        setTheme(Settings.Theme());//set the theme we have chosen in the settings tabs
+        setTheme(Settings.Theme());																		// set the theme we have chosen in the settings tabs
         setContentView(R.layout.main_screen);
-        logStarted = false;
+        logStarted = false;																				// Flag for when the logActivity has been created
         // Find views	
+        View theader = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE))					// Inflate header view to put on top of drop 
+        		.inflate(R.layout.input_message_list_item, null, false);									// down message list
+        header 		= (TextView) theader.findViewById(R.id.input_message_list_item);					// Get header textview for direct control 
+
         enableButton = 		(ImageButton) findViewById(R.id.enable_away_button);						// To enable the message
         listButton	 =	 	(ImageButton) findViewById(R.id.show_list_button);							// Show messages
         messageList  = 		(ListView) findViewById(R.id.auto_complete_list);							// List of Messages 
         inputMessage = 		(TextView) findViewById(R.id.message_input);								// Textview showing current Message
+
         
         // Set Tabs to correct Activities 
         mTabHost 	= getTabHost();																		// Get TabHost
@@ -128,161 +130,171 @@ public class HomeScreenActivity extends TabActivity {
         		setContent(new Intent(this,SettingsActivity.class)));									// Set Intent for SettingsActivity
         
         // Set Current Tab
-        mTabHost.setCurrentTab(0);        
+        mTabHost.setCurrentTab(0); 																		// Set the current tab to messageActivity       
 
         //open up a parent interaction so we can interact with the parent database
-        pDb = new ParentInteraction(this);
-        View theader = ((LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.input_message_list_item, null, false);
+        pDb = new ParentInteraction(this);																// Initialize parentInteraction
         
         // Set to theme appropriate color
         TypedArray a = getTheme().obtainStyledAttributes(new int[] {R.attr.dark_color});
-        theader.setBackgroundColor(a.getColor(0, Color.BLACK));
         a.recycle();
         
-        header = (TextView) theader.findViewById(R.id.input_message_list_item);
-        header.setTextColor(Color.WHITE);
-        header.setText("Create New Message");
-        messageList.addHeaderView(header);
-        Cursor temp = pDb.GetAllParentMessages();//creating a temp so we can close it as soon as we're done with it
-        //MessageListCursorAdapter is defined below
-        adapter = new MessageListCursorAdapter(this,R.layout.input_message_list_item,temp,
+        // Set up Header
+        theader.setBackgroundColor(a.getColor(0, Color.BLACK));											// set header color different then othere
+        header.setTextColor(Color.WHITE);																// set header text color different as well
+        header.setText("Create New Message");															// set the text
+        messageList.addHeaderView(header);																// add it to the top of the listview
+        Cursor temp = pDb.GetAllParentMessages();														// creating a temp so we can close it as soon as 
+        																									// we're done with it
+        adapter = new MessageListCursorAdapter(this,R.layout.input_message_list_item,temp,				// Create adapter for controlling the listview
         		new String[]{MESSAGE},new int[]{R.id.input_message_list_item});
-       
-        messageList.setAdapter(adapter);
-        //
-        temp.close();//can close the getAllParentMessages cursor now that it's stored
+        messageList.setAdapter(adapter);																// Set the adapter
+        temp.close();																					//can close the getAllParentMessages cursor now that it's stored
 
-        //set up everything 
-        messageList.setVisibility(View.GONE);
-        registerListeners();
+        messageList.setVisibility(View.GONE);															// Dont show the list until the button is clicked
+        registerListeners();																			// Set up Click Listeners
         
-    	Log.d(TAG,String.valueOf(isEnabled()));
+        
+        // Set up color of button and change current message
+        //		This is done twice, in onCreate and onStart because
+        // 		of the Android LifeCycle. If the app has been closed 
+        //		and destroyed i want to put no message selected up when created
+        //		if there was not one disabled. And in onstart i do it in case
+        //		the app just went down for a second
+   		int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);						// Get db_id of the last mCurrent message						
+    	if(isEnabled() == MESSAGE_ENABLED && db_id >= 0){												// if it enabled and there is a valid db_id
+   			changeCurrent(db_id);																		// change the current message
+   			enableMessage();																			// and enable it
+   		} else noMessage();																				// else say that there is no message
     	
-   		int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
-   		Log.d(TAG,String.valueOf(db_id));
-    	if(isEnabled() == MESSAGE_ENABLED && db_id >= 0){
-    		Log.d(TAG,"message is enabled in onCreate");
-   			changeCurrent(db_id);
-   			enableMessage();
-   		}else noMessage();
     }
     
+    /*	onStart
+     * 		Basically just does what was done at the end of onCreate, for
+     * 		reasons that were explained in onCreate
+     */
     @Override
     public void onStart(){
     	super.onStart();
-    	int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);
-    	int enabled = isEnabled();
-    	Log.d(TAG,"in onStart");
-    	//check if we are enable or disable and act accordingly
-   		if((enabled == MESSAGE_ENABLED) && (db_id >= 0)){
-   			Log.d(TAG,"message Enabled");
-   			changeCurrent(db_id);
-   			enableMessage();
-   		}else if((enabled == MESSAGE_DISABLED) && (db_id >= 0)){
-   			Log.d(TAG,"message disabled");
-   			changeCurrent(db_id);
-   			disableMessage();
-   		} else{
-   			Log.d(TAG,"no message");
-   			noMessage();
-   		}
-
+    	int db_id = getSharedPreferences(PREFS,MODE_PRIVATE).getInt(DB_ID_KEY, -1);						// Get the db_id
+    	int enabled = isEnabled();																		// check to see if it was enabled
+   		if((enabled == MESSAGE_ENABLED) && (db_id >= 0)){												// if it is enabled and has a valid db_id
+   			changeCurrent(db_id);																		// change the current message
+   			enableMessage();																			// and enable it
+   		}else if((enabled == MESSAGE_DISABLED) && (db_id >= 0)){										// else if it is disabled and the db_id is valid
+   			changeCurrent(db_id);																		// change the current message
+   			disableMessage();																			// and disable it
+   		} else noMessage();																				// else just put no Message selected up
     }
     
-    @Override
-    public void onResume(){
-    	super.onResume();
-    	Log.d(TAG,"in onResume");
-    }
-        
-    @Override
-    public void onPause(){
-    	super.onPause();
-    	Log.d(TAG,"in onPause");
-    }
     
-    @Override
-    public void onStop(){
-    	super.onStop();
-    	Log.d(TAG, "in onStop");
-    }
-    
+    /*	onDestroy
+     * 		Saves if the message was enabled or not and cleans up the DB
+     */
     @Override
     public void onDestroy(){
     	super.onDestroy();
-    	Log.d(TAG,"in onDestroy");
-    	SharedPreferences prefs = getSharedPreferences(PREFS,MODE_PRIVATE);
-		SharedPreferences.Editor editor = prefs.edit();
+    	SharedPreferences prefs = getSharedPreferences(PREFS,MODE_PRIVATE);								// get the preferences
+		SharedPreferences.Editor editor = prefs.edit();													// and the editor to set the values
 		//if we are not enabled, we dont want any message selected
-    	if(isEnabled() != MESSAGE_ENABLED)
-    		editor.putInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
+    	if(isEnabled() != MESSAGE_ENABLED)																// if the message is not enabled
+    		editor.putInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);									// say there is no message selected next time
     	//if it is enabled, we need to store what the current message is
-    	else editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);
-    	editor.commit();
+    	else editor.putInt(MESSAGE_ENABLED_KEY, MESSAGE_ENABLED);										// if enabled store it
+    	editor.commit();																				// save the preferences
     	//if pDb is not null, make sure we clean it up to avoid database never closed errors!
-    	if(pDb != null){
-    		pDb.Cleanup();
+    	if(pDb != null){																				// if the db isn't already null
+    		pDb.Cleanup();																				// clean it up for no errors
     	}
-    	
-    	
-    }
-    //check if the app is turned on
-    public int isEnabled(){
-    	SharedPreferences prefs = getSharedPreferences(PREFS,MODE_PRIVATE);
-    	return prefs.getInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);
-    }
-    
-    
-    public void popToast(String t){
-    	Toast.makeText(this, t, Toast.LENGTH_LONG).show();
     }
     
     /*	registerClickListeners
      *  pretty straightforward, just setting all the click listeners we need so the user can click on anything they want
      */
- 
     private void registerListeners(){
-    	Log.d(TAG,"in registerListener");
+    	// inputMessage 
+    	//		If there isn't a message selected bring up the createNewMessage dialog
+    	//		else just bring up the edit text dialog
     	inputMessage.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
-				if(mCurrent == null)
-					createNewMessageDialog();
-				else editTextDialog();
+				if(mCurrent == null)																	// if there is no current message
+					createNewMessageDialog();															// bring up the create new dialog								
+				else editTextDialog();																	// else brign up the edit text dialog
 			}
     	});
-    	messageList.setOnItemClickListener(new OnItemClickListener(){
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-
-			}
-    	});
+    	
+    	//	enableButton
+    	//		Enables and disables the message accordingly
     	enableButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
-				if(isEnabled() == MESSAGE_DISABLED) enableMessage();
-				else disableMessage();
+				if(isEnabled() == MESSAGE_DISABLED) enableMessage();									// if it is disabled enable the message
+				else disableMessage();																	// else just disable it
 			}
     	});
+    	
+    	//	listButton
+    	//		just makes the messageListView visible or invisible and updates
+    	//		the cursor
     	listButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
-				if(messageList.getVisibility() == View.GONE){
-					pDb.Cleanup();
-					adapter.changeCursor(pDb.GetAllParentMessages());
-					messageList.setVisibility(View.VISIBLE);
-					messageList.bringToFront();
+				if(messageList.getVisibility() == View.GONE){											// if the list is not there
+					pDb.Cleanup();																		// close the original cursor just incase
+					adapter.changeCursor(pDb.GetAllParentMessages());									// change it to a new one
+					messageList.setVisibility(View.VISIBLE);											// show the listview
+					messageList.bringToFront();															// make sure it is able to be seen
 				}
 				else{
-					messageList.setVisibility(View.GONE);
-					pDb.Cleanup();
+					messageList.setVisibility(View.GONE);												// else just make it invisible again
+					pDb.Cleanup();																		// and close the cursor
 				}
 					
 			}
     	});
     	
+    	//	header
+    	//		brings up the createNewMessageDialog
     	header.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
-				createNewMessageDialog();				
+				createNewMessageDialog();																// bring it up	
 			}
     	});
+    }
+    
+    // -- Getters --
+    
+    /*	isEnabled
+     * 		gets if it is enabled or not from the preferences
+     */
+    public int isEnabled(){
+    	SharedPreferences prefs = getSharedPreferences(PREFS,MODE_PRIVATE);								// get the preferences
+    	return prefs.getInt(MESSAGE_ENABLED_KEY, NO_MESSAGE_SELECTED);									// return if it is enabled or not
+    }
+    
+    /*	getEndTime
+     * 		gets the difference between the current time and endtime of the message
+     * 		for the alarm manager to be set
+     */
+    private int getEndTime(){
+    	SharedPreferences prefs = this.getSharedPreferences(PREFS, Context.MODE_PRIVATE);				// get the preferences
+    	Calendar current = Calendar.getInstance(); 														// get the current time
+    	Calendar end = Calendar.getInstance();															// and a instance to set to the end time
+    	end.set(prefs.getInt("END_TIME_YEAR", 0), prefs.getInt("END_TIME_MONTH", 0),					// set end 
+    			prefs.getInt("END_TIME_DAY", 0), prefs.getInt("END_TIME_HOUR", 0), 
+    			prefs.getInt("END_TIME_MIN", 0));
+    	if(end.getTimeInMillis() == 0)																	// error checking
+    		return(-1);																					
+    	
+    	int difference = (int)(end.getTimeInMillis() - current.getTimeInMillis());						// get the difference of end - current in mills
+    	difference = difference - end.get(Calendar.SECOND)*1000;										// also you need to get the seconds
+    	return(difference);																				// return it to the alarm manager
+    }
+    
+    // -- Dialog/Toast Functions --
+    
+    
+    
+    public void popToast(String t){
+    	Toast.makeText(this, t, Toast.LENGTH_LONG).show();
     }
     
     private void createNewMessageDialog(){
@@ -334,13 +346,10 @@ public class HomeScreenActivity extends TabActivity {
 				if(mCurrent == null){
 					Log.d(TAG,"new message");
 					mCurrent = pDb.InsertMessage(text);
-					//mCurrent = db.InsertMessage(text, new String[]{});
 					HomeScreenActivity.adapter.changeCursor(pDb.GetAllParentMessages());
 				}
 				messageList.setVisibility(View.GONE);
 				changeCurrent();
-				
-				// Maybe? -- agree with original comment, may need to be closed
 				pDb.Cleanup();
 			}
 		});
@@ -383,23 +392,6 @@ public class HomeScreenActivity extends TabActivity {
     	
     }
 
-    private int getEndTime(){
-    	SharedPreferences prefs = this.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-    	Calendar current = Calendar.getInstance(); 
-    	Calendar end = Calendar.getInstance();
-    	
-    	end.set(prefs.getInt("END_TIME_YEAR", 0), prefs.getInt("END_TIME_MONTH", 0), 
-    			prefs.getInt("END_TIME_DAY", 0), prefs.getInt("END_TIME_HOUR", 0), 
-    			prefs.getInt("END_TIME_MIN", 0));
-    	
-    	if(end.getTimeInMillis() == 0)
-    		return(-1);
-    	
-    	int difference = (int)(end.getTimeInMillis() - current.getTimeInMillis());
-    	difference = difference - end.get(Calendar.SECOND)*1000;
-    	
-    	return(difference);
-    }
     
     private void enableMessage(){
     	// Make an alarm for the end time
@@ -592,6 +584,9 @@ public class HomeScreenActivity extends TabActivity {
     	remoteViews.setTextViewText(R.id.widget_textview, mCurrent.text);
     	appWidgetManager.updateAppWidget(thisWidget, remoteViews);
     }
+    
+    
+    
     private class MessageListCursorAdapter extends CursorAdapter {
     	private final int layout;
     	private final int textview_id;
