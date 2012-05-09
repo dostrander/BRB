@@ -4,7 +4,7 @@
  * 		- Activity where user configurable settings are changed
  * 
  * Created: 2012
- * Author: Will Stahl
+ * Author: Will Stahl, additions by Max Schwenk
  * 
  * Evan Dodge, Derek Ostrander, Max Shwenk
  * Jason Mather, Stuart Lang, Will Stahl
