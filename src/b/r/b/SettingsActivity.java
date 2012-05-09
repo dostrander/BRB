@@ -139,8 +139,11 @@ public class SettingsActivity extends Activity {
 				Settings.SetTheme(style_selected);
 			}
 		});
+		
+		TextView styleSelector = (TextView)findViewById(R.id.style_selector);
+		styleSelector.setText(Settings.ThemeName());
 		//set listenner for style selector
-		((TextView)findViewById(R.id.style_selector)).setOnClickListener(new OnClickListener(){										// Click Listener for EndTime
+		styleSelector.setOnClickListener(new OnClickListener(){										// Click Listener for EndTime
 			public void onClick(View v) {
 				//create a linear layout setup by setUpStyleDialog
 				final LinearLayout dialoglayout = setUpStyleDialog();								// Linear Layout for container of the new dialog

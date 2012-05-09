@@ -54,6 +54,11 @@ public interface Constants extends BaseColumns {
 	//public static final String RINGER_MODE = "ringer mode pref";
 	public static final String ENABLED_VOL = "enabled volume pref";
 	public static final String DISABLED_VOL = "disabled volume pref";
+
+	public static final String HANDLE_CALLS = "handle_calls";
+	public static final String HANDLE_TEXTS = "handle_texts";
+	public static final String LOG_HISTORY_DAYS = "log_history_days";
+	public static final String THEME = "theme";
 	
 	public static final int SILENT=0;
 	public static final int VIBRATE=1;

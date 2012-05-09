@@ -13,7 +13,7 @@
 
 package b.r.b;
 
-
+import static b.r.b.Constants.*;
 import java.lang.reflect.Field;
 import android.app.Activity;
 import android.content.Intent;
@@ -34,7 +34,7 @@ public class Settings {
 	}
 	public static void SetLogHistoryDays(int value) {
 		_logHistoryDays = value;
-		_editor.putInt("log_history_days", _logHistoryDays);
+		_editor.putInt(LOG_HISTORY_DAYS, _logHistoryDays);
 		_editor.commit();
 	}
 	
@@ -45,7 +45,7 @@ public class Settings {
 	}
 	public static void SetHandleCalls(Boolean value) {
 		_handleCalls = value;
-		_editor.putBoolean("handle_calls", _handleCalls);
+		_editor.putBoolean(HANDLE_CALLS, _handleCalls);
 		_editor.commit();
 	}
 	
@@ -56,7 +56,7 @@ public class Settings {
 	}
 	public static void SetHandleTexts(Boolean value) {
 		_handleTexts = value;
-		_editor.putBoolean("handle_texts", _handleTexts);
+		_editor.putBoolean(HANDLE_TEXTS, _handleTexts);
 		_editor.commit();
 	}
 	
@@ -99,7 +99,7 @@ public class Settings {
 		_theme = id;
 		_themeName = name;
 		
-		_editor.putString("theme", name);
+		_editor.putString(THEME, name);
 		_editor.commit();
 
 		// The home activity needs to be restarted to set the theme
@@ -117,12 +117,12 @@ public class Settings {
 
 		_editor.commit();
 		
-		_handleCalls = _settings.getBoolean("handle_calls", true);
-		_handleTexts = _settings.getBoolean("handle_texts", true);
-		_logHistoryDays = _settings.getInt("log_history_days", 10);
+		_handleCalls = _settings.getBoolean(HANDLE_CALLS, true);
+		_handleTexts = _settings.getBoolean(HANDLE_TEXTS, true);
+		_logHistoryDays = _settings.getInt(LOG_HISTORY_DAYS, 10);
 		
 		// Try to get name of saved theme, otherwise use default
-		_themeName = _settings.getString("theme", "Default");
+		_themeName = _settings.getString(THEME, "Default");
 		_theme = R.style.Theme_Default;
 		try {
 			// Try to find the theme in the style resources that corresponds with the given name (using reflection).
@@ -136,10 +136,10 @@ public class Settings {
 		}
 		
 		// Write settings
-		_editor.putBoolean("handle_calls", _handleCalls);
-		_editor.putBoolean("handle_texts", _handleTexts);
-		_editor.putInt("log_history_days", _logHistoryDays);
-		_editor.putString("theme", _themeName);
+		_editor.putBoolean(HANDLE_CALLS, _handleCalls);
+		_editor.putBoolean(HANDLE_TEXTS, _handleTexts);
+		_editor.putInt(LOG_HISTORY_DAYS, _logHistoryDays);
+		_editor.putString(THEME, _themeName);
 		
 		// Commit settings
 		_editor.commit();
