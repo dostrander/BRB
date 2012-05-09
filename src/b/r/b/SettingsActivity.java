@@ -3,8 +3,6 @@
  * SettingsActivity.java
  * 		- Activity where user configurable settings are changed
  * 
- * Created: 2012
- * Author: Will Stahl
  * 
  * Evan Dodge, Derek Ostrander, Max Shwenk
  * Jason Mather, Stuart Lang, Will Stahl
@@ -83,7 +81,8 @@ public class SettingsActivity extends Activity {
 			} catch (Exception e) { }
 			
 		}
-		//
+		//make sure that volume preferences carry over 
+		//when the application closes
 		_settings = SettingsActivity.this.getSharedPreferences(PREFS, MODE_PRIVATE);
 		String enabled_vol_str,disabled_vol_str;
 		enabled_vol_str = _settings.getString(ENABLED_VOL_TXT, "Default");
@@ -143,8 +142,10 @@ public class SettingsActivity extends Activity {
 				        .setCancelable(false) 													// Make it so they can not use the back button
 				        .setPositiveButton("Set", new AlertDialog.OnClickListener() {			// OnClick to actually set the time/date
 				    	public void onClick(DialogInterface dialog, int which){
-				    		// Set the textView
+				    		// Get selection from radio button dialog
 				    		int choice = styleGroup.getCheckedRadioButtonId();
+				    		
+				    		//chose theme based on selected radio button
 				    		if(choice==0) {
 				        		((TextView)findViewById(R.id.style_selector)).setText("Night");
 				        		style_selected = R.style.Theme_Night;
@@ -171,10 +172,11 @@ public class SettingsActivity extends Activity {
 				        .setCancelable(false) 													// Make it so they can not use the back button
 				        .setPositiveButton("Set", new AlertDialog.OnClickListener() {			// OnClick to actually set the time/date
 				    	public void onClick(DialogInterface dialog, int which){
-				    		// Set the textView
+				    		// Get choice from radio buttons
 				    		int choice = volumeGroup.getCheckedRadioButtonId();
 				    		_settings = SettingsActivity.this.getSharedPreferences(PREFS, MODE_PRIVATE);
 				    		_editor = _settings.edit();
+				    		//write preference to constants
 				    		_editor.putInt(ENABLED_VOL,choice);
 				    		
 				    		_editor.commit();
@@ -182,11 +184,17 @@ public class SettingsActivity extends Activity {
 				    		int volumePref = _settings.getInt(ENABLED_VOL, SILENT);
 				        	_editor.putInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
 				        	_editor.putInt(PREVIOUS_VOL, audiomanage.getStreamVolume(AudioManager.STREAM_RING));
+				        	/*
+				        	 * Updates button text and sets the appropiate ringer mode/volume based on
+				        	 * the cases of constants we created in Constants.java
+				        	 */
 				        	switch(volumePref){
 				        	case SILENT:
-				        		//
+				        		//set text of preference button
 				        		((TextView)findViewById(R.id.on_enable_volume_edit)).setText("Silent");
+				        		//save preference
 				        		_editor.putString(ENABLED_VOL_TXT, "Silent");
+				        		//set the ringer mode to silent
 				        		audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 				        		break;
 				        	case VIBRATE:
@@ -250,6 +258,10 @@ public class SettingsActivity extends Activity {
 				    		_editor.commit();
 				        	AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 				    		
+				        	/*
+				        	 * 
+				        	 * Same process as on_enabled_volume edit
+				        	 */
 				    		switch(choice){
 				        	case SILENT:
 				        		//
@@ -291,7 +303,6 @@ public class SettingsActivity extends Activity {
 				        		int previousRingMode = _settings.getInt(PREVIOUS_RINGER_MODE,audiomanage.getRingerMode());
 				        		audiomanage.setStreamVolume(AudioManager.STREAM_RING,previousVolume, 0);
 				        		audiomanage.setRingerMode(previousRingMode);
-				        		//do nothing
 				        		break;
 				        	}
 						}
@@ -305,6 +316,11 @@ public class SettingsActivity extends Activity {
 	}
 	private LinearLayout setUpVolumeDialog(){
 		LinearLayout dialoglayout 			= new LinearLayout(SettingsActivity.this);					// Create a linear layout for the dialog
+		/*
+		 * Create our radio buttons for the popup dialog
+		 * Also, create a radio group so that only one 
+		 * of the radio buttons can be selected at once
+		 */
 		RadioButton vibrate  				= new RadioButton(SettingsActivity.this);						// get date picker
 		RadioButton silent  				= new RadioButton(SettingsActivity.this);
 		RadioButton low  					= new RadioButton(SettingsActivity.this);
@@ -326,22 +342,24 @@ public class SettingsActivity extends Activity {
 		medium.setText("Medium");
 		high.setText("High");
 		maintain.setText("Maintain current");
+		
+		//add radio buttons to radio group
 		volumeGroup.addView(vibrate);
 		volumeGroup.addView(silent);
 		volumeGroup.addView(low);
 		volumeGroup.addView(medium);
 		volumeGroup.addView(high);
 		volumeGroup.addView(maintain);
-											// set the ID for getting later
+
 		dialoglayout.addView(volumeGroup);
 		
-															// add time picker to linear layout
 		dialoglayout.setOrientation(LinearLayout.VERTICAL);										// set linear layout to vertical orientation
 		return dialoglayout;																	// return the linear layout
 	}
 	private LinearLayout setUpStyleDialog(){
 		//default
 		//night
+		//same process as above
 		LinearLayout dialoglayout 							= new LinearLayout(SettingsActivity.this);					// Create a linear layout for the dialog
 		RadioButton defaultStyle  							= new RadioButton(SettingsActivity.this);						// get date picker
 		RadioButton nightStyle	  							= new RadioButton(SettingsActivity.this);
@@ -359,7 +377,6 @@ public class SettingsActivity extends Activity {
 		// set the ID for getting later
 		dialoglayout.addView(styleGroup);
 		
-															// add time picker to linear layout
 		dialoglayout.setOrientation(LinearLayout.VERTICAL);										// set linear layout to vertical orientation
 		return dialoglayout;																	// return the linear layout
 	}
